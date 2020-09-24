@@ -18,9 +18,10 @@ client.on('message', message => {
 			return;
 		case message.mentions.users.has('545420239706521601'):
 			const EmbedMessage = new MessageEmbed()
-				.setAuthor('Hope Bot Commands', 'https://cdn.discordapp.com/avatars/545420239706521601/06cd328d670773df41efe598d2389f52.png')
+				.setAuthor('Bot Help', 'https://cdn.discordapp.com/avatars/545420239706521601/06cd328d670773df41efe598d2389f52.png')
 				.setColor('GREEN')
-				.setDescription('My command prefix is .h');
+				.addField('**Prefix**', '`.h`', true)
+				.addField('**Commands**', '`.h commands`', true);
 			message.channel.send(EmbedMessage);
 			return;
 		case !message.content.startsWith('.h'):
@@ -36,6 +37,23 @@ client.on('message', message => {
 		case 'avatar':
 			message.channel.send(message.author.avatarURL({format: 'jpeg', dynamic: false, size: 1024}));
 			break;
+		case 'commands':
+			const Commands = {
+				avatar: 'Display your avatar',
+				ping: 'Says pong'
+			}
+
+			let CommandsDescription = '';
+			for (const commandName in Commands) {
+				CommandsDescription += '`.h ' + commandName + '`' + '\n' + Commands[commandName] + '\n\n';
+			}
+
+			const EmbedMessage = new MessageEmbed()
+				.setAuthor('Bot Commands', 'https://cdn.discordapp.com/avatars/545420239706521601/06cd328d670773df41efe598d2389f52.png')
+				.setColor('RED')
+				.setDescription(CommandsDescription);
+			message.channel.send(EmbedMessage);
+			break;	
 		case 'ping':
 			message.channel.send('Pong!');
 			break;
