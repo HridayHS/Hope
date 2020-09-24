@@ -27,6 +27,8 @@ client.on('message', message => {
 		case message.content === '.h':
 			message.channel.send('Invalid usage.');
 			return;
+		default:
+			break;
 	}
 
 	switch (message.content.substring(3)) {
