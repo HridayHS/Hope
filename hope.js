@@ -33,6 +33,9 @@ client.on('message', message => {
 	}
 
 	switch (message.content.substring(3)) {
+		case 'avatar':
+			message.channel.send(message.author.avatarURL({format: 'jpeg', dynamic: false, size: 1024}));
+			break;
 		case 'ping':
 			message.channel.send('Pong!');
 			break;
