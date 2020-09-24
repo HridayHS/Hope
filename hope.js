@@ -16,7 +16,7 @@ client.on('message', message => {
 	switch (true) {
 		case message.author.id === '545420239706521601':
 			return;
-		case message.content.substring(0, 2) !== '.h':
+		case !message.content.startsWith('.h'):
 			return;
 		case message.content === '.h':
 			message.channel.send('Invalid usage.');
