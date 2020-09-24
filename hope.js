@@ -18,6 +18,7 @@ client.on('message', message => {
 			return;
 		case message.mentions.users.has('545420239706521601'):
 			const EmbededMessage = new MessageEmbed()
+				.setAuthor('Hope Bot Commands', 'https://cdn.discordapp.com/avatars/545420239706521601/06cd328d670773df41efe598d2389f52.png')
 				.setColor('GREEN')
 				.setDescription('My command prefix is .h');
 			message.channel.send(EmbededMessage);
