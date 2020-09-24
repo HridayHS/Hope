@@ -18,7 +18,7 @@ client.on('message', message => {
 			return;
 		case message.mentions.users.has('545420239706521601'):
 			const EmbededMessage = new MessageEmbed()
-				.setColor(0xff0000)
+				.setColor('GREEN')
 				.setDescription('My command prefix is .h');
 			message.channel.send(EmbededMessage);
 			return;
