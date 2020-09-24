@@ -17,11 +17,11 @@ client.on('message', message => {
 		case message.author.id === '545420239706521601':
 			return;
 		case message.mentions.users.has('545420239706521601'):
-			const EmbededMessage = new MessageEmbed()
+			const EmbedMessage = new MessageEmbed()
 				.setAuthor('Hope Bot Commands', 'https://cdn.discordapp.com/avatars/545420239706521601/06cd328d670773df41efe598d2389f52.png')
 				.setColor('GREEN')
 				.setDescription('My command prefix is .h');
-			message.channel.send(EmbededMessage);
+			message.channel.send(EmbedMessage);
 			return;
 		case !message.content.startsWith('.h'):
 			return;
