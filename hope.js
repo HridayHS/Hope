@@ -1,7 +1,7 @@
 const Config = require('./config.json');
+const { Client, MessageEmbed } = require('discord.js');
 
-const Discord = require('discord.js');
-const client = new Discord.Client();
+const client = new Client();
 
 // Console log when bot is ready.
 client.once('ready', () => {
@@ -15,6 +15,12 @@ client.login(Config.token);
 client.on('message', message => {
 	switch (true) {
 		case message.author.id === '545420239706521601':
+			return;
+		case message.mentions.users.has('545420239706521601'):
+			const EmbededMessage = new MessageEmbed()
+				.setColor(0xff0000)
+				.setDescription('My command prefix is .h');
+			message.channel.send(EmbededMessage);
 			return;
 		case !message.content.startsWith('.h'):
 			return;
