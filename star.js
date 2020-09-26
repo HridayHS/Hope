@@ -12,7 +12,7 @@ client.once('ready', () => {
 // Initialize login
 client.login(Config.token);
 
-client.on('message', message => {
+client.on('message', async (message) => {
 	switch (true) {
 		case message.author.id === '545420239706521601':
 			return;
@@ -43,7 +43,8 @@ client.on('message', message => {
 			const Commands = {
 				avatar: 'Display your avatar',
 				pin: 'Pins the message',
-				ping: 'Says pong'
+				ping: 'Says pong',
+				unpinall: 'Unpins all the pinned messages'
 			};
 
 			let CommandsDescription = '';
@@ -66,6 +67,13 @@ client.on('message', message => {
 			break;
 		case 'ping':
 			message.channel.send('Pong!');
+			break;
+		case 'unpinall':
+			const fetchPinnedMessages = await message.channel.messages.fetchPinned();
+			fetchPinnedMessages.forEach(async (pinnedMessage) => {
+				await pinnedMessage.unpin();
+			});
+			message.channel.send('Unpinned all the pinned messages!');
 			break;
 		default:
 			message.channel.send('Invalid command.');
