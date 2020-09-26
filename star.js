@@ -20,13 +20,13 @@ client.on('message', message => {
 			const EmbedMessage = new MessageEmbed()
 				.setAuthor('Bot Help', 'https://cdn.discordapp.com/avatars/545420239706521601/06cd328d670773df41efe598d2389f52.png')
 				.setColor('GREEN')
-				.addField('**Prefix**', '`.h`', true)
-				.addField('**Commands**', '`.h commands`', true);
+				.addField('**Prefix**', '`.s`', true)
+				.addField('**Commands**', '`.s commands`', true);
 			message.channel.send(EmbedMessage);
 			return;
-		case !message.content.startsWith('.h'):
+		case !message.content.startsWith('.s'):
 			return;
-		case message.content === '.h':
+		case message.content === '.s':
 			message.channel.send('Invalid usage.');
 			return;
 		default:
@@ -35,7 +35,7 @@ client.on('message', message => {
 
 	switch (message.content.substring(3)) {
 		case 'avatar':
-			message.channel.send(message.author.avatarURL({format: 'jpeg', dynamic: false, size: 1024}));
+			message.channel.send(message.author.avatarURL({ format: 'jpeg', dynamic: false, size: 1024 }));
 			break;
 		case 'commands':
 			const Commands = {
@@ -45,7 +45,7 @@ client.on('message', message => {
 
 			let CommandsDescription = '';
 			for (const commandName in Commands) {
-				CommandsDescription += '`.h ' + commandName + '`' + '\n' + Commands[commandName] + '\n\n';
+				CommandsDescription += '`.s ' + commandName + '`' + '\n' + Commands[commandName] + '\n\n';
 			}
 
 			const EmbedMessage = new MessageEmbed()
@@ -53,7 +53,7 @@ client.on('message', message => {
 				.setColor('RED')
 				.setDescription(CommandsDescription);
 			message.channel.send(EmbedMessage);
-			break;	
+			break;
 		case 'ping':
 			message.channel.send('Pong!');
 			break;
