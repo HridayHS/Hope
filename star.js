@@ -20,8 +20,10 @@ client.on('message', message => {
 			const EmbedMessage = new MessageEmbed()
 				.setAuthor('Bot Help', 'https://cdn.discordapp.com/avatars/545420239706521601/06cd328d670773df41efe598d2389f52.png')
 				.setColor('GREEN')
-				.addField('Prefix', '`.s`', true)
-				.addField('Commands', '`.s commands`', true);
+				.addFields(
+					{ name: 'Prefix', value: '`.s`', inline: true },
+					{ name: 'Commands', value: '`.s commands`', inline: true }
+				);
 			message.channel.send(EmbedMessage);
 			return;
 		case !message.content.startsWith('.s'):
