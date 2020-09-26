@@ -43,11 +43,11 @@ client.on('message', message => {
 			const Commands = {
 				avatar: 'Display your avatar',
 				ping: 'Says pong'
-			}
+			};
 
 			let CommandsDescription = '';
-			for (const commandName in Commands) {
-				CommandsDescription += '`.s ' + commandName + '`' + '\n' + Commands[commandName] + '\n\n';
+			for (const CommandName in Commands) {
+				CommandsDescription += '`.s ' + CommandName + '`' + '\n' + Commands[CommandName] + '\n\n';
 			}
 
 			const EmbedMessage = new MessageEmbed()
