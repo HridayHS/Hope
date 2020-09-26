@@ -35,13 +35,14 @@ client.on('message', message => {
 			break;
 	}
 
-	switch (message.content.substring(3)) {
+	switch (message.content.split(' ')[1]) {
 		case 'avatar':
 			message.channel.send(message.author.avatarURL({ format: 'jpeg', dynamic: false, size: 1024 }));
 			break;
 		case 'commands':
 			const Commands = {
 				avatar: 'Display your avatar',
+				pin: 'Pins the message',
 				ping: 'Says pong'
 			};
 
@@ -55,6 +56,13 @@ client.on('message', message => {
 				.setColor('RED')
 				.setDescription(CommandsDescription);
 			message.channel.send(EmbedMessage);
+			break;
+		case 'pin':
+			const pinMessageContent = message.content;
+			const MessageToPin = pinMessageContent
+				.substring(pinMessageContent.indexOf(' ') + 1)
+				.substring(pinMessageContent.indexOf(' ') + 1);
+			message.channel.send(MessageToPin).then(message => message.pin());
 			break;
 		case 'ping':
 			message.channel.send('Pong!');
