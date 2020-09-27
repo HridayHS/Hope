@@ -70,9 +70,7 @@ client.on('message', async (message) => {
 			break;
 		case 'unpinall':
 			const fetchPinnedMessages = await message.channel.messages.fetchPinned();
-			fetchPinnedMessages.forEach(async (pinnedMessage) => {
-				await pinnedMessage.unpin();
-			});
+			fetchPinnedMessages.forEach(async (pinnedMessage) => await pinnedMessage.unpin());
 			message.channel.send('Unpinned all the pinned messages!');
 			break;
 		default:
