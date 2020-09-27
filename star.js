@@ -39,12 +39,33 @@ client.on('message', async (message) => {
 		case 'avatar':
 			message.channel.send(message.author.avatarURL({ format: 'jpeg', dynamic: false, size: 1024 }));
 			break;
+		case 'clear':
+			const getAmountOfMessagesToClear = message.content.split(' ')[2];
+
+			if (getAmountOfMessagesToClear) {
+				const isValidNumber = parseInt(getAmountOfMessagesToClear);
+				if (!isValidNumber || isValidNumber < 1) {
+					message.reply('Please enter a valid number! [1-100]');
+					break;
+				}
+			}
+
+			const amountOfMessagesToClear = () => {
+				const amount = getAmountOfMessagesToClear;
+				return (amount < 99) ? amount + 1
+					: (amount >= 100) ? 100
+						: NaN;
+			};
+
+			message.channel.bulkDelete(amountOfMessagesToClear() || 2);
+			break;
 		case 'commands':
 			const Commands = {
-				avatar: 'Display your avatar',
-				pin: 'Pins the message',
-				ping: 'Says pong',
-				unpinall: 'Unpins all the pinned messages'
+				'avatar': 'Display your avatar',
+				'clear [1-100]': 'Delete recent messages',
+				'pin': 'Pins the message',
+				'ping': 'Says pong',
+				'unpinall': 'Unpins all the pinned messages'
 			};
 
 			let CommandsDescription = '';
