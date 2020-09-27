@@ -37,7 +37,8 @@ client.on('message', async (message) => {
 
 	switch (message.content.split(' ')[1]) {
 		case 'avatar':
-			message.channel.send(message.author.avatarURL({ format: 'jpeg', dynamic: false, size: 1024 }));
+			message.channel.send(message.author.avatarURL({ format: 'jpeg', dynamic: false, size: 1024 }))
+				.catch(console.error);
 			break;
 		case 'clear':
 			const getAmountOfMessagesToClear = message.content.split(' ')[2];
@@ -45,7 +46,8 @@ client.on('message', async (message) => {
 			if (getAmountOfMessagesToClear) {
 				const isValidNumber = parseInt(getAmountOfMessagesToClear);
 				if (!isValidNumber || isValidNumber < 1) {
-					message.reply('Please enter a valid number! [1-100]');
+					message.reply('Please enter a valid number! [1-100]')
+						.catch(console.error);
 					break;
 				}
 			}
@@ -57,7 +59,8 @@ client.on('message', async (message) => {
 						: NaN;
 			};
 
-			message.channel.bulkDelete(amountOfMessagesToClear() || 2);
+			message.channel.bulkDelete(amountOfMessagesToClear() || 2)
+				.catch(console.error);
 			break;
 		case 'commands':
 			const Commands = {
@@ -77,25 +80,39 @@ client.on('message', async (message) => {
 				.setAuthor('Bot Commands', 'https://cdn.discordapp.com/avatars/545420239706521601/06cd328d670773df41efe598d2389f52.png')
 				.setColor('RED')
 				.setDescription(CommandsDescription);
-			message.channel.send(EmbedMessage);
+
+			message.channel.send(EmbedMessage)
+				.catch(console.error);
 			break;
 		case 'pin':
 			const pinMessageContent = message.content;
-			const MessageToPin = pinMessageContent
+			const MessageToPinSubstring = pinMessageContent
 				.substring(pinMessageContent.indexOf(' ') + 1)
 				.substring(pinMessageContent.indexOf(' ') + 1);
-			message.channel.send(MessageToPin).then(message => message.pin());
+
+			try {
+				const MessageToPin = await message.channel.send(MessageToPinSubstring);
+				MessageToPin.pin()
+					.catch(console.error);
+			} catch (error) {
+				console.log(erorr);
+			}
+
 			break;
 		case 'ping':
-			message.channel.send('Pong!');
+			message.channel.send('Pong!')
+				.then(console.error);
 			break;
 		case 'unpinall':
 			const fetchPinnedMessages = await message.channel.messages.fetchPinned();
-			fetchPinnedMessages.forEach(pinnedMessage => pinnedMessage.unpin());
-			message.channel.send('Unpinned all the pinned messages!');
+			fetchPinnedMessages.forEach(pinnedMessage => pinnedMessage.unpin().catch(console.error));
+
+			message.channel.send('Unpinned all the pinned messages!')
+				.catch(console.error);
 			break;
 		default:
-			message.channel.send('Invalid command.');
+			message.channel.send('Invalid command.')
+				.catch(console.error);
 			break;
 	}
 });
