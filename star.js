@@ -19,7 +19,7 @@ client.on('message', async (message) => {
 		case message.author.bot: // Return if messages are from a bot.
 			return;
 		case messageContent === '.s': // Send bot help message if only bot prefix is used.
-		case message.mentions.users.has('545420239706521601'): // Send help message if bot is tagged.
+		case message.mentions.users.has('545420239706521601') && messageContent === '<@!545420239706521601>': // Send help message if only bot is tagged.
 			message.channel.send(
 				new MessageEmbed()
 					.setAuthor('Bot Help', 'https://cdn.discordapp.com/avatars/545420239706521601/06cd328d670773df41efe598d2389f52.png')
