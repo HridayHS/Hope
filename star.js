@@ -39,8 +39,14 @@ client.on('message', async (message) => {
 	/* Bot Commands */
 	switch (messageContent.split(' ')[1]) {
 		case 'avatar':
-			message.channel.send(message.author.avatarURL({ format: 'jpeg', dynamic: false, size: 1024 }))
-				.catch(console.error);
+			const mentionedUser = message.mentions.users.first();
+			if (mentionedUser) { // if a user is mentioned display his avatar
+				message.channel.send(mentionedUser.avatarURL({ format: 'png', dynamic: true, size: 4096 }))
+					.catch(console.error);
+			} else { // if a user is not mentioned display authors avatar
+				message.channel.send(message.author.avatarURL({ format: 'png', dynamic: true, size: 4096 }))
+					.catch(console.error);
+			}
 			break;
 		case 'clear':
 			const getAmountOfMessagesToClear = messageContent.split(' ')[2];
