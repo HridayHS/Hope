@@ -14,11 +14,10 @@ client.login(Config.token);
 
 client.on('message', async (message) => {
 	switch (true) {
-		case !message.content.startsWith('.s'):
-		case message.author.bot:
+		case message.author.bot: // Return if messages are from a bot.
 			return;
-		case message.content === '.s':
-		case message.mentions.users.has('545420239706521601'):
+		case message.content === '.s': // Send bot help message if only bot prefix is used.
+		case message.mentions.users.has('545420239706521601'): // Send help message if bot is tagged.
 			message.channel.send(
 				new MessageEmbed()
 					.setAuthor('Bot Help', 'https://cdn.discordapp.com/avatars/545420239706521601/06cd328d670773df41efe598d2389f52.png')
@@ -26,9 +25,10 @@ client.on('message', async (message) => {
 					.addFields(
 						{ name: 'Prefix', value: '`.s`', inline: true },
 						{ name: 'Commands', value: '`.s commands`', inline: true }
-
 					)
 			).catch(console.error);
+			return;
+		case !message.content.startsWith('.s'): // Return if message doesn't start with bot prefix.
 			return;
 		default:
 			break;
@@ -105,7 +105,7 @@ client.on('message', async (message) => {
 				.catch(console.error);
 			break;
 		default:
-			message.channel.send('Invalid command.')
+			message.channel.send('Invalid command. `.s commands` for all commands.')
 				.catch(console.error);
 			break;
 	}
