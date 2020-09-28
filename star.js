@@ -13,10 +13,12 @@ client.once('ready', () => {
 client.login(Config.token);
 
 client.on('message', async (message) => {
+	const messageContent = message.content.toLowerCase();
+
 	switch (true) {
 		case message.author.bot: // Return if messages are from a bot.
 			return;
-		case message.content === '.s': // Send bot help message if only bot prefix is used.
+		case messageContent === '.s': // Send bot help message if only bot prefix is used.
 		case message.mentions.users.has('545420239706521601'): // Send help message if bot is tagged.
 			message.channel.send(
 				new MessageEmbed()
@@ -28,20 +30,20 @@ client.on('message', async (message) => {
 					)
 			).catch(console.error);
 			return;
-		case !message.content.startsWith('.s'): // Return if message doesn't start with bot prefix.
+		case !messageContent.startsWith('.s'): // Return if message doesn't start with bot prefix.
 			return;
 		default:
 			break;
 	}
 
 	/* Bot Commands */
-	switch (message.content.split(' ')[1]) {
+	switch (messageContent.split(' ')[1]) {
 		case 'avatar':
 			message.channel.send(message.author.avatarURL({ format: 'jpeg', dynamic: false, size: 1024 }))
 				.catch(console.error);
 			break;
 		case 'clear':
-			const getAmountOfMessagesToClear = message.content.split(' ')[2];
+			const getAmountOfMessagesToClear = messageContent.split(' ')[2];
 
 			if (getAmountOfMessagesToClear) {
 				const isValidNumber = parseInt(getAmountOfMessagesToClear);
