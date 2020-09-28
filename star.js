@@ -105,7 +105,7 @@ client.on('message', async (message) => {
 				.catch(console.error);
 			break;
 		default:
-			message.channel.send('Invalid command. `.s commands` for all commands.')
+			message.channel.send('**Invalid command.** Use `.s commands` to show all the bot commands.')
 				.catch(console.error);
 			break;
 	}
