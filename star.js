@@ -62,7 +62,7 @@ client.on('message', async (message) => {
 			};
 
 			message.channel.bulkDelete(amountOfMessagesToClear() || 2)
-				.catch(console.error);
+				.catch(() => message.channel.send('Failed to clear recent messages!').catch(console.error));
 			break;
 		case 'commands':
 			const Commands = {
@@ -92,8 +92,8 @@ client.on('message', async (message) => {
 				.substring(userMessage.indexOf(' ') + 1);
 
 			message.channel.send(MessageToPin)
-				.then(MessageToPin => MessageToPin.pin().catch(console.error))
-				.catch(console.error);
+				.then(MessageToPin => MessageToPin.pin().catch(() => message.channel.send('Failed to pin the message!').catch(console.error)))
+				.catch(() => message.channel.send('Failed to pin the message!').catch(console.error));
 			break;
 		case 'ping':
 			message.channel.send('Pong!')
