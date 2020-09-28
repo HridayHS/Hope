@@ -100,8 +100,23 @@ client.on('message', async (message) => {
 				.then(console.error);
 			break;
 		case 'unpinall':
-			const fetchPinnedMessages = await message.channel.messages.fetchPinned();
-			fetchPinnedMessages.forEach(pinnedMessage => pinnedMessage.unpin().catch(console.error));
+			try {
+				const pinnedMessages = await message.channel.messages.fetchPinned();
+				if (pinnedMessages) {
+					for (const [key, value] of pinnedMessages) {
+						const pinnedMessage = value;
+						try {
+							await pinnedMessage.unpin();
+						} catch (error) {
+							message.channel.send(`Failed to unpin ${pinnedMessage.url}`)
+								.catch(console.error);
+						}
+					}
+				}
+			} catch (error) {
+				message.channel.send('Unpinning failed!').catch(console.error);
+				console.error(error);
+			}
 
 			message.channel.send('Unpinned all the pinned messages!')
 				.catch(console.error);
