@@ -14,27 +14,27 @@ client.login(Config.token);
 
 client.on('message', async (message) => {
 	switch (true) {
-		case message.author.id === '545420239706521601':
+		case message.author.bot: // Return if messages are from a bot.
 			return;
-		case message.mentions.users.has('545420239706521601'):
-			const EmbedMessage = new MessageEmbed()
-				.setAuthor('Bot Help', 'https://cdn.discordapp.com/avatars/545420239706521601/06cd328d670773df41efe598d2389f52.png')
-				.setColor('GREEN')
-				.addFields(
-					{ name: 'Prefix', value: '`.s`', inline: true },
-					{ name: 'Commands', value: '`.s commands`', inline: true }
-				);
-			message.channel.send(EmbedMessage);
+		case message.content === '.s': // Send bot help message if only bot prefix is used.
+		case message.mentions.users.has('545420239706521601'): // Send help message if bot is tagged.
+			message.channel.send(
+				new MessageEmbed()
+					.setAuthor('Bot Help', 'https://cdn.discordapp.com/avatars/545420239706521601/06cd328d670773df41efe598d2389f52.png')
+					.setColor('GREEN')
+					.addFields(
+						{ name: 'Prefix', value: '`.s`', inline: true },
+						{ name: 'Commands', value: '`.s commands`', inline: true }
+					)
+			).catch(console.error);
 			return;
-		case !message.content.startsWith('.s'):
-			return;
-		case message.content === '.s':
-			message.channel.send('Invalid usage.');
+		case !message.content.startsWith('.s'): // Return if message doesn't start with bot prefix.
 			return;
 		default:
 			break;
 	}
 
+	/* Bot Commands */
 	switch (message.content.split(' ')[1]) {
 		case 'avatar':
 			message.channel.send(message.author.avatarURL({ format: 'jpeg', dynamic: false, size: 1024 }))
@@ -76,28 +76,22 @@ client.on('message', async (message) => {
 				CommandsDescription += '`.s ' + CommandName + '`' + '\n' + Commands[CommandName] + '\n\n';
 			}
 
-			const EmbedMessage = new MessageEmbed()
-				.setAuthor('Bot Commands', 'https://cdn.discordapp.com/avatars/545420239706521601/06cd328d670773df41efe598d2389f52.png')
-				.setColor('RED')
-				.setDescription(CommandsDescription);
-
-			message.channel.send(EmbedMessage)
-				.catch(console.error);
+			message.channel.send(
+				new MessageEmbed()
+					.setAuthor('Bot Commands', 'https://cdn.discordapp.com/avatars/545420239706521601/06cd328d670773df41efe598d2389f52.png')
+					.setColor('RED')
+					.setDescription(CommandsDescription)
+			).catch(console.error);
 			break;
 		case 'pin':
-			const pinMessageContent = message.content;
-			const MessageToPinSubstring = pinMessageContent
-				.substring(pinMessageContent.indexOf(' ') + 1)
-				.substring(pinMessageContent.indexOf(' ') + 1);
+			const userMessage = message.content;
+			const MessageToPin = userMessage
+				.substring(userMessage.indexOf(' ') + 1)
+				.substring(userMessage.indexOf(' ') + 1);
 
-			try {
-				const MessageToPin = await message.channel.send(MessageToPinSubstring);
-				MessageToPin.pin()
-					.catch(console.error);
-			} catch (error) {
-				console.log(erorr);
-			}
-
+			message.channel.send(MessageToPin)
+				.then(MessageToPin => MessageToPin.pin().catch(console.error))
+				.catch(console.error);
 			break;
 		case 'ping':
 			message.channel.send('Pong!')
