@@ -53,8 +53,8 @@ client.on('message', async (message) => {
 		case 'clear':
 			const getAmountOfMessagesToClear = messageContent.split(' ')[2];
 
+			const isValidNumber = parseInt(getAmountOfMessagesToClear);
 			if (getAmountOfMessagesToClear) {
-				const isValidNumber = parseInt(getAmountOfMessagesToClear);
 				if (!isValidNumber || isValidNumber < 1) {
 					message.reply('Please enter a valid number! [1-100]');
 					break;
@@ -62,7 +62,7 @@ client.on('message', async (message) => {
 			}
 
 			const amountOfMessagesToClear = () => {
-				const amount = getAmountOfMessagesToClear;
+				const amount = isValidNumber;
 				return (amount < 99) ? amount + 1
 					: (amount >= 100) ? 100
 						: NaN;
