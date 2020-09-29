@@ -12,12 +12,16 @@ client.once('ready', () => {
 // Initialize login
 client.login(Config.token);
 
+const botPermissions = ['MANAGE_MESSAGES', 'EMBED_LINKS', 'READ_MESSAGE_HISTORY'];
+
 client.on('message', async (message) => {
 	const messageContent = message.content.toLowerCase();
 
 	switch (true) {
 		case message.author.bot:
 			return;
+		case !message.guild.me.permissions.has(botPermissions):
+			return message.channel.send(`I need the permissions ${botPermissions.join(', ')} for this bot to work properly`);
 		case messageContent === '.s':
 		case message.mentions.users.has('545420239706521601') && messageContent === '<@!545420239706521601>':
 			return message.channel.send(
