@@ -16,11 +16,11 @@ client.on('message', async (message) => {
 	const messageContent = message.content.toLowerCase();
 
 	switch (true) {
-		case message.author.bot: // Return if messages are from a bot.
+		case message.author.bot:
 			return;
-		case messageContent === '.s': // Send bot help message if only bot prefix is used.
-		case message.mentions.users.has('545420239706521601') && messageContent === '<@!545420239706521601>': // Send help message if only bot is tagged.
-			message.channel.send(
+		case messageContent === '.s':
+		case message.mentions.users.has('545420239706521601') && messageContent === '<@!545420239706521601>':
+			return message.channel.send(
 				new MessageEmbed()
 					.setAuthor('Bot Help', 'https://cdn.discordapp.com/avatars/545420239706521601/06cd328d670773df41efe598d2389f52.png')
 					.setColor('GREEN')
@@ -28,9 +28,8 @@ client.on('message', async (message) => {
 						{ name: 'Prefix', value: '`.s`', inline: true },
 						{ name: 'Commands', value: '`.s commands`', inline: true }
 					)
-			).catch(console.error);
-			return;
-		case !messageContent.startsWith('.s'): // Return if message doesn't start with bot prefix.
+			);
+		case !messageContent.startsWith('.s'):
 			return;
 		default:
 			break;
@@ -40,12 +39,10 @@ client.on('message', async (message) => {
 	switch (messageContent.split(' ')[1]) {
 		case 'avatar':
 			const mentionedUser = message.mentions.users.first();
-			if (mentionedUser) { // if a user is mentioned display his avatar
-				message.channel.send(mentionedUser.avatarURL({ format: 'png', dynamic: true, size: 4096 }))
-					.catch(console.error);
-			} else { // if a user is not mentioned display authors avatar
-				message.channel.send(message.author.avatarURL({ format: 'png', dynamic: true, size: 4096 }))
-					.catch(console.error);
+			if (mentionedUser) {
+				message.channel.send(mentionedUser.avatarURL({ format: 'png', dynamic: true, size: 4096 }));
+			} else {
+				message.channel.send(message.author.avatarURL({ format: 'png', dynamic: true, size: 4096 }));
 			}
 			break;
 		case 'clear':
@@ -54,8 +51,7 @@ client.on('message', async (message) => {
 			if (getAmountOfMessagesToClear) {
 				const isValidNumber = parseInt(getAmountOfMessagesToClear);
 				if (!isValidNumber || isValidNumber < 1) {
-					message.reply('Please enter a valid number! [1-100]')
-						.catch(console.error);
+					message.reply('Please enter a valid number! [1-100]');
 					break;
 				}
 			}
@@ -68,7 +64,7 @@ client.on('message', async (message) => {
 			};
 
 			message.channel.bulkDelete(amountOfMessagesToClear() || 2)
-				.catch(() => message.channel.send('Failed to clear recent messages!').catch(console.error));
+				.catch(() => message.channel.send('Failed to clear recent messages!'));
 			break;
 		case 'commands':
 			const Commands = {
@@ -89,7 +85,7 @@ client.on('message', async (message) => {
 					.setAuthor('Bot Commands', 'https://cdn.discordapp.com/avatars/545420239706521601/06cd328d670773df41efe598d2389f52.png')
 					.setColor('RED')
 					.setDescription(CommandsDescription)
-			).catch(console.error);
+			);
 			break;
 		case 'pin':
 			const userMessage = message.content;
@@ -98,12 +94,14 @@ client.on('message', async (message) => {
 				.substring(userMessage.indexOf(' ') + 1);
 
 			message.channel.send(MessageToPin)
-				.then(MessageToPin => MessageToPin.pin().catch(() => message.channel.send('Failed to pin the message!').catch(console.error)))
-				.catch(() => message.channel.send('Failed to pin the message!').catch(console.error));
+				.then(MessageToPin => {
+					MessageToPin.pin()
+						.catch(() => message.channel.send('Failed to pin the message!'));
+				})
+				.catch(() => message.channel.send('Failed to pin the message!'));
 			break;
 		case 'ping':
-			message.channel.send('Pong!')
-				.then(console.error);
+			message.channel.send('Pong!');
 			break;
 		case 'unpinall':
 			try {
@@ -114,22 +112,18 @@ client.on('message', async (message) => {
 						try {
 							await pinnedMessage.unpin();
 						} catch (error) {
-							message.channel.send(`Failed to unpin ${pinnedMessage.url}`)
-								.catch(console.error);
+							message.channel.send(`Failed to unpin ${pinnedMessage.url}`);
 						}
 					}
 				}
 			} catch (error) {
-				message.channel.send('Unpinning failed!').catch(console.error);
-				console.error(error);
+				message.channel.send('Unpinning failed!').catch(console.error);;
 			}
 
-			message.channel.send('Unpinned all the pinned messages!')
-				.catch(console.error);
+			message.channel.send('Unpinned all the pinned messages!');
 			break;
 		default:
-			message.channel.send('**Invalid command.** Use `.s commands` to show all the bot commands.')
-				.catch(console.error);
+			message.channel.send('**Invalid command.** Use `.s commands` to show all the bot commands.');
 			break;
 	}
 });
