@@ -68,8 +68,11 @@ client.on('message', async (message) => {
 						: NaN;
 			};
 
-			message.channel.bulkDelete(amountOfMessagesToClear() || 2)
-				.catch(() => message.channel.send('Failed to clear recent messages!'));
+			message.channel.bulkDelete(amountOfMessagesToClear() || 2, true)
+				.catch(async () => {
+					await message.channel.send('Failed to clear recent messages!');
+					message.delete(); // Delete command message as command failed to work
+				});
 			break;
 		case 'commands':
 			const Commands = {
