@@ -20,9 +20,6 @@ client.on('message', async (message) => {
 	switch (true) {
 		case message.author.bot:
 			return;
-		case !message.guild.me.permissions.has(botPermissions):
-			const botPermsHumnanReadable = botPermissions.map(s => s.toLowerCase().replace(/(^|_)./g, s => s.slice(-1).toUpperCase()).replace(/([A-Z])/g, ' $1').trim());
-			return message.channel.send(`I need the permissions ${botPermsHumnanReadable.join(', ')} for this bot to work properly.`);
 		case messageContent === '.s':
 		case message.mentions.users.has('545420239706521601') && messageContent === '<@!545420239706521601>':
 			return message.channel.send(
@@ -36,6 +33,9 @@ client.on('message', async (message) => {
 			);
 		case !messageContent.startsWith('.s'):
 			return;
+		case !message.guild.me.permissions.has(botPermissions):
+			const botPermsHumnanReadable = botPermissions.map(s => s.toLowerCase().replace(/(^|_)./g, s => s.slice(-1).toUpperCase()).replace(/([A-Z])/g, ' $1').trim());
+			return message.channel.send(`I need the permissions ${botPermsHumnanReadable.join(', ')} for this bot to work properly.`);
 		default:
 			break;
 	}
