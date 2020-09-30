@@ -51,24 +51,18 @@ client.on('message', async (message) => {
 			}
 			break;
 		case 'clear':
-			const getAmountOfMessagesToClear = messageContent.split(' ')[2];
+			const getClearAmount = messageContent.split(' ')[2];
 
-			const isValidNumber = parseInt(getAmountOfMessagesToClear);
-			if (getAmountOfMessagesToClear) {
-				if (!isValidNumber || isValidNumber < 1) {
-					message.reply('Please enter a valid number! [1-100]');
-					break;
-				}
+			let clearAmount = parseInt(getClearAmount);
+			if (clearAmount < 1) {
+				message.reply('Please enter a valid number! [1-100]');
+				break;
 			}
 
-			const amountOfMessagesToClear = () => {
-				const amount = isValidNumber;
-				return (amount < 99) ? amount + 1
-					: (amount >= 100) ? 100
-						: NaN;
-			};
+			clearAmount = (clearAmount < 99) ? clearAmount + 1
+				: (clearAmount >= 100) ? 100 : null;
 
-			message.channel.bulkDelete(amountOfMessagesToClear() || 2, true)
+			message.channel.bulkDelete(clearAmount || 2, true)
 				.catch(async () => {
 					await message.channel.send('Failed to clear recent messages!');
 					message.delete(); // Delete command message as command failed to work
