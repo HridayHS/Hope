@@ -22,7 +22,7 @@ client.on('message', async (message) => {
 			return;
 		case messageContent === '.s':
 		case messageContent === '<@!545420239706521601>':
-			return message.channel.send(
+			message.channel.send(
 				new MessageEmbed()
 					.setAuthor('Bot Help', 'https://cdn.discordapp.com/avatars/545420239706521601/06cd328d670773df41efe598d2389f52.png')
 					.setColor('GREEN')
@@ -31,11 +31,13 @@ client.on('message', async (message) => {
 						{ name: 'Commands', value: '`.s commands`', inline: true }
 					)
 			);
+			return;
 		case !messageContent.startsWith('.s'):
 			return;
 		case !message.guild.me.permissions.has(botPermissions):
 			const botPermsHumnanReadable = botPermissions.map(s => s.toLowerCase().replace(/(^|_)./g, s => s.slice(-1).toUpperCase()).replace(/([A-Z])/g, ' $1').trim());
-			return message.channel.send(`I need the permissions ${botPermsHumnanReadable.join(', ')} for this bot to work properly.`);
+			message.channel.send(`I need the permissions ${botPermsHumnanReadable.join(', ')} for this bot to work properly.`);
+			return;
 		default:
 			break;
 	}
@@ -49,7 +51,7 @@ client.on('message', async (message) => {
 			} else {
 				message.channel.send(message.author.avatarURL({ format: 'png', dynamic: true, size: 4096 }));
 			}
-			break;
+			return;
 		case 'clear':
 			await message.delete();
 
@@ -57,7 +59,8 @@ client.on('message', async (message) => {
 
 			let clearAmount = parseInt(getClearAmount);
 			if (clearAmount < 1) {
-				return message.reply('Please enter a valid number! [1-100]');
+				message.reply('Please enter a valid number! [1-100]');
+				return;
 			}
 
 			clearAmount = (clearAmount >= 100) ? 100 : clearAmount;
@@ -65,18 +68,19 @@ client.on('message', async (message) => {
 			message.channel.messages.fetch({ limit: 1 })
 				.then(fetchedMessage => {
 					if (Date.now() - fetchedMessage.first().createdAt.getTime() > 1209600000) {
-						return message.channel.send('Unable to clear messages older than 14 days.');
+						message.channel.send('Unable to clear messages older than 14 days.');
+						return;
 					}
+
+					message.channel.bulkDelete(clearAmount || 1, true)
+						.catch(() => {
+							message.channel.send('Failed to clear recent messages!');
+						});
 				})
 				.catch(() => {
-					return message.channel.send('Failed to clear recent messages!');
+					message.channel.send('Failed to clear recent messages!');
 				});
-
-			message.channel.bulkDelete(clearAmount || 1, true)
-				.catch(() => {
-					return message.channel.send('Failed to clear recent messages!');
-				});
-			break;
+			return;
 		case 'commands':
 			const Commands = {
 				'avatar': 'Display your avatar',
@@ -97,7 +101,7 @@ client.on('message', async (message) => {
 					.setColor('RED')
 					.setDescription(CommandsDescription)
 			);
-			break;
+			return;
 		case 'pin':
 			const userMessage = message.content;
 			const MessageToPin = userMessage
@@ -110,31 +114,25 @@ client.on('message', async (message) => {
 						.catch(() => message.channel.send('Failed to pin the message!'));
 				})
 				.catch(() => message.channel.send('Failed to pin the message!'));
-			break;
+			return;
 		case 'ping':
 			message.channel.send('Pong!');
-			break;
+			return;
 		case 'unpinall':
-			try {
-				const pinnedMessages = await message.channel.messages.fetchPinned();
-				if (pinnedMessages) {
-					for (const [key, value] of pinnedMessages) {
-						const pinnedMessage = value;
-						try {
-							await pinnedMessage.unpin();
-						} catch (error) {
-							message.channel.send(`Failed to unpin ${pinnedMessage.url}`);
-						}
+			await message.channel.messages.fetchPinned()
+				.then(pinnedMessages => {
+					for (const [key, pinnedMessage] of pinnedMessages) {
+						pinnedMessage.unpin().catch(() => message.channel.send(`Failed to unpin ${pinnedMessage.url}`));
 					}
-				}
-			} catch (error) {
-				message.channel.send('Unpinning failed!').catch(console.error);;
-			}
+				})
+				.catch(() => {
+					message.channel.send('Unpinning failed!')
+				});
 
 			message.channel.send('Unpinned all the pinned messages!');
-			break;
+			return;
 		default:
 			message.channel.send('**Invalid command.** Use `.s commands` to show all the bot commands.');
-			break;
+			return;
 	}
 });
