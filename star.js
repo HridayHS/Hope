@@ -51,21 +51,30 @@ client.on('message', async (message) => {
 			}
 			break;
 		case 'clear':
+			await message.delete();
+
 			const getClearAmount = messageContent.split(' ')[2];
 
 			let clearAmount = parseInt(getClearAmount);
 			if (clearAmount < 1) {
-				message.reply('Please enter a valid number! [1-100]');
-				break;
+				return message.reply('Please enter a valid number! [1-100]');
 			}
 
-			clearAmount = (clearAmount < 99) ? clearAmount + 1
-				: (clearAmount >= 100) ? 100 : null;
+			clearAmount = (clearAmount >= 100) ? 100 : clearAmount;
 
-			message.channel.bulkDelete(clearAmount || 2, true)
-				.catch(async () => {
-					await message.channel.send('Failed to clear recent messages!');
-					message.delete(); // Delete command message as command failed to work
+			message.channel.messages.fetch({ limit: 1 })
+				.then(fetchedMessage => {
+					if (Date.now() - fetchedMessage.first().createdAt.getTime() > 1209600000) {
+						return message.channel.send('Unable to clear messages older than 14 days.');
+					}
+				})
+				.catch(() => {
+					return message.channel.send('Failed to clear recent messages!');
+				});
+
+			message.channel.bulkDelete(clearAmount || 1, true)
+				.catch(() => {
+					return message.channel.send('Failed to clear recent messages!');
 				});
 			break;
 		case 'commands':
