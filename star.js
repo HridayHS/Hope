@@ -21,7 +21,7 @@ client.on('message', async (message) => {
 		case message.author.bot:
 			return;
 		case messageContent === '.s':
-		case message.mentions.users.has('545420239706521601') && messageContent === '<@!545420239706521601>':
+		case messageContent === '<@!545420239706521601>':
 			return message.channel.send(
 				new MessageEmbed()
 					.setAuthor('Bot Help', 'https://cdn.discordapp.com/avatars/545420239706521601/06cd328d670773df41efe598d2389f52.png')
