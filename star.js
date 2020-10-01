@@ -45,12 +45,8 @@ client.on('message', async (message) => {
 	/* Bot Commands */
 	switch (messageContent.split(' ')[1]) {
 		case 'avatar':
-			const mentionedUser = message.mentions.users.first();
-			if (mentionedUser) {
-				message.channel.send(mentionedUser.avatarURL({ format: 'png', dynamic: true, size: 4096 }));
-			} else {
-				message.channel.send(message.author.avatarURL({ format: 'png', dynamic: true, size: 4096 }));
-			}
+			const avatarAuthor = message.mentions.users.first() || message.author;
+			message.channel.send(avatarAuthor.avatarURL({ format: 'png', dynamic: true, size: 4096 }));
 			return;
 		case 'clear':
 			await message.delete();
@@ -83,7 +79,7 @@ client.on('message', async (message) => {
 			return;
 		case 'commands':
 			const Commands = {
-				'avatar': 'Display your avatar',
+				'avatar [@user]': 'Display avatar',
 				'clear [1-100]': 'Delete recent messages',
 				'pin': 'Pins the message',
 				'ping': 'Says pong',
