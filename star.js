@@ -80,8 +80,8 @@ client.on('message', async (message) => {
 		case 'commands':
 			const Commands = {
 				'avatar [@user]': 'Display avatar',
-				'clear [1-100]': 'Delete recent messages',
-				'pin': 'Pins the message',
+				'clear [1-100]': 'Clears recent messages',
+				'pin <message>': 'Pins the message',
 				'ping': 'Says pong',
 				'unpinall': 'Unpins all the pinned messages'
 			};
