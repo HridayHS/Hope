@@ -49,9 +49,25 @@ client.on('message', async (message) => {
 			message.channel.send(avatarAuthor.avatarURL({ format: 'png', dynamic: true, size: 4096 }));
 			return;
 		case 'clear':
-			await message.delete();
-
 			const getClearAmount = messageContent.split(' ')[2];
+
+			/* .s clear all */
+			if (getClearAmount === 'all') {
+				const oldChannelPossition = message.channel.position;
+				const oldChannelWebhooks = await message.channel.fetchWebhooks();
+				await message.channel.delete();
+
+				const clonedChannel = await message.channel.clone({});
+				clonedChannel.setPosition(oldChannelPossition);
+				if (oldChannelWebhooks) {
+					for (const [key, fetchedWebhook] of oldChannelWebhooks) {
+						clonedChannel.createWebhook(fetchedWebhook.name, { avatar: fetchedWebhook.avatarURL({ format: 'png', dynamic: true, size: 4096 }) });
+					}
+				}
+				return;
+			}
+
+			await message.delete();
 
 			let clearAmount = parseInt(getClearAmount);
 			if (clearAmount < 1) {
@@ -80,7 +96,7 @@ client.on('message', async (message) => {
 		case 'commands':
 			const Commands = {
 				'avatar [@user]': 'Display avatar',
-				'clear [1-100]': 'Clears recent messages',
+				'clear [1-100] OR all': 'Clears recent messages',
 				'pin <message>': 'Pins the message',
 				'ping': 'Says pong',
 				'unpinall': 'Unpins all the pinned messages'
