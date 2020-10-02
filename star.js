@@ -96,7 +96,7 @@ client.on('message', async (message) => {
 		case 'commands':
 			const Commands = {
 				'avatar [@user]': 'Display avatar',
-				'clear [1-100] OR all': 'Clears recent messages',
+				'clear [1-100 | all]': 'Clears recent messages',
 				'pin <message>': 'Pins the message',
 				'ping': 'Says pong',
 				'unpinall': 'Unpins all the pinned messages'
