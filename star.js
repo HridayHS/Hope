@@ -12,7 +12,7 @@ client.once('ready', () => {
 // Initialize login
 client.login(Config.token);
 
-const botPermissions = ['MANAGE_MESSAGES', 'EMBED_LINKS', 'READ_MESSAGE_HISTORY'];
+const botPermissions = ['MANAGE_CHANNELS', 'MANAGE_WEBHOOKS', 'VIEW_CHANNEL', 'MANAGE_MESSAGES', 'EMBED_LINKS', 'READ_MESSAGE_HISTORY'];
 
 client.on('message', async (message) => {
 	const messageContent = message.content.toLowerCase();
