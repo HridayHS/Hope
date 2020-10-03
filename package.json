@@ -2,7 +2,7 @@
   "name": "star",
   "version": "1.0.0",
   "description": "Discord Bot",
-  "main": "star.js",
+  "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/HridayHS/Star",
   "dependencies": {
-    "discord.js": "^12.3.1"
+    "discord.js": "^12.3.1",
+    "fs": "0.0.1-security"
   }
 }
