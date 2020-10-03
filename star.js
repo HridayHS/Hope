@@ -12,12 +12,13 @@ client.once('ready', () => {
 // Initialize login
 client.login(Config.token);
 
-const botPermissions = ['MANAGE_CHANNELS', 'MANAGE_WEBHOOKS', 'VIEW_CHANNEL', 'MANAGE_MESSAGES', 'EMBED_LINKS', 'READ_MESSAGE_HISTORY'];
+const botPermissions = ['MANAGE_CHANNELS', 'MANAGE_WEBHOOKS', 'MANAGE_MESSAGES', 'EMBED_LINKS', 'READ_MESSAGE_HISTORY'];
 
 client.on('message', async (message) => {
 	const messageContent = message.content.toLowerCase();
 
 	switch (true) {
+		case !message.guild.me.permissions.has(['VIEW_CHANNEL', 'SEND_MESSAGES']):
 		case message.author.bot:
 			return;
 		case messageContent === '.s':
@@ -35,7 +36,16 @@ client.on('message', async (message) => {
 		case !messageContent.startsWith('.s'):
 			return;
 		case !message.guild.me.permissions.has(botPermissions):
-			const botPermsHumnanReadable = botPermissions.map(s => s.toLowerCase().replace(/(^|_)./g, s => s.slice(-1).toUpperCase()).replace(/([A-Z])/g, ' $1').trim());
+			const missingPerms = [];
+
+			for (let i = 0; i < botPermissions.length; i++) {
+				const botPermission = botPermissions[i];
+				if (!message.guild.me.permissions.has(botPermission)) {
+					missingPerms.push(botPermission);
+				}
+			}
+
+			const botPermsHumnanReadable = missingPerms.map(s => s.toLowerCase().replace(/(^|_)./g, s => s.slice(-1).toUpperCase()).replace(/([A-Z])/g, ' $1').trim());
 			message.channel.send(`I need the permissions ${botPermsHumnanReadable.join(', ')} for this bot to work properly.`);
 			return;
 		default:
