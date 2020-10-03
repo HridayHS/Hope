@@ -1,0 +1,22 @@
+{
+  "name": "star",
+  "version": "1.0.0",
+  "description": "Discord Bot",
+  "main": "star.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/HridayHS/Star.git"
+  },
+  "author": "Hriday Sharma <hridaysharma42@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/HridayHS/Star/issues"
+  },
+  "homepage": "https://github.com/HridayHS/Star",
+  "dependencies": {
+    "discord.js": "^12.3.1"
+  }
+}
