@@ -12,9 +12,9 @@ module.exports = {
 			const clonedChannel = await message.channel.clone({});
 			clonedChannel.setPosition(oldChannelPossition);
 			if (oldChannelWebhooks) {
-				for (const [key, fetchedWebhook] of oldChannelWebhooks) {
+				oldChannelWebhooks.forEach(fetchedWebhook => {
 					clonedChannel.createWebhook(fetchedWebhook.name, { avatar: fetchedWebhook.avatarURL({ format: 'png', dynamic: true, size: 4096 }) });
-				}
+				});
 			}
 			return;
 		}

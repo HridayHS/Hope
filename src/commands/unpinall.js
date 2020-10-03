@@ -1,16 +1,22 @@
 module.exports = {
 	name: 'unpinall',
-	func: async function (message) {
-		await message.channel.messages.fetchPinned()
+	func: function (message) {
+		message.channel.messages.fetchPinned()
 			.then(pinnedMessages => {
-				for (const [key, pinnedMessage] of pinnedMessages) {
-					pinnedMessage.unpin().catch(() => message.channel.send(`Failed to unpin ${pinnedMessage.url}`));
+				if (pinnedMessages.size === 0) {
+					message.channel.send('No pinned messages found!');
+					return;
 				}
+
+				pinnedMessages.forEach(async (pinnedMessage) => {
+					await pinnedMessage.unpin()
+						.catch(() => message.channel.send(`Failed to unpin ${pinnedMessage.url}`));
+				});
+
+				message.channel.send('Unpinned all the pinned messages!');
 			})
 			.catch(() => {
 				message.channel.send('Unpinning failed!')
 			});
-
-		message.channel.send('Unpinned all the pinned messages!');
 	}
 };
