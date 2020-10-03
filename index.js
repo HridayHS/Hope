@@ -61,9 +61,5 @@ client.on('message', message => {
 	}
 
 	const botCommand = botCommands.get(messageContent.split(' ')[1]);
-	if (botCommand) {
-		botCommand(message);
-	} else {
-		message.channel.send('**Invalid command.** Use `.s commands` to display bot commands.');
-	}
+	botCommand ? botCommand(message) : message.channel.send('**Invalid command.** Use `.s commands` to display bot commands.');
 });
