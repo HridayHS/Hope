@@ -1,10 +1,10 @@
 module.exports = {
-	name: 'clear',
+	name: 'purge',
 	func: async function (message) {
-		const getClearAmount = message.content.toLowerCase().split(' ')[2];
+		const getPurgeAmount = message.content.toLowerCase().split(' ')[2];
 
-		/* .s clear all */
-		if (getClearAmount === 'all') {
+		/* .s purge all */
+		if (getPurgeAmount === 'all') {
 			const oldChannelPossition = message.channel.position;
 			const oldChannelWebhooks = await message.channel.fetchWebhooks();
 			await message.channel.delete();
@@ -21,28 +21,28 @@ module.exports = {
 
 		await message.delete();
 
-		let clearAmount = parseInt(getClearAmount);
-		if (clearAmount < 1) {
+		let purgeAmount = parseInt(getPurgeAmount);
+		if (purgeAmount < 1) {
 			message.reply('Please enter a valid number! [1-100]');
 			return;
 		}
 
-		clearAmount = (clearAmount >= 100) ? 100 : clearAmount;
+		purgeAmount = (purgeAmount >= 100) ? 100 : purgeAmount;
 
 		message.channel.messages.fetch({ limit: 1 })
 			.then(fetchedMessage => {
 				if (Date.now() - fetchedMessage.first().createdAt.getTime() > 1209600000) {
-					message.channel.send('Unable to clear messages older than 14 days.');
+					message.channel.send('Unable to purge messages older than 14 days.');
 					return;
 				}
 
-				message.channel.bulkDelete(clearAmount || 1, true)
+				message.channel.bulkDelete(purgeAmount || 1, true)
 					.catch(() => {
-						message.channel.send('Failed to clear recent messages!');
+						message.channel.send('Failed to purge recent messages!');
 					});
 			})
 			.catch(() => {
-				message.channel.send('Failed to clear recent messages!');
+				message.channel.send('Failed to purge recent messages!');
 			});
 	}
 };

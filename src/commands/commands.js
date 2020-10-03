@@ -3,7 +3,7 @@ module.exports = {
 	func: function (message) {
 		const Commands = {
 			'avatar [@user]': 'Display avatar',
-			'clear [1-100 | all]': 'Clears recent messages',
+			'purge [1-100 | all]': 'Purge recent messages',
 			'pin <message>': 'Pins the message',
 			'ping': 'Says pong',
 			'unpinall': 'Unpins all the pinned messages'
