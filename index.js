@@ -13,7 +13,7 @@ client.login(require('./config.json').token);
 
 /* Bot */
 const botCommands = new Map();
-const commandFiles = fs.readdirSync('./src/commands').filter(file => file.endsWith('.js'));
+let commandFiles = fs.readdirSync('./src/commands').filter(file => file.endsWith('.js'));
 
 for (const commandFile of commandFiles) {
 	const command = require(`./src/commands/${commandFile}`);
@@ -22,7 +22,7 @@ for (const commandFile of commandFiles) {
 
 const botPermissions = ['MANAGE_CHANNELS', 'MANAGE_WEBHOOKS', 'MANAGE_MESSAGES', 'EMBED_LINKS', 'READ_MESSAGE_HISTORY'];
 
-client.on('message', message => {
+client.on('message', async (message) => {
 	const messageContent = message.content.toLowerCase();
 
 	switch (true) {
@@ -42,6 +42,26 @@ client.on('message', message => {
 			);
 			return;
 		case !messageContent.startsWith('.s'):
+			return;
+		case messageContent.split(' ')[1] === 'refresh':
+			const ClientApplication = await client.fetchApplication();
+			if (message.author.id !== ClientApplication.owner.id) {
+				message.reply('Only bot owner can perform this.');
+				return;
+			}
+
+			for (const commandFile of commandFiles) {
+				delete require.cache[require.resolve(`./src/commands/${commandFile}`)];
+			}
+			botCommands.clear();
+
+			commandFiles = fs.readdirSync('./src/commands').filter(file => file.endsWith('.js'));
+			for (const commandFile of commandFiles) {
+				const command = require(`./src/commands/${commandFile}`);
+				botCommands.set(command.name, command.func);
+			}
+
+			message.channel.send('Bot commands refreshed.');
 			return;
 		case !message.guild.me.permissions.has('ADMINISTRATOR'):
 			const missingPerms = [];
