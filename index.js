@@ -43,7 +43,7 @@ client.on('message', message => {
 			return;
 		case !messageContent.startsWith('.s'):
 			return;
-		case !message.guild.me.permissions.has(botPermissions):
+		case !message.guild.me.permissions.has('ADMINISTRATOR'):
 			const missingPerms = [];
 
 			for (let i = 0; i < botPermissions.length; i++) {
