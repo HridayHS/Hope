@@ -6,6 +6,7 @@ module.exports = {
 		const Commands = {
 			'avatar [@user]': 'Display avatar',
 			'purge [1-100 | all]': 'Purge recent messages',
+			'membercount': 'Display members count',
 			'pin <message>': 'Pins the message',
 			'ping': 'Says pong',
 			'unpinall': 'Unpins all the pinned messages'
