@@ -63,7 +63,7 @@ client.on('message', async (message) => {
 
 			message.channel.send('Bot commands refreshed.');
 			return;
-		case !message.guild.me.permissions.has('ADMINISTRATOR'):
+		case !message.guild.me.permissions.has(botPermissions):
 			const missingPerms = [];
 
 			for (let i = 0; i < botPermissions.length; i++) {
