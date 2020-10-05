@@ -1,5 +1,6 @@
 module.exports = {
 	name: 'unpinall',
+	permissions: ['MANAGE_MESSAGES', 'READ_MESSAGE_HISTORY'],
 	func: function (message) {
 		message.channel.messages.fetchPinned()
 			.then(pinnedMessages => {

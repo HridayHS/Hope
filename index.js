@@ -17,10 +17,8 @@ let commandFiles = fs.readdirSync('./src/commands').filter(file => file.endsWith
 
 for (const commandFile of commandFiles) {
 	const command = require(`./src/commands/${commandFile}`);
-	botCommands.set(command.name, command.func);
+	botCommands.set(command.name, command);
 }
-
-const botPermissions = ['MANAGE_CHANNELS', 'MANAGE_WEBHOOKS', 'MANAGE_MESSAGES', 'EMBED_LINKS', 'READ_MESSAGE_HISTORY'];
 
 client.on('message', async (message) => {
 	const messageContent = message.content.toLowerCase();
@@ -58,28 +56,37 @@ client.on('message', async (message) => {
 			commandFiles = fs.readdirSync('./src/commands').filter(file => file.endsWith('.js'));
 			for (const commandFile of commandFiles) {
 				const command = require(`./src/commands/${commandFile}`);
-				botCommands.set(command.name, command.func);
+				botCommands.set(command.name, command);
 			}
 
 			message.channel.send('Bot commands refreshed.');
-			return;
-		case !message.guild.me.permissions.has(botPermissions):
-			const missingPerms = [];
-
-			for (let i = 0; i < botPermissions.length; i++) {
-				const botPermission = botPermissions[i];
-				if (!message.guild.me.permissions.has(botPermission)) {
-					missingPerms.push(botPermission);
-				}
-			}
-
-			const botPermsHumnanReadable = missingPerms.map(s => s.toLowerCase().replace(/(^|_)./g, s => s.slice(-1).toUpperCase()).replace(/([A-Z])/g, ' $1').trim());
-			message.channel.send(`I need the permissions ${botPermsHumnanReadable.join(', ')} for this bot to work properly.`);
 			return;
 		default:
 			break;
 	}
 
 	const botCommand = botCommands.get(messageContent.split(' ')[1]);
-	botCommand ? botCommand(message) : message.channel.send('**Invalid command.** Use `.s commands` to display bot commands.');
+
+	if (botCommand) {
+		if (botCommand.hasOwnProperty('permissions')) {
+			const commandPerms = botCommand.permissions;
+			if (!message.member.hasPermission(commandPerms)) {
+				const missingPerms = [];
+
+				for (let i = 0; i < commandPerms.length; i++) {
+					const botPermission = commandPerms[i];
+					if (!message.member.hasPermission(botPermission)) {
+						missingPerms.push(botPermission);
+					}
+				}
+
+				const commandPermsHumnanReadable = missingPerms.map(s => s.toLowerCase().replace(/(^|_)./g, s => s.slice(-1).toUpperCase()).replace(/([A-Z])/g, ' $1').trim());
+				message.reply(`You do not have the required permissions to perform this action.\nYou need the permissions ${commandPermsHumnanReadable.join(', ')} for this command to work.`);
+				return;
+			}
+		}
+		botCommand.func(message);
+	} else {
+		message.channel.send('**Invalid command.** Use `.s commands` to display bot commands.');
+	}
 });

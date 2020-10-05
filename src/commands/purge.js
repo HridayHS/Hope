@@ -1,5 +1,6 @@
 module.exports = {
 	name: 'purge',
+	permissions: ['MANAGE_CHANNELS', 'MANAGE_WEBHOOKS', 'MANAGE_MESSAGES', 'READ_MESSAGE_HISTORY'],
 	func: async function (message) {
 		const getPurgeAmount = message.content.toLowerCase().split(' ')[2];
 
