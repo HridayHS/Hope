@@ -9,7 +9,8 @@ module.exports = {
 			'membercount': 'Get members count',
 			'pin <message>': 'Pins the message',
 			'ping': 'Says pong',
-			'unpinall': 'Unpins all the pinned messages'
+			'unpinall': 'Unpins all the pinned messages',
+			'whois [@member]': 'Get member info'
 		};
 
 		let CommandsDescription = '';
