@@ -43,8 +43,8 @@ client.on('message', async (message) => {
 		case !messageContent.startsWith('.s'):
 			return;
 		case messageContent.split(' ')[1] === 'refresh':
-			const ClientApplication = await client.fetchApplication();
-			if (message.author.id !== ClientApplication.owner.id) {
+			const botTeamMembers = (await client.fetchApplication()).owner.members;
+			if (!botTeamMembers.has(message.author.id)) {
 				message.reply('Only bot owner can perform this.');
 				return;
 			}
