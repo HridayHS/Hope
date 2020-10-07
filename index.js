@@ -1,5 +1,5 @@
 const fs = require('fs');
-const { Client, MessageEmbed } = require('discord.js');
+const { Client, Collection, MessageEmbed } = require('discord.js');
 const client = new Client();
 
 // Console log when bot is ready.
@@ -12,7 +12,7 @@ client.once('ready', () => {
 client.login(require('./config.json').token);
 
 /* Bot */
-const botCommands = new Map();
+const botCommands = new Collection();
 let commandFiles = fs.readdirSync('./src/commands').filter(file => file.endsWith('.js'));
 
 for (const commandFile of commandFiles) {
@@ -66,7 +66,8 @@ client.on('message', async (message) => {
 			break;
 	}
 
-	const botCommand = botCommands.get(messageContent.split(' ')[1]);
+	const botCommand = botCommands.get(messageContent.split(' ')[1])
+		|| botCommands.find(command => command.alias && command.alias.includes(messageContent.split(' ')[1]))
 
 	if (botCommand) {
 		if (botCommand.hasOwnProperty('permissions')) {
