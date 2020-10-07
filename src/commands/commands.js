@@ -2,6 +2,7 @@ const { MessageEmbed } = require('discord.js');
 
 module.exports = {
 	name: 'commands',
+	alias: ['cmds'],
 	func: function (message) {
 		const Commands = {
 			'avatar [@member]': 'Display avatar',
