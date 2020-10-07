@@ -32,7 +32,7 @@ client.on('message', async (message) => {
 		case messageContent === '<@!545420239706521601>':
 			message.channel.send(
 				new MessageEmbed()
-					.setAuthor('Bot Help', 'https://cdn.discordapp.com/avatars/545420239706521601/06cd328d670773df41efe598d2389f52.png')
+					.setAuthor('Bot Help', 'https://cdn.discordapp.com/app-icons/545420239706521601/9fb441dfa2135181808a394f8189c2cf.webp')
 					.setColor('GREEN')
 					.addFields(
 						{ name: 'Prefix', value: '`.s`', inline: true },
