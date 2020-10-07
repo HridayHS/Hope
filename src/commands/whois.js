@@ -27,6 +27,7 @@ module.exports = {
 		message.channel.send(
 			new MessageEmbed()
 				.setAuthor(user.tag, user.avatarURL())
+				.setThumbnail(user.avatarURL({ dynamic: true }))
 				.setColor('GREEN')
 				.addFields(
 					{ name: 'Joined', value: customDateFormat(message.guild.member(user).joinedAt), inline: true },
