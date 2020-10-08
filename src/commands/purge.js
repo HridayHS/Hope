@@ -2,48 +2,57 @@ module.exports = {
 	name: 'purge',
 	permissions: ['MANAGE_CHANNELS', 'MANAGE_WEBHOOKS', 'MANAGE_MESSAGES', 'READ_MESSAGE_HISTORY'],
 	func: async function (message) {
-		const getPurgeAmount = message.content.toLowerCase().split(' ')[2];
+		const userInput = message.content.toLowerCase().split(' ')[2];
 
-		/* .s purge all */
-		if (getPurgeAmount === 'all') {
+		/* .s clear all */
+		if (userInput === 'all') {
 			const oldChannelPossition = message.channel.position;
 			const oldChannelWebhooks = await message.channel.fetchWebhooks();
 			await message.channel.delete();
 
-			const clonedChannel = await message.channel.clone({});
-			clonedChannel.setPosition(oldChannelPossition);
-			if (oldChannelWebhooks) {
-				oldChannelWebhooks.forEach(fetchedWebhook => {
-					clonedChannel.createWebhook(fetchedWebhook.name, { avatar: fetchedWebhook.avatarURL({ format: 'png', dynamic: true, size: 4096 }) });
-				});
-			}
-			return;
-		}
-
-		await message.delete();
-
-		let purgeAmount = parseInt(getPurgeAmount);
-		if (purgeAmount < 1) {
-			message.reply('Please enter a valid number! [1-100]');
-			return;
-		}
-
-		purgeAmount = (purgeAmount >= 100) ? 100 : purgeAmount;
-
-		message.channel.messages.fetch({ limit: 1 })
-			.then(fetchedMessage => {
-				if (Date.now() - fetchedMessage.first().createdAt.getTime() > 1209600000) {
-					message.channel.send('Unable to purge messages older than 14 days.');
-					return;
-				}
-
-				message.channel.bulkDelete(purgeAmount || 1, true)
-					.catch(() => {
-						message.channel.send('Failed to purge recent messages!');
-					});
-			})
-			.catch(() => {
-				message.channel.send('Failed to purge recent messages!');
+			const channelClone = await message.channel.clone();
+			channelClone.setPosition(oldChannelPossition);
+			oldChannelWebhooks.forEach(webhook => {
+				channelClone.createWebhook(webhook.name, { avatar: webhook.avatarURL() });
 			});
+			channelClone.send(`<@${message.author.id}>, All messages purged!`);
+			return;
+		}
+
+		// Return with a message if last is message is older than 14 days.
+		const lastMessage = await message.channel.messages.fetch({ limit: 2 });
+		if (Date.now() - lastMessage.last().createdAt.getTime() > 1209600000) {
+			message.channel.send('Unable to purge messages older than 14 days.');
+			return;
+		}
+
+		/* .s clear @member */
+		const mentionedUser = message.mentions.users.first();
+		if (mentionedUser) {
+			const userMessages = (await message.channel.messages.fetch({ limit: 100 }))
+				.filter(message => message.author.id === mentionedUser.id);
+
+			if (userMessages.size === 0) {
+				message.channel.send(`Unable to find ${mentionedUser.username}'s messages.`);
+				return;
+			}
+
+			message.channel.bulkDelete(userMessages, true)
+				.then(() => message.channel.send(`Purged ${mentionedUser.username}'s messages.`))
+				.catch(() => message.channel.send(`Failed to purge ${mentionedUser.username}'s messages!`));
+			return;
+		}
+
+		let purgeAmount = parseInt(userInput);
+		if (isNaN(purgeAmount) && purgeAmount < 1) {
+			message.reply('Please enter a valid number. [1-100]');
+			return;
+		}
+
+		purgeAmount = (purgeAmount >= 100) ? 100 : purgeAmount + 1;
+
+		message.channel.bulkDelete(purgeAmount || 2, true)
+			.catch(() => message.channel.send('Failed to purge recent messages!'));
+		return;
 	}
 };
