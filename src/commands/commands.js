@@ -6,10 +6,10 @@ module.exports = {
 	func: function (message) {
 		const Commands = {
 			'avatar [@member]': 'Display avatar',
-			'purge [1-100 | @member | all]': 'Purge recent messages',
 			'membercount': 'Get members count',
 			'pin <message>': 'Pins the message',
 			'ping': 'Says pong',
+			'purge [1-100 | @member | all]': 'Purge recent messages',
 			'unpinall': 'Unpins all the pinned messages',
 			'whois [@member]': 'Get member info'
 		};
