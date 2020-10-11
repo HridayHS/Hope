@@ -24,7 +24,7 @@ client.on('message', async (message) => {
 	const messageContent = message.content.toLowerCase();
 
 	switch (true) {
-		case message.guild && !message.guild.me.permissions.has(['VIEW_CHANNEL', 'SEND_MESSAGES']):
+		case message.channel.type !== 'dm' && !message.guild.me.permissions.has(['VIEW_CHANNEL', 'SEND_MESSAGES']):
 		case message.author.bot:
 			return;
 		case messageContent === '.s':
@@ -73,7 +73,7 @@ client.on('message', async (message) => {
 
 		// Command permissions
 		const commandPerms = botCommand.permissions;
-		if (commandPerms && !message.member.hasPermission(commandPerms)) {
+		if (commandPerms && message.channel.type !== 'dm' && !message.member.hasPermission(commandPerms)) {
 			const missingPerms = [];
 
 			for (let i = 0; i < commandPerms.length; i++) {
