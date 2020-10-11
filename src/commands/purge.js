@@ -43,6 +43,7 @@ module.exports = {
 			return;
 		}
 
+		/* .s clear [1-100] */
 		let purgeAmount = parseInt(userInput);
 		if (isNaN(purgeAmount) && purgeAmount < 1) {
 			message.reply('Please enter a valid number. [1-100]');
