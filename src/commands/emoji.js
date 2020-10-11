@@ -1,6 +1,7 @@
 module.exports = {
     name: 'emoji',
     alias: ['e', 'emote', 'emotelink', 'emojilink', 'elink'],
+    permissions: ['ADD_REACTIONS'],
     func: async function (message) {
         const reactionMessage = await message.reply('React to this message to get the emoji link.');
 
