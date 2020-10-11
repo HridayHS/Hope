@@ -22,6 +22,8 @@ const customDateFormat = date => {
 
 module.exports = {
 	name: 'whois',
+	alias: ['userinfo'],
+	guildOnly: true,
 	func: function (message) {
 		const user = message.mentions.users.first() || message.author;
 		message.channel.send(

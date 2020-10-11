@@ -2,6 +2,7 @@ const { MessageEmbed } = require('discord.js');
 
 module.exports = {
     name: 'serverinfo',
+    guildOnly: true,
     func: async function (message) {
         const serverCreated = message.guild.createdAt;
         const serverRegion = region => {

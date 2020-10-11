@@ -1,5 +1,6 @@
 module.exports = {
 	name: 'unpinall',
+	guildOnly: true,
 	permissions: ['MANAGE_MESSAGES', 'READ_MESSAGE_HISTORY'],
 	func: async function (message) {
 		const pinnedMessages = await message.channel.messages.fetchPinned();

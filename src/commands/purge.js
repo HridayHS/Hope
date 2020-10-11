@@ -1,5 +1,7 @@
 module.exports = {
 	name: 'purge',
+	alias: ['clear', 'clean', 'delete'],
+	guildOnly: true,
 	permissions: ['MANAGE_CHANNELS', 'MANAGE_WEBHOOKS', 'MANAGE_MESSAGES', 'READ_MESSAGE_HISTORY'],
 	func: async function (message) {
 		const userInput = message.content.toLowerCase().split(' ')[2];

@@ -2,6 +2,7 @@ const { MessageEmbed } = require('discord.js');
 
 module.exports = {
 	name: 'membercount',
+	guildOnly: true,
 	func: function (message) {
 		message.channel.send(
 			new MessageEmbed()

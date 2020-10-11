@@ -2,10 +2,12 @@ const { MessageEmbed } = require('discord.js');
 
 module.exports = {
 	name: 'commands',
-	alias: ['cmds'],
+	alias: ['cmd', 'cmds'],
+	guildOnly: true,
 	func: function (message) {
 		const Commands = {
 			'avatar [@member]': 'Display avatar',
+			'emoji **DM Enabled**': 'Get emoji link',
 			'membercount': 'Get members count',
 			'pin <message>': 'Pins the message',
 			'ping': 'Says pong',
