@@ -23,19 +23,22 @@ const customDateFormat = date => {
 module.exports = {
 	name: 'whois',
 	alias: ['userinfo'],
-	guildOnly: true,
 	func: function (message) {
 		const user = message.mentions.users.first() || message.author;
-		message.channel.send(
-			new MessageEmbed()
-				.setAuthor(user.tag, user.avatarURL({ dynamic: true }))
-				.setThumbnail(user.avatarURL({ format: 'png', dynamic: true, size: 4096 }))
-				.setColor('GREEN')
-				.addFields(
-					{ name: 'Joined', value: customDateFormat(message.guild.member(user).joinedAt), inline: true },
-					{ name: 'Registered', value: customDateFormat(user.createdAt), inline: true },
-				)
-				.setFooter('ID: ' + user.id)
-		);
+
+		const EmbedMessage = new MessageEmbed()
+			.setAuthor(user.tag, user.avatarURL({ dynamic: true }))
+			.setThumbnail(user.avatarURL({ format: 'png', dynamic: true, size: 4096 }))
+			.setColor('GREEN')
+			.addFields(
+				{ name: 'Registered', value: customDateFormat(user.createdAt), inline: true },
+			)
+			.setFooter('ID: ' + user.id);
+
+		if (message.channel.type !== 'dm') {
+			EmbedMessage.spliceFields(0, 0, { name: 'Joined', value: customDateFormat(message.guild.member(user).joinedAt), inline: true })
+		}
+
+		message.channel.send(EmbedMessage);
 	}
 };

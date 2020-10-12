@@ -1,6 +1,5 @@
 module.exports = {
 	name: 'pin',
-	guildOnly: true,
 	permissions: ['MANAGE_CHANNELS'],
 	func: function (message) {
 		const userMessage = message.content;
