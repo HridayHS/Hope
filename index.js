@@ -24,7 +24,7 @@ client.on('message', async (message) => {
 	const messageContent = message.content.toLowerCase();
 
 	switch (true) {
-		case message.channel.type !== 'dm' && !message.guild.me.permissions.has(['VIEW_CHANNEL', 'SEND_MESSAGES']):
+		case message.channel.type !== 'dm' && !message.guild.me.permissions.has(['SEND_MESSAGES']):
 		case message.author.bot:
 			return;
 		case messageContent === '.s':
