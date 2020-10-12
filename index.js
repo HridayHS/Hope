@@ -28,6 +28,7 @@ client.on('message', async (message) => {
 		case message.author.bot:
 			return;
 		case messageContent === '.s':
+		case messageContent === '.s help':
 		case messageContent === '<@!545420239706521601>':
 			message.channel.send(
 				new MessageEmbed()
