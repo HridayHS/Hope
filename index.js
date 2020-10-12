@@ -78,9 +78,9 @@ client.on('message', async (message) => {
 			const missingPerms = [];
 
 			for (let i = 0; i < commandPerms.length; i++) {
-				const botPermission = commandPerms[i];
-				if (!message.member.hasPermission(botPermission)) {
-					missingPerms.push(botPermission);
+				const Permission = commandPerms[i];
+				if (!message.member.hasPermission(Permission)) {
+					missingPerms.push(Permission);
 				}
 			}
 
