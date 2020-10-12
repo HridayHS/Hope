@@ -6,7 +6,7 @@ module.exports = {
 	func: async function (message) {
 		const userInput = message.content.toLowerCase().split(' ')[2];
 
-		/* .s clear all */
+		/* .s purge all */
 		if (userInput === 'all') {
 			const oldChannelPossition = message.channel.position;
 			const oldChannelWebhooks = await message.channel.fetchWebhooks();
@@ -28,7 +28,7 @@ module.exports = {
 			return;
 		}
 
-		/* .s clear @member */
+		/* .s purge @member */
 		const mentionedUser = message.mentions.users.first();
 		if (mentionedUser) {
 			const userMessages = (await message.channel.messages.fetch({ limit: 100 }))
@@ -45,7 +45,7 @@ module.exports = {
 			return;
 		}
 
-		/* .s clear [1-100] */
+		/* .s purge [1-100] */
 		let purgeAmount = parseInt(userInput);
 		if (isNaN(purgeAmount) && purgeAmount < 1) {
 			message.reply('Please enter a valid number. [1-100]');
