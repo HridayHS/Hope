@@ -3,7 +3,6 @@ const { MessageEmbed } = require('discord.js');
 module.exports = {
 	name: 'commands',
 	alias: ['cmd', 'cmds'],
-	guildOnly: true,
 	func: function (message) {
 		const Commands = {
 			'avatar [@member]': 'Display avatar',
@@ -15,6 +14,12 @@ module.exports = {
 			'unpinall': 'Unpins all the pinned messages',
 			'whois [@member]': 'Get member info'
 		};
+
+		if (message.channel.type === 'dm') {
+			delete Commands['avatar [@member]'];
+			delete Commands['membercount'];
+			delete Commands['whois [@member]'];
+		}
 
 		let CommandsDescription = '';
 		for (const CommandName in Commands) {
