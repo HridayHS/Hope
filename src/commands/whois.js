@@ -27,8 +27,8 @@ module.exports = {
 		const user = message.mentions.users.first() || message.author;
 
 		const EmbedMessage = new MessageEmbed()
-			.setAuthor(user.tag, user.avatarURL({ dynamic: true }))
-			.setThumbnail(user.avatarURL({ format: 'png', dynamic: true, size: 4096 }))
+			.setAuthor(user.tag, user.displayAvatarURL({ dynamic: true }))
+			.setThumbnail(user.displayAvatarURL({ format: 'png', dynamic: true, size: 4096 }))
 			.setColor('GREEN')
 			.addFields(
 				{ name: 'Registered', value: customDateFormat(user.createdAt), inline: true },
