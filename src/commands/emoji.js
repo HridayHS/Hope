@@ -2,22 +2,31 @@ module.exports = {
 	name: 'emoji',
 	alias: ['e', 'emote', 'emotelink', 'emojilink', 'elink'],
 	func: async function (message) {
+		const Emojis = message.content.match(/(:[^:\s]+:|<:[^:\s]+:[0-9]+>|<a:[^:\s]+:[0-9]+>)/g);
 
-		const customEmojis = message.content.match(/(:[^:\s]+:|<:[^:\s]+:[0-9]+>|<a:[^:\s]+:[0-9]+>)/g);
-
-		if (!customEmojis) {
+		if (!Emojis) {
 			message.channel.send('Invalid emoji.');
 			return;
 		}
 
-		const emoji = {
-			info: customEmojis[0].slice(1).slice(0, -1).split(':')
+		const Emoji = {
+			info: undefined,
+			get url() {
+				const emojiID = this.info[2];
+				const emojiExtention = this.info.includes('a') ? 'gif' : 'png';
+				return `https://cdn.discordapp.com/emojis/${emojiID}.${emojiExtention}`;
+			}
 		};
 
-		emoji.id = emoji.info[2];
-		emoji.extention = emoji.info.includes('a') ? 'gif' : 'png';
-		emoji.url = `https://cdn.discordapp.com/emojis/${emoji.id}.${emoji.extention}`;
+		if (message.channel.type === 'dm') {
+			for (let i = 0; i < (Emojis.length > 5 ? 5 : Emojis.length); i++) {
+				Emoji.info = Emojis[i].slice(1).slice(0, -1).split(':');
+				message.channel.send(`<${Emoji.url}>`, { files: [Emoji.url] });
+			}
+			return;
+		}
 
-		message.channel.send(`<${emoji.url}>`, { files: [emoji.url] });
+		Emoji.info = Emojis[0].slice(1).slice(0, -1).split(':');
+		message.channel.send(`<${Emoji.url}>`, { files: [Emoji.url] });
 	}
 };
