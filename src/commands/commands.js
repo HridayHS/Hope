@@ -7,7 +7,7 @@ module.exports = {
 	func: function (message) {
 		const Commands = {
 			'avatar [@member]': 'Display avatar',
-			'emoji **DM Enabled**': 'Get emoji link',
+			'emoji <custom emoji>': 'Get emoji link',
 			'membercount': 'Get members count',
 			'pin <message>': 'Pins the message',
 			'ping': 'Says pong',
