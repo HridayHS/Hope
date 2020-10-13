@@ -19,6 +19,7 @@ module.exports = {
 		if (message.channel.type === 'dm') {
 			delete Commands['avatar [@member]'];
 			delete Commands['membercount'];
+			delete Commands['purge [1-100 | @member | all]'];
 			delete Commands['whois [@member]'];
 		}
 
