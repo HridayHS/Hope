@@ -37,6 +37,7 @@ module.exports = {
 				.addFields(
 					{ name: 'Owner', value: message.guild.owner, inline: true },
 					{ name: 'Region', value: serverRegion(message.guild.region), inline: true },
+					{ name: 'Admins', value: message.guild.members.cache.filter(member => !member.user.bot && member.hasPermission('ADMINISTRATOR')).size, inline: true },
 					{ name: 'Roles', value: (await message.guild.roles.fetch()).cache.size, inline: true },
 					{ name: 'Roles List', value: await serverRoles(), inline: false },
 				)
