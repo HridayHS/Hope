@@ -40,7 +40,7 @@ module.exports = {
 					{ name: 'Roles', value: (await message.guild.roles.fetch()).cache.size, inline: true },
 					{ name: 'Roles List', value: await serverRoles(), inline: false },
 				)
-				.setFooter('Server ID: ' + message.guild.id + ' | ' + 'Server Created • ' + `${serverCreated.getDate()}/${serverCreated.getMonth()}/${serverCreated.getFullYear()}`)
+				.setFooter('ID: ' + message.guild.id + ' | ' + 'Server Created • ' + `${serverCreated.getDate()}/${serverCreated.getMonth()}/${serverCreated.getFullYear()}`)
 		);
 	}
 };
