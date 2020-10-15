@@ -1,11 +1,9 @@
-const { MessageEmbed } = require('discord.js');
-
 module.exports = {
 	name: 'membercount',
 	guildOnly: true,
-	func: function (message) {
+	func: function (message, discord = {}) {
 		message.channel.send(
-			new MessageEmbed()
+			new discord.MessageEmbed()
 				.setAuthor('Member Count', message.guild.iconURL())
 				.setColor('GREEN')
 				.addFields(
