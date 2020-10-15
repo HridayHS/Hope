@@ -2,7 +2,7 @@ module.exports = {
 	name: 'emojilink',
 	alias: ['e', 'emoji', 'emote', 'emotelink', 'elink'],
 	func: async function (message) {
-		const Emojis = message.content.match(/(:[^:\s]+:|<:[^:\s]+:[0-9]+>|<a:[^:\s]+:[0-9]+>)/g);
+		const Emojis = message.content.match(/(<a:|<:)+[^:]+:[0-9]+>/g);
 
 		if (!Emojis) {
 			message.channel.send('Invalid emoji.');
