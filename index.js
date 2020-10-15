@@ -74,6 +74,10 @@ client.on('message', async (message) => {
 
 		// Check if bot and member both have the required permission to execute the command.
 		function permissionsCheck(botPerms = false) {
+			if (!botCommand.permissions) {
+				return true;
+			}
+
 			const Perms = botCommand.permissions[botPerms ? 'bot' : 'member'];
 			const hasPermissions = botPerms ? message.guild.me.permissions.has(Perms) : message.member.hasPermission(Perms);
 			if (Perms && !hasPermissions) {
