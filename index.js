@@ -1,4 +1,5 @@
-const fs = require('fs');
+const { getAllFiles } = require('./utils.js');
+
 const { Client, Collection, MessageEmbed } = require('discord.js');
 const client = new Client();
 
@@ -13,10 +14,11 @@ client.login(require('./config.json').token);
 
 /* Bot */
 const botCommands = new Collection();
-let commandFiles = fs.readdirSync('./src/commands').filter(file => file.endsWith('.js'));
+
+let commandFiles = getAllFiles('./src/commands').filter(file => file.endsWith('.js'));
 
 for (const commandFile of commandFiles) {
-	const command = require(`./src/commands/${commandFile}`);
+	const command = require(`./${commandFile}`);
 	botCommands.set(command.name, command);
 }
 
@@ -48,14 +50,14 @@ client.on('message', async (message) => {
 				return;
 			}
 
-			for (const commandFile of commandFiles) {
-				delete require.cache[require.resolve(`./src/commands/${commandFile}`)];
-			}
+			commandFiles.forEach(commandFile => delete require.cache[require.resolve(`./${commandFile}`)]);
+
 			botCommands.clear();
 
-			commandFiles = fs.readdirSync('./src/commands').filter(file => file.endsWith('.js'));
+			commandFiles = getAllFiles('./src/commands').filter(file => file.endsWith('.js'));
+
 			for (const commandFile of commandFiles) {
-				const command = require(`./src/commands/${commandFile}`);
+				const command = require(`./${commandFile}`);
 				botCommands.set(command.name, command);
 			}
 
