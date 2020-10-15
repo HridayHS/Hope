@@ -23,11 +23,6 @@ module.exports = {
 					return region.charAt(0).toUpperCase() + region.slice(1);
 			}
 		};
-		const serverRoles = async () => {
-			let rolesList = '';
-			(await message.guild.roles.fetch()).cache.forEach(role => rolesList += role.name + ', ');
-			return rolesList;
-		};
 
 		message.channel.send(
 			new MessageEmbed()
@@ -39,7 +34,7 @@ module.exports = {
 					{ name: 'Region', value: serverRegion(message.guild.region), inline: true },
 					{ name: 'Admins', value: message.guild.members.cache.filter(member => !member.user.bot && member.hasPermission('ADMINISTRATOR')).size, inline: true },
 					{ name: 'Roles', value: (await message.guild.roles.fetch()).cache.size, inline: true },
-					{ name: 'Roles List', value: await serverRoles(), inline: false },
+					{ name: 'Roles List', value: (await message.guild.roles.fetch()).cache.map(role => role.name).join(', '), inline: false },
 				)
 				.setFooter('ID: ' + message.guild.id + ' | ' + 'Server Created • ' + `${serverCreated.getDate()}/${serverCreated.getMonth()}/${serverCreated.getFullYear()}`)
 		);
