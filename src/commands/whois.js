@@ -21,8 +21,16 @@ const customDateFormat = date => {
 module.exports = {
 	name: 'whois',
 	alias: ['userinfo'],
-	func: function (message, discord = {}) {
-		const user = message.mentions.users.first() || message.author;
+	func: async function (message, discord = {}) {
+		const userID = message.content.split(' ')[2];
+
+		const user = message.mentions.users.first()
+			|| userID ? await discord.client.users.fetch(userID).catch(() => { }) : message.author;
+
+		if (!user) {
+			message.channel.send(`Unable to find user.`);
+			return;
+		}
 
 		const EmbedMessage = new discord.MessageEmbed()
 			.setAuthor(user.tag, user.displayAvatarURL({ dynamic: true }))

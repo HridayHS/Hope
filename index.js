@@ -104,7 +104,7 @@ client.on('message', async (message) => {
 			return;
 		}
 
-		botCommand.func(message, { MessageEmbed });
+		botCommand.func(message, { client, MessageEmbed });
 	} else {
 		message.channel.send('**Invalid command.** Use `.s commands` to display bot commands.');
 	}
