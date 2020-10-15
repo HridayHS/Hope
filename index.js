@@ -72,20 +72,29 @@ client.on('message', async (message) => {
 			return;
 		}
 
-		// Command permissions
-		const commandPerms = botCommand.permissions;
-		if (commandPerms && message.channel.type !== 'dm' && !message.member.hasPermission(commandPerms)) {
-			const missingPerms = [];
+		// Check if bot and member both have the required permission to execute the command.
+		function permissionsCheck(botPerms = false) {
+			const Perms = botCommand.permissions[botPerms ? 'bot' : 'member'];
+			const hasPermissions = botPerms ? message.guild.me.permissions.has(Perms) : message.member.hasPermission(Perms);
+			if (Perms && !hasPermissions) {
+				const missingPerms = [];
 
-			for (let i = 0; i < commandPerms.length; i++) {
-				const Permission = commandPerms[i];
-				if (!message.member.hasPermission(Permission)) {
-					missingPerms.push(Permission);
+				for (let i = 0; i < Perms.length; i++) {
+					const Permission = Perms[i];
+					const hasPermission = botPerms ? message.guild.me.permissions.has(Permission) : message.member.hasPermission(Permission)
+					if (!hasPermission) {
+						missingPerms.push(Permission);
+					}
 				}
-			}
 
-			const commandPermsHumnanReadable = missingPerms.map(s => s.toLowerCase().replace(/(^|_)./g, s => s.slice(-1).toUpperCase()).replace(/([A-Z])/g, ' $1').trim());
-			message.reply(`You do not have the required permissions to perform this action.\nYou need the permissions ${commandPermsHumnanReadable.join(', ')} for this command to work.`);
+				const PermsHumnanReadable = missingPerms.map(s => s.toLowerCase().replace(/(^|_)./g, s => s.slice(-1).toUpperCase()).replace(/([A-Z])/g, ' $1').trim());
+				message.channel.send(`${botPerms ? 'Bot' : `<@${message.author.id}>, You`} do not have the required permissions to perform this action.\n${botPerms ? 'Bot' : 'You'} need the permissions ${PermsHumnanReadable.join(', ')} for this command to work.`);
+				return false;
+			}
+			return true;
+		}
+
+		if (message.channel.type !== 'dm' && (!permissionsCheck(true) || !permissionsCheck())) {
 			return;
 		}
 

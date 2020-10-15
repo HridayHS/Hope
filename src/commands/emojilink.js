@@ -1,6 +1,7 @@
 module.exports = {
 	name: 'emojilink',
 	alias: ['e', 'emoji', 'emote', 'emotelink', 'elink'],
+	permissions: { bot: ['ATTACH_FILES'] },
 	func: async function (message) {
 		const Emojis = message.content.match(/(<a:|<:)+[^:]+:[0-9]+>/g);
 

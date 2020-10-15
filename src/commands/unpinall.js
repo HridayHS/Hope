@@ -1,6 +1,9 @@
 module.exports = {
 	name: 'unpinall',
-	permissions: ['MANAGE_MESSAGES', 'READ_MESSAGE_HISTORY'],
+	permissions: {
+		bot: ['MANAGE_MESSAGES', 'READ_MESSAGE_HISTORY'],
+		member: ['MANAGE_MESSAGES', 'READ_MESSAGE_HISTORY']
+	},
 	func: async function (message) {
 		const pinnedMessages = await message.channel.messages.fetchPinned();
 		if (!pinnedMessages || pinnedMessages.size === 0) {
