@@ -1,10 +1,18 @@
 const ytdl = require('ytdl-core');
+const YouTube = require('simple-youtube-api');
+
+const youtube = new YouTube(require('../../../config.json')["youtube-data-api-key"]);
 
 module.exports = {
 	name: 'play',
 	alias: ['p'],
 	guildOnly: true,
-	func: function (message) {
+	func: async function (message) {
+		const songName = message.content.slice(8);
+		if (songName === '') {
+			return;
+		}
+
 		const voiceChannel = message.member.voice.channel;
 
 		if (!voiceChannel) {
@@ -18,10 +26,17 @@ module.exports = {
 			return;
 		}
 
+		const song = {
+			searchResult: await youtube.searchVideos(songName, 1),
+			get url() {
+				return this.searchResult.values().next().value.url;
+			}
+		}
+
 		voiceChannel.join().then(connection => {
 			message.guild.me.voice.setSelfDeaf(true);
 
-			const stream = ytdl('https://youtu.be/24u3NoPvgMw', { filter: 'audioonly', quality: 'highestaudio' });
+			const stream = ytdl(song.url, { filter: 'audioonly', quality: 'highestaudio' });
 			const dispatcher = connection.play(stream, { bitrate: 192000, volume: 0.8 });
 
 			dispatcher.on('finish', () => voiceChannel.leave());
