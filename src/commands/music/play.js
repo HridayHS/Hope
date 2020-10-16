@@ -10,6 +10,7 @@ module.exports = {
 	func: async function (message) {
 		const songName = message.content.slice(8);
 		if (songName === '') {
+			message.channel.send('Song name not found!');
 			return;
 		}
 
