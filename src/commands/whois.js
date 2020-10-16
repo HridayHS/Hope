@@ -28,7 +28,7 @@ module.exports = {
 			if (message.mentions.users.first()) {
 				return message.mentions.users.first();
 			} else if (userID) {
-				return await discord.client.users.fetch(userID).catch(() => { });
+				return await message.client.users.fetch(userID).catch(() => { });
 			} else {
 				return message.author;
 			}
