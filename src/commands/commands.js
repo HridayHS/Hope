@@ -1,7 +1,9 @@
+const { MessageEmbed } = require('discord.js');
+
 module.exports = {
 	name: 'commands',
 	alias: ['cmd', 'cmds', 'command'],
-	func: function (message, discord = {}) {
+	func: function (message) {
 		const Commands = {
 			'avatar [@member]': 'Display avatar',
 			'emoji <custom emoji>': 'Get emoji link',
@@ -26,7 +28,7 @@ module.exports = {
 		}
 
 		message.channel.send(
-			new discord.MessageEmbed()
+			new MessageEmbed()
 				.setAuthor('Bot Commands', 'https://cdn.discordapp.com/app-icons/545420239706521601/9fb441dfa2135181808a394f8189c2cf.webp')
 				.setColor('RED')
 				.setDescription(CommandsDescription)

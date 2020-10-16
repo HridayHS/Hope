@@ -1,3 +1,5 @@
+const { MessageEmbed } = require('discord.js');
+
 const customDateFormat = date => {
 	const Time12To24 = () => {
 		const Hours = date.getHours();
@@ -21,7 +23,7 @@ const customDateFormat = date => {
 module.exports = {
 	name: 'whois',
 	alias: ['userinfo'],
-	func: async function (message, discord = {}) {
+	func: async function (message) {
 		const getUser = async () => {
 			const userID = message.content.split(' ')[2];
 
@@ -41,7 +43,7 @@ module.exports = {
 			return;
 		}
 
-		const EmbedMessage = new discord.MessageEmbed()
+		const EmbedMessage = new MessageEmbed()
 			.setAuthor(user.tag, user.displayAvatarURL({ dynamic: true }))
 			.setThumbnail(user.displayAvatarURL({ format: 'png', dynamic: true, size: 4096 }))
 			.setColor('GREEN')

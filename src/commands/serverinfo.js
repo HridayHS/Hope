@@ -1,7 +1,9 @@
+const { MessageEmbed } = require('discord.js');
+
 module.exports = {
 	name: 'serverinfo',
 	guildOnly: true,
-	func: async function (message, discord = {}) {
+	func: async function (message) {
 		const serverCreated = message.guild.createdAt;
 		const serverRegion = region => {
 			switch (region) {
@@ -23,7 +25,7 @@ module.exports = {
 		};
 
 		message.channel.send(
-			new discord.MessageEmbed()
+			new MessageEmbed()
 				.setAuthor(message.guild.name, message.guild.iconURL({ dynamic: true }))
 				.setThumbnail(message.guild.iconURL({ format: 'png', dynamic: true, size: 4096 }))
 				.setColor('GREEN')
