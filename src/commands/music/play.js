@@ -1,6 +1,7 @@
 const ytdl = require('ytdl-core');
 const YouTube = require('simple-youtube-api');
 
+const { MessageEmbed } = require('discord.js');
 const youtube = new YouTube(require('../../../config.json')["youtube-data-api-key"]);
 
 module.exports = {
@@ -29,10 +30,31 @@ module.exports = {
 
 		const song = {
 			searchResult: await youtube.searchVideos(songName, 1),
+			get title() {
+				return this.searchResult.values().next().value.title;
+			},
+			get thumbnail() {
+				return this.searchResult.values().next().value.thumbnails.high.url;
+			},
 			get url() {
 				return this.searchResult.values().next().value.url;
 			}
 		}
+
+		if (song.searchResult.length === 0) {
+			message.channel.send('Unable to find the song.')
+			return;
+		}
+
+		message.channel.send(
+			new MessageEmbed()
+				.setAuthor('Now playing')
+				.setColor('#FF0000')
+				.setTitle(song.title)
+				.setThumbnail(song.thumbnail)
+				.setURL(song.url)
+				.setFooter(`Added by ${message.author.tag}`, message.author.displayAvatarURL({ dynamic: true, }))
+		);
 
 		voiceChannel.join().then(connection => {
 			message.guild.me.voice.setSelfDeaf(true);
