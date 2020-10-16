@@ -22,10 +22,19 @@ module.exports = {
 	name: 'whois',
 	alias: ['userinfo'],
 	func: async function (message, discord = {}) {
-		const userID = message.content.split(' ')[2];
+		const getUser = async () => {
+			const userID = message.content.split(' ')[2];
 
-		const user = message.mentions.users.first()
-			|| userID ? await discord.client.users.fetch(userID).catch(() => { }) : message.author;
+			if (message.mentions.users.first()) {
+				return message.mentions.users.first();
+			} else if (userID) {
+				return await discord.client.users.fetch(userID).catch(() => { });
+			} else {
+				return message.author;
+			}
+		};
+
+		const user = await getUser();
 
 		if (!user) {
 			message.channel.send(`Unable to find user.`);
@@ -41,7 +50,7 @@ module.exports = {
 			)
 			.setFooter('ID: ' + user.id);
 
-		if (message.channel.type !== 'dm') {
+		if (message.channel.type !== 'dm' && message.guild.member(user)) {
 			EmbedMessage.spliceFields(0, 0, { name: 'Joined', value: customDateFormat(message.guild.member(user).joinedAt), inline: true })
 		}
 

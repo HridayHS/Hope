@@ -1,10 +1,19 @@
 module.exports = {
 	name: 'avatar',
 	func: async function (message, discord = {}) {
-		const userID = message.content.split(' ')[2];
+		const user = async () => {
+			const userID = message.content.split(' ')[2];
 
-		const avatarAuthor = message.mentions.users.first()
-			|| userID ? await discord.client.users.fetch(userID).catch(() => { }) : message.author;
+			if (message.mentions.users.first()) {
+				return message.mentions.users.first();
+			} else if (userID) {
+				return await discord.client.users.fetch(userID).catch(() => { });
+			} else {
+				return message.author;
+			}
+		};
+
+		const avatarAuthor = await user();
 
 		if (avatarAuthor) {
 			message.channel.send(avatarAuthor.displayAvatarURL({ format: 'png', dynamic: true, size: 4096 }));
