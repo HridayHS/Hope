@@ -8,8 +8,10 @@ module.exports = {
 			'membercount': 'Get members count',
 			'pin <message>': 'Pins the message',
 			'ping': 'Says pong',
+			'play <song name>': 'Play a song',
 			'purge [1-100 | @member | all]': 'Purge recent messages',
 			'serverinfo': 'Display server info',
+			'stop': 'Stop playing music',
 			'unpinall': 'Unpins all the pinned messages',
 			'whois [@member]': 'Get member info'
 		};
