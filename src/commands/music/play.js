@@ -48,12 +48,12 @@ module.exports = {
 
 		message.channel.send(
 			new MessageEmbed()
-				.setAuthor('Now playing')
+				.setAuthor('Playing')
 				.setColor('#FF0000')
 				.setTitle(song.title)
 				.setThumbnail(song.thumbnail)
 				.setURL(song.url)
-				.setFooter(`Added by ${message.author.tag}`, message.author.displayAvatarURL({ dynamic: true, }))
+				.setFooter(`By ${message.author.tag}`, message.author.displayAvatarURL({ dynamic: true, }))
 		);
 
 		voiceChannel.join().then(connection => {
