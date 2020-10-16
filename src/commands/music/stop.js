@@ -4,7 +4,7 @@ module.exports = {
 	name: 'stop',
 	alias: ['s'],
 	guildOnly: true,
-	func: function (message, discord = {}) {
+	func: function (message) {
 		if (!message.member.roles.cache.find(role => role.name === 'DJ') && !message.member.hasPermission('MANAGE_CHANNELS')) {
 			message.channel.send('This command requires you to either have a role named DJ or the Manage Channels permission to use it.')
 			return;
