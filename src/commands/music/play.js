@@ -4,12 +4,17 @@ module.exports = {
 	name: 'play',
 	alias: ['p'],
 	guildOnly: true,
-	permissions: { bot: ['CONNECT', 'SPEAK'] },
 	func: function (message) {
 		const voiceChannel = message.member.voice.channel;
 
 		if (!voiceChannel) {
 			message.reply('Please join a voice channel first!');
+			return;
+		}
+
+		const botPerms = voiceChannel.permissionsFor(message.client.user);
+		if (!botPerms.has('CONNECT') || !botPerms.has('SPEAK')) {
+			message.channel.send('I need the permissions to connect and speak in your voice channel!');
 			return;
 		}
 
