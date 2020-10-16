@@ -18,7 +18,10 @@
   },
   "homepage": "https://github.com/HridayHS/Star",
   "dependencies": {
+    "@discordjs/opus": "^0.3.2",
     "discord.js": "^12.3.1",
-    "fs": "0.0.1-security"
+    "ffmpeg-static": "^4.2.7",
+    "fs": "0.0.1-security",
+    "ytdl-core": "^3.4.1"
   }
 }
