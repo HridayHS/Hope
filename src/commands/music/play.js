@@ -60,7 +60,7 @@ module.exports = {
 			message.guild.me.voice.setSelfDeaf(true);
 
 			const stream = ytdl(song.url, { filter: 'audioonly', quality: 'highestaudio' });
-			const dispatcher = connection.play(stream, { bitrate: 192000, volume: 0.8 });
+			const dispatcher = connection.play(stream, { bitrate: 192000, volume: 0.85 });
 
 			dispatcher.on('finish', () => voiceChannel.leave());
 		});
