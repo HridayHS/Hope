@@ -94,7 +94,7 @@ client.on('message', async (message) => {
 				}
 
 				const PermsHumnanReadable = missingPerms.map(s => s.toLowerCase().replace(/(^|_)./g, s => s.slice(-1).toUpperCase()).replace(/([A-Z])/g, ' $1').trim());
-				message.channel.send(`${botPerms ? 'Bot' : `<@${message.author.id}>, You`} do not have the required permissions to perform this action.\n${botPerms ? 'Bot' : 'You'} need the permissions ${PermsHumnanReadable.join(', ')} for this command to work.`);
+				message.channel.send(`${botPerms ? 'I' : `<@${message.author.id}>, You`} do not have the required permissions to perform this action.\n${botPerms ? 'Bot' : 'You'} need the permissions ${PermsHumnanReadable.join(', ')} for this command to work.`);
 				return false;
 			}
 			return true;
