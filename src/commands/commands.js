@@ -5,7 +5,10 @@ module.exports = {
 	alias: ['cmd', 'cmds', 'command'],
 	func: function (message) {
 		const Commands = {
+			'about': 'Get info about bot',
 			'avatar [@member]': 'Display avatar',
+			'botdiscord': 'Get bot discord link',
+			'botinvite': 'Get bot invite link',
 			'emoji <custom emoji>': 'Get emoji link',
 			'membercount': 'Get members count',
 			'pin <message>': 'Pins the message',
