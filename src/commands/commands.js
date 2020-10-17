@@ -52,15 +52,13 @@ module.exports = {
 	name: 'commands',
 	alias: ['cmd', 'cmds', 'command'],
 	func: async function (message) {
+		let commandMessageDescription = 'React to get a list of commands\n\n#️⃣ - General commands\n\n🎵 - Music commands\n\n🤖 - Bot commands';
+
 		if (message.channel.type === 'dm') {
 			delete commands['music'];
 			delete commands.general.list['membercount'];
 			delete commands.general.list['purge [1-100 | @member | all]'];
 			delete commands.general.list['serverinfo'];
-		}
-
-		let commandMessageDescription = 'React to get a list of commands\n\n#️⃣ - General commands\n\n🎵 - Music commands\n\n🤖 - Bot commands';
-		if (message.channel.type === 'dm') {
 			commandMessageDescription = commandMessageDescription.replace('\n\n🎵 - Music commands', '');
 		}
 
