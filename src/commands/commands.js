@@ -20,8 +20,10 @@ module.exports = {
 
 		if (message.channel.type === 'dm') {
 			delete Commands['membercount'];
+			delete Commands['play <song name>'];
 			delete Commands['purge [1-100 | @member | all]'];
 			delete Commands['serverinfo'];
+			delete Commands['stop'];
 		}
 
 		let CommandsDescription = '';
