@@ -9,9 +9,9 @@ module.exports = {
 	alias: ['p'],
 	guildOnly: true,
 	func: async function (message) {
-		const songName = message.content.slice(8);
-		if (songName === '') {
-			message.channel.send('Song name not found!');
+		const userMessage = message.content.slice(8);
+		if (userMessage === '') {
+			message.channel.send('Please provide a song name or a youtube video link!');
 			return;
 		}
 
@@ -29,19 +29,23 @@ module.exports = {
 		}
 
 		const song = {
-			searchResult: await youtube.searchVideos(songName, 1),
+			videoResult: ytdl.validateURL(userMessage) ? await youtube.getVideo(userMessage)
+				: await youtube.searchVideos(userMessage, 1),
 			get title() {
-				return this.searchResult.values().next().value.title;
+				return this.videoResult.title
+					|| this.videoResult.values().next().value.title;
 			},
 			get thumbnail() {
-				return this.searchResult.values().next().value.thumbnails.high.url;
+				const thumbnails = this.videoResult.thumbnails || this.videoResult.values().next().value.thumbnails;
+				return thumbnails.high.url;
 			},
 			get url() {
-				return this.searchResult.values().next().value.url;
+				return this.videoResult.url
+					|| this.videoResult.values().next().value.url;
 			}
 		}
 
-		if (song.searchResult.length === 0) {
+		if (song.videoResult.length === 0) {
 			message.channel.send('Unable to find the song.')
 			return;
 		}

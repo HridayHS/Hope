@@ -10,7 +10,7 @@ module.exports = {
 			'membercount': 'Get members count',
 			'pin <message>': 'Pins the message',
 			'ping': 'Says pong',
-			'play <song name>': 'Play a song',
+			'play <song name | youtube video link>': 'Play a song',
 			'purge [1-100 | @member | all]': 'Purge recent messages',
 			'serverinfo': 'Display server info',
 			'stop': 'Stop playing music',
@@ -20,7 +20,7 @@ module.exports = {
 
 		if (message.channel.type === 'dm') {
 			delete Commands['membercount'];
-			delete Commands['play <song name>'];
+			delete Commands['play <song name | youtube video link>'];
 			delete Commands['purge [1-100 | @member | all]'];
 			delete Commands['serverinfo'];
 			delete Commands['stop'];
