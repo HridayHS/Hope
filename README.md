@@ -2,6 +2,6 @@
 
 # Star
 
-![Discord](https://img.shields.io/discord/751418359593173084)
-![GitHub package.json version](https://img.shields.io/github/package-json/v/HridayHS/Star)
-![GitHub](https://img.shields.io/github/license/HridayHS/Star)
+[![](https://img.shields.io/discord/751418359593173084?label=Discord&logo=discord)](https://discord.gg/cnkAxAT)
+[![](https://img.shields.io/github/package-json/v/HridayHS/Star)](https://github.com/HridayHS/Star/tags)
+[![](https://img.shields.io/github/license/HridayHS/Star)](https://github.com/HridayHS/Star/blob/master/LICENSE)
