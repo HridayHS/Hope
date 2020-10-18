@@ -39,12 +39,12 @@ module.exports = {
 			},
 			getEmbedMessage(commandsCategory) {
 				const { name: categoryName, list: commandsList } = commandsCategory;
-		
+
 				let CommandsDescription = '';
 				for (const CommandName in commandsList) {
 					CommandsDescription += '`.s ' + CommandName + '`' + '\n' + commandsList[CommandName] + '\n\n';
 				}
-		
+
 				return new MessageEmbed()
 					.setAuthor(categoryName, 'https://cdn.discordapp.com/app-icons/545420239706521601/9fb441dfa2135181808a394f8189c2cf.webp')
 					.setColor('RED')
@@ -76,12 +76,14 @@ module.exports = {
 			const emoji = commands[commandCategory].emoji;
 			const category = commands[commandCategory];
 
-			await commandMessage.react(emoji);
-			commandMessage.awaitReactions((reaction, user) => reaction.emoji.name === emoji && user.id == message.author.id, { max: 1, maxUser: 1 })
+			commandMessage.react(emoji);
+			commandMessage.awaitReactions((reaction, user) => reaction.emoji.name === emoji && user.id == message.author.id, { max: 1, idle: 72000 })
 				.then(reactions => {
-					commandMessage.edit(commands.getEmbedMessage(category));
-					if (message.channel.type !== 'dm') {
-						reactions.first().remove();
+					if (reactions.first()) {
+						commandMessage.edit(commands.getEmbedMessage(category));
+						if (message.channel.type !== 'dm') {
+							reactions.first().remove();
+						}
 					}
 				});
 		}
