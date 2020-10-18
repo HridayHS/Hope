@@ -1,11 +1,25 @@
 const { MessageEmbed } = require('discord.js');
 
+const getEmbedMessage = (commandsCategory) => {
+	const { name: categoryName, list: commandsList } = commandsCategory;
+
+	let CommandsDescription = '';
+	for (const CommandName in commandsList) {
+		CommandsDescription += '`.s ' + CommandName + '`' + '\n' + commandsList[CommandName] + '\n\n';
+	}
+
+	return new MessageEmbed()
+		.setAuthor(categoryName, 'https://cdn.discordapp.com/app-icons/545420239706521601/9fb441dfa2135181808a394f8189c2cf.webp')
+		.setColor('RED')
+		.setDescription(CommandsDescription)
+};
+
 module.exports = {
 	name: 'commands',
 	alias: ['cmd', 'cmds', 'command'],
 	func: async function (message) {
-		const commands = {
-			general: {
+		const commands = [
+			{
 				name: 'General Commands',
 				emoji: '#️⃣',
 				list: {
@@ -20,7 +34,7 @@ module.exports = {
 					'whois [@member]': 'Get member info'
 				}
 			},
-			music: {
+			{
 				name: 'Music Commands',
 				emoji: '🎵',
 				list: {
@@ -28,7 +42,7 @@ module.exports = {
 					'stop': 'Stop playing'
 				}
 			},
-			bot: {
+			{
 				name: 'Bot Commands',
 				emoji: '🤖',
 				list: {
@@ -36,29 +50,16 @@ module.exports = {
 					'botdiscord': 'Get bot discord link',
 					'botinvite': 'Get bot invite link'
 				}
-			},
-			getEmbedMessage(commandsCategory) {
-				const { name: categoryName, list: commandsList } = commandsCategory;
-
-				let CommandsDescription = '';
-				for (const CommandName in commandsList) {
-					CommandsDescription += '`.s ' + CommandName + '`' + '\n' + commandsList[CommandName] + '\n\n';
-				}
-
-				return new MessageEmbed()
-					.setAuthor(categoryName, 'https://cdn.discordapp.com/app-icons/545420239706521601/9fb441dfa2135181808a394f8189c2cf.webp')
-					.setColor('RED')
-					.setDescription(CommandsDescription)
 			}
-		};
+		];
 
 		let commandMessageDescription = 'React to get a list of commands\n\n#️⃣ - General commands\n\n🎵 - Music commands\n\n🤖 - Bot commands';
 
 		if (message.channel.type === 'dm') {
-			delete commands['music'];
-			delete commands.general.list['membercount'];
-			delete commands.general.list['purge [1-100 | @member | all]'];
-			delete commands.general.list['serverinfo'];
+			commands.splice(1, 1);
+			delete commands[0].list['membercount'];
+			delete commands[0].list['purge [1-100 | @member | all]'];
+			delete commands[0].list['serverinfo'];
 			commandMessageDescription = commandMessageDescription.replace('\n\n🎵 - Music commands', '');
 		}
 
@@ -68,24 +69,36 @@ module.exports = {
 				.setDescription(commandMessageDescription)
 		);
 
-		for (const commandCategory in commands) {
-			if (commandCategory === 'getEmbedMessage') {
-				continue;
+		commands.forEach(commandsCategory => {
+			commandMessage.react(commandsCategory.emoji);
+		})
+
+		const filter = reaction => commands.some(commandsCategory => commandsCategory.emoji === reaction.emoji.name);
+		const collector = commandMessage.createReactionCollector(filter, { idle: 72000 });
+
+		collector.on('collect', (reaction, user) => {
+			if (user.id == message.client.user.id) {
+				return;
 			}
 
-			const emoji = commands[commandCategory].emoji;
-			const category = commands[commandCategory];
-
-			commandMessage.react(emoji);
-			commandMessage.awaitReactions((reaction, user) => reaction.emoji.name === emoji && user.id == message.author.id, { max: 1, idle: 72000 })
-				.then(reactions => {
-					if (reactions.first()) {
-						commandMessage.edit(commands.getEmbedMessage(category));
-						if (message.channel.type !== 'dm') {
-							reactions.first().remove();
-						}
+			if (user.id == message.author.id) {
+				for (let i = 0; i < commands.length; i++) {
+					const category = commands[i];
+					if (category.emoji === reaction.emoji.name) {
+						commandMessage.edit(getEmbedMessage(category));
 					}
-				});
-		}
+				}
+			}
+
+			if (message.channel.type !== 'dm') {
+				reaction.users.remove(user.id);
+			}
+		});
+
+		collector.on('end', collected => {
+			if (message.channel.type !== 'dm') {
+				collected.every(reaction => reaction.remove());
+			}
+		});
 	}
 };
