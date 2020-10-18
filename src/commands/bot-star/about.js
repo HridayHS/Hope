@@ -18,8 +18,8 @@ module.exports = {
 				.setColor('GREEN')
 				.addFields(
 					{ name: 'Created on', value: botCreatedAt, inline: true },
-					{ name: 'Used in', value: `${message.client.guilds.cache.size} Servers`, inline: true },
 					{ name: 'Developer', value: bot.owner.owner.user.tag, inline: true },
+					{ name: 'Used in', value: `${message.client.guilds.cache.size} Servers`, inline: true },
 					{ name: 'Team members', value: teamMembersList, inline: false },
 					{ name: 'Discord', value: '[Click here](https://discord.gg/cnkAxAT)', inline: true },
 					{ name: 'Invite link', value: `[Click here](${botInviteLink})`, inline: true },
