@@ -1,4 +1,4 @@
-const botPermissions = ['ADMINISTRATOR', 'MANAGE_CHANNELS', 'VIEW_CHANNEL', 'SEND_MESSAGES', 'MANAGE_MESSAGES', 'EMBED_LINKS', 'ATTACH_FILES', 'READ_MESSAGE_HISTORY', 'CONNECT', 'SPEAK'];
+const { botPermissions } = require('../../../utils');
 
 module.exports = {
 	name: 'botinvite',

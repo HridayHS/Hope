@@ -13,6 +13,7 @@ client.once('ready', () => {
 client.login(require('./config.json').token);
 
 /* Bot */
+const { botIconURL } = require('./utils');
 const botCommands = new Collection();
 
 let commandFiles = getAllFiles('./src/commands').filter(file => file.endsWith('.js'));
@@ -34,7 +35,7 @@ client.on('message', async (message) => {
 		case messageContent === '<@!545420239706521601>':
 			message.channel.send(
 				new MessageEmbed()
-					.setAuthor('Bot Help', 'https://cdn.discordapp.com/app-icons/545420239706521601/9fb441dfa2135181808a394f8189c2cf.webp')
+					.setAuthor('Bot Help', botIconURL)
 					.setColor('GREEN')
 					.addFields(
 						{ name: 'Prefix', value: '`.s`', inline: true },

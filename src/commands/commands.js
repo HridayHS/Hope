@@ -1,4 +1,5 @@
 const { MessageEmbed } = require('discord.js');
+const { botIconURL } = require('../../utils');
 
 const getEmbedMessage = (commandsCategory) => {
 	const { name: categoryName, list: commandsList } = commandsCategory;
@@ -9,7 +10,7 @@ const getEmbedMessage = (commandsCategory) => {
 	}
 
 	return new MessageEmbed()
-		.setAuthor(categoryName, 'https://cdn.discordapp.com/app-icons/545420239706521601/9fb441dfa2135181808a394f8189c2cf.webp')
+		.setAuthor(categoryName, botIconURL)
 		.setColor('RED')
 		.setDescription(CommandsDescription)
 };
