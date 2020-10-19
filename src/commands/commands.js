@@ -100,7 +100,7 @@ module.exports = {
 
 		collector.on('end', collected => {
 			if (message.channel.type !== 'dm') {
-				collected.every(reaction => reaction.remove());
+				collected.forEach(reaction => reaction.remove());
 			}
 			if (atHomePage) {
 				commandMessage.edit(getEmbedMessage(commands[0], message));
