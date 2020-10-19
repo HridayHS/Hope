@@ -69,6 +69,7 @@ module.exports = {
 				.setColor('GREEN')
 				.setDescription(commandMessageDescription)
 		);
+		let atHomePage = true;
 
 		commands.forEach(commandsCategory => {
 			commandMessage.react(commandsCategory.emoji);
@@ -87,6 +88,7 @@ module.exports = {
 					const category = commands[i];
 					if (category.emoji === reaction.emoji.name) {
 						commandMessage.edit(getEmbedMessage(category, message));
+						atHomePage = false;
 					}
 				}
 			}
@@ -99,6 +101,9 @@ module.exports = {
 		collector.on('end', collected => {
 			if (message.channel.type !== 'dm') {
 				collected.every(reaction => reaction.remove());
+			}
+			if (atHomePage) {
+				commandMessage.edit(getEmbedMessage(commands[0], message));
 			}
 		});
 	}
