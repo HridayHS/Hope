@@ -1,5 +1,3 @@
-const { getAllFiles } = require('./utils.js');
-
 const { Client, Collection, MessageEmbed } = require('discord.js');
 const client = new Client();
 
@@ -13,6 +11,8 @@ client.once('ready', () => {
 client.login(require('./config.json').token);
 
 /* Bot */
+const { getAllFiles } = require('./utils');
+
 const botCommands = new Collection();
 
 let commandFiles = getAllFiles('./src/commands').filter(file => file.endsWith('.js'));
