@@ -5,13 +5,13 @@ const botPermissions = ['ADMINISTRATOR', 'MANAGE_CHANNELS', 'VIEW_CHANNEL', 'SEN
 const fetch = require('node-fetch');
 
 const botVersion = async () => {
-    try {
-        const response = await fetch('https://raw.githubusercontent.com/HridayHS/Star/master/package.json');
-        const json = await response.json();
-        return json['version'];
-    } catch {
-        return 'Super Stable';
-    }
+	try {
+		const response = await fetch('https://raw.githubusercontent.com/HridayHS/Star/master/package.json');
+		const json = await response.json();
+		return json['version'];
+	} catch {
+		return 'Super Stable';
+	}
 };
 
 /* getAllFiles */
@@ -19,64 +19,64 @@ const fs = require('fs');
 const path = require('path');
 
 const getAllFiles = dir =>
-    fs.readdirSync(dir).reduce((files, file) => {
-        const name = path.join(dir, file);
-        const isDirectory = fs.statSync(name).isDirectory();
-        return isDirectory ? [...files, ...getAllFiles(name)] : [...files, name];
-    }, []);
+	fs.readdirSync(dir).reduce((files, file) => {
+		const name = path.join(dir, file);
+		const isDirectory = fs.statSync(name).isDirectory();
+		return isDirectory ? [...files, ...getAllFiles(name)] : [...files, name];
+	}, []);
 
 /* Custom date format for bot */
 const customDateFormat = (date, withTime = false) => {
-    const Time12To24 = () => {
-        const Hours = date.getHours();
-        const Minutes = date.getMinutes();
+	const Time12To24 = () => {
+		const Hours = date.getHours();
+		const Minutes = date.getMinutes();
 
-        const HoursIn12 = (Hours === 0) ? 12
-            : (Hours > 12) ? (Hours - 12)
-                : Hours;
+		const HoursIn12 = (Hours === 0) ? 12
+			: (Hours > 12) ? (Hours - 12)
+				: Hours;
 
-        const HourText = HoursIn12;
-        const MinuteText = (Minutes <= 9) ? '0' + Minutes : Minutes;
+		const HourText = HoursIn12;
+		const MinuteText = (Minutes <= 9) ? '0' + Minutes : Minutes;
 
-        return HourText + ':' + MinuteText;
-    };
+		return HourText + ':' + MinuteText;
+	};
 
-    const Days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-    const Months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+	const Days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+	const Months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
-    let string = `${Days[date.getDay()]}, ${date.getDate()} ${Months[date.getMonth()]}, ${date.getFullYear()}`;
+	let string = `${Days[date.getDay()]}, ${date.getDate()} ${Months[date.getMonth()]}, ${date.getFullYear()}`;
 
-    if (withTime) {
-        string += `${Time12To24()} ${date.getHours() > 12 ? 'PM' : 'AM'}`;
-    }
+	if (withTime) {
+		string += `${Time12To24()} ${date.getHours() > 12 ? 'PM' : 'AM'}`;
+	}
 
-    return string;
+	return string;
 };
 
 /* Server region name normalized (HR = Human Readable) */
 const serverRegionHR = region => {
-    switch (region) {
-        case 'hongkong':
-            return 'Hong Kong'
-        case 'southafrica':
-            return 'South Africa'
-        case 'us-central':
-            return 'US Central'
-        case 'us-east':
-            return 'US East'
-        case 'us-south':
-            return 'US South'
-        case 'us-west':
-            return 'US West'
-        default:
-            return region.charAt(0).toUpperCase() + region.slice(1);
-    }
+	switch (region) {
+		case 'hongkong':
+			return 'Hong Kong'
+		case 'southafrica':
+			return 'South Africa'
+		case 'us-central':
+			return 'US Central'
+		case 'us-east':
+			return 'US East'
+		case 'us-south':
+			return 'US South'
+		case 'us-west':
+			return 'US West'
+		default:
+			return region.charAt(0).toUpperCase() + region.slice(1);
+	}
 };
 
 module.exports = {
-    botPermissions,
-    botVersion,
-    getAllFiles,
-    customDateFormat,
-    serverRegionHR
+	botPermissions,
+	botVersion,
+	getAllFiles,
+	customDateFormat,
+	serverRegionHR
 };
