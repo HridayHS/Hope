@@ -49,7 +49,8 @@ module.exports = {
 				list: {
 					'about': 'Get info about bot',
 					'botdiscord': 'Get bot discord link',
-					'botinvite': 'Get bot invite link'
+					'botinvite': 'Get bot invite link',
+					'version': 'Display bot version'
 				}
 			}
 		];
