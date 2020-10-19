@@ -1,5 +1,4 @@
 const { MessageEmbed } = require('discord.js');
-const { botIconURL } = require('../../utils');
 
 const getEmbedMessage = (commandsCategory, message) => {
 	const { name: categoryName, list: commandsList } = commandsCategory;

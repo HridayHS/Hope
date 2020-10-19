@@ -1,7 +1,7 @@
 const { MessageEmbed } = require('discord.js');
 
-const { botPermissions } = require('../../../utils');
-const { customDateFormat } = require('../../../utils');
+const { botPermissions } = require('../../utils');
+const { customDateFormat } = require('../../utils');
 
 module.exports = {
 	name: 'about',

@@ -1,5 +1,5 @@
 const { MessageEmbed } = require('discord.js');
-const { customDateFormat } = require('../../utils');
+const { customDateFormat } = require('../utils');
 
 module.exports = {
 	name: 'whois',

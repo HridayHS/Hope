@@ -1,4 +1,4 @@
-const { botPermissions } = require('../../../utils');
+const { botPermissions } = require('../../utils');
 
 module.exports = {
 	name: 'botinvite',

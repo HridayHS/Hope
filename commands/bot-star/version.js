@@ -1,4 +1,4 @@
-const { botVersion } = require('../../../utils');
+const { botVersion } = require('../../utils');
 
 module.exports = {
 	name: 'version',

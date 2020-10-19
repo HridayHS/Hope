@@ -15,7 +15,7 @@ const { getAllFiles } = require('./utils');
 
 const botCommands = new Collection();
 
-let commandFiles = getAllFiles('./src/commands').filter(file => file.endsWith('.js'));
+let commandFiles = getAllFiles('./commands').filter(file => file.endsWith('.js'));
 
 for (const commandFile of commandFiles) {
 	const command = require(`./${commandFile}`);
@@ -54,7 +54,7 @@ client.on('message', async (message) => {
 
 			botCommands.clear();
 
-			commandFiles = getAllFiles('./src/commands').filter(file => file.endsWith('.js'));
+			commandFiles = getAllFiles('./commands').filter(file => file.endsWith('.js'));
 
 			for (const commandFile of commandFiles) {
 				const command = require(`./${commandFile}`);

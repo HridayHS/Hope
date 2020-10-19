@@ -1,5 +1,5 @@
 const { MessageEmbed } = require('discord.js');
-const {serverRegionHR } = require('../../utils');
+const { serverRegionHR } = require('../utils');
 
 module.exports = {
 	name: 'serverinfo',

@@ -2,7 +2,7 @@ const ytdl = require('ytdl-core');
 const YouTube = require('simple-youtube-api');
 
 const { MessageEmbed } = require('discord.js');
-const youtube = new YouTube(require('../../../config.json')["youtube-data-api-key"]);
+const youtube = new YouTube(require('../../config.json')["youtube-data-api-key"]);
 
 module.exports = {
 	name: 'play',
