@@ -1,7 +1,7 @@
 module.exports = {
 	name: 'emojilink',
 	alias: ['e', 'emoji', 'emote', 'emotelink', 'elink'],
-	func: async function (message) {
+	func: function (message) {
 		const Emojis = message.content.match(/(<a:|<:)+[^:]+:[0-9]+>/g);
 
 		if (!Emojis) {
