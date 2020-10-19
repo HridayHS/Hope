@@ -1,5 +1,6 @@
 module.exports = {
 	name: 'avatar',
+	alias: ['av'],
 	func: async function (message) {
 		const user = async () => {
 			const userID = message.content.split(' ')[2];
