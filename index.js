@@ -13,7 +13,6 @@ client.once('ready', () => {
 client.login(require('./config.json').token);
 
 /* Bot */
-const { botIconURL } = require('./utils');
 const botCommands = new Collection();
 
 let commandFiles = getAllFiles('./src/commands').filter(file => file.endsWith('.js'));
@@ -35,7 +34,7 @@ client.on('message', async (message) => {
 		case messageContent === '<@!545420239706521601>':
 			message.channel.send(
 				new MessageEmbed()
-					.setAuthor('Bot Help', botIconURL)
+					.setAuthor('Bot Help', client.user.displayAvatarURL())
 					.setColor('GREEN')
 					.addFields(
 						{ name: 'Prefix', value: '`.s`', inline: true },

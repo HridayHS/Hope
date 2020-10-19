@@ -1,6 +1,3 @@
-/* Bot Icon */
-const botIconURL = 'https://cdn.discordapp.com/app-icons/545420239706521601/9fb441dfa2135181808a394f8189c2cf.webp';
-
 /* Bot Permissions */
 const botPermissions = ['ADMINISTRATOR', 'MANAGE_CHANNELS', 'VIEW_CHANNEL', 'SEND_MESSAGES', 'MANAGE_MESSAGES', 'EMBED_LINKS', 'ATTACH_FILES', 'READ_MESSAGE_HISTORY', 'CONNECT', 'SPEAK'];
 
@@ -64,7 +61,6 @@ const serverRegionHR = region => {
 };
 
 module.exports = {
-    botIconURL,
     botPermissions,
     getAllFiles,
     customDateFormat,

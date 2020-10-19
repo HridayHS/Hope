@@ -1,7 +1,7 @@
 const { MessageEmbed } = require('discord.js');
 const { botIconURL } = require('../../utils');
 
-const getEmbedMessage = (commandsCategory) => {
+const getEmbedMessage = (commandsCategory, message) => {
 	const { name: categoryName, list: commandsList } = commandsCategory;
 
 	let CommandsDescription = '';
@@ -10,7 +10,7 @@ const getEmbedMessage = (commandsCategory) => {
 	}
 
 	return new MessageEmbed()
-		.setAuthor(categoryName, botIconURL)
+		.setAuthor(categoryName, message.client.user.displayAvatarURL())
 		.setColor('RED')
 		.setDescription(CommandsDescription)
 };
@@ -86,7 +86,7 @@ module.exports = {
 				for (let i = 0; i < commands.length; i++) {
 					const category = commands[i];
 					if (category.emoji === reaction.emoji.name) {
-						commandMessage.edit(getEmbedMessage(category));
+						commandMessage.edit(getEmbedMessage(category, message));
 					}
 				}
 			}
