@@ -106,6 +106,6 @@ client.on('message', async (message) => {
 
 		botCommand.func(message);
 	} else {
-		message.channel.send('**Invalid command.** Use `.s commands` to display bot commands.');
+		message.channel.send('**Invalid command.** Use `.s commands` to get the list commands.');
 	}
 });
