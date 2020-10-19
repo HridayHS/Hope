@@ -5,17 +5,14 @@ module.exports = {
 	name: 'whois',
 	alias: ['userinfo'],
 	func: async function (message) {
-		const getUser = async () => {
+		async function getUser() {
 			const userID = message.content.split(' ')[2];
+			const userMention = message.mentions.users.first();
 
-			if (message.mentions.users.first()) {
-				return message.mentions.users.first();
-			} else if (userID) {
-				return await message.client.users.fetch(userID).catch(() => { });
-			} else {
-				return message.author;
-			}
-		};
+			return userMention ? userMention
+				: userID ? await message.client.users.fetch(userID).catch(() => {})
+					: message.author;
+		};;
 
 		const user = await getUser();
 
