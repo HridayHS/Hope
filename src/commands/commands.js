@@ -66,6 +66,17 @@ module.exports = {
 			commandMessageDescription = commandMessageDescription.replace('\n\n🎵 - Music commands', '');
 		}
 
+		/* .s commands <category name> */
+		const userRequestedCommandCategory = message.content.toLowerCase().split(' ')[2];
+		for (const commandCategory in commands) {
+			const category = commands[commandCategory];
+			const categoryName = category.name.split(' ')[0].toLowerCase();
+			if (userRequestedCommandCategory === categoryName) {
+				message.channel.send(getEmbedMessage(category, message));
+				return;
+			}
+		}
+
 		const commandMessage = await message.channel.send(
 			new MessageEmbed()
 				.setColor('GREEN')
