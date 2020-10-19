@@ -1,21 +1,13 @@
+const fs = require('fs');
+
 /* Bot Permissions */
 const botPermissions = ['ADMINISTRATOR', 'MANAGE_CHANNELS', 'VIEW_CHANNEL', 'SEND_MESSAGES', 'MANAGE_MESSAGES', 'EMBED_LINKS', 'ATTACH_FILES', 'READ_MESSAGE_HISTORY', 'CONNECT', 'SPEAK'];
 
 /* Bot version */
-const fetch = require('node-fetch');
-
-const botVersion = async () => {
-	try {
-		const response = await fetch('https://raw.githubusercontent.com/HridayHS/Star/master/package.json');
-		const json = await response.json();
-		return json['version'];
-	} catch {
-		return 'Super Stable';
-	}
-};
+const packageJson = fs.readFileSync('./package.json');
+const botVersion = JSON.parse(packageJson)['version'];
 
 /* getAllFiles */
-const fs = require('fs');
 const path = require('path');
 
 const getAllFiles = dir =>
