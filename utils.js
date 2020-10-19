@@ -1,6 +1,19 @@
 /* Bot Permissions */
 const botPermissions = ['ADMINISTRATOR', 'MANAGE_CHANNELS', 'VIEW_CHANNEL', 'SEND_MESSAGES', 'MANAGE_MESSAGES', 'EMBED_LINKS', 'ATTACH_FILES', 'READ_MESSAGE_HISTORY', 'CONNECT', 'SPEAK'];
 
+/* Bot version */
+const fetch = require('node-fetch');
+
+const botVersion = async () => {
+    try {
+        const response = await fetch('https://raw.githubusercontent.com/HridayHS/Star/master/package.json');
+        const json = await response.json();
+        return json['version'];
+    } catch {
+        return 'Super Stable';
+    }
+};
+
 /* getAllFiles */
 const fs = require('fs');
 const path = require('path');
@@ -62,6 +75,7 @@ const serverRegionHR = region => {
 
 module.exports = {
     botPermissions,
+    botVersion,
     getAllFiles,
     customDateFormat,
     serverRegionHR
