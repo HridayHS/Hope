@@ -18,6 +18,7 @@ const getEmbedMessage = (commandsCategory, message) => {
 module.exports = {
 	name: 'commands',
 	alias: ['cmd', 'cmds', 'command'],
+	permissions: { bot: ['ADD_REACTIONS'] },
 	func: async function (message) {
 		const commands = [
 			{
