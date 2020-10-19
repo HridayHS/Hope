@@ -81,20 +81,20 @@ client.on('message', async (message) => {
 			}
 
 			const Perms = botCommand.permissions[botPerms ? 'bot' : 'member'];
-			const hasPermissions = botPerms ? message.guild.me.permissions.has(Perms) : message.member.hasPermission(Perms);
+			const hasPermissions = message.channel.permissionsFor(botPerms ? message.guild.me : message.member).has(Perms);
 			if (Perms && !hasPermissions) {
 				const missingPerms = [];
 
 				for (let i = 0; i < Perms.length; i++) {
 					const Permission = Perms[i];
-					const hasPermission = botPerms ? message.guild.me.permissions.has(Permission) : message.member.hasPermission(Permission)
+					const hasPermission = message.channel.permissionsFor(botPerms ? message.guild.me : message.member).has(Permission);
 					if (!hasPermission) {
 						missingPerms.push(Permission);
 					}
 				}
 
 				const PermsHumnanReadable = missingPerms.map(s => s.toLowerCase().replace(/(^|_)./g, s => s.slice(-1).toUpperCase()).replace(/([A-Z])/g, ' $1').trim());
-				message.channel.send(`${botPerms ? 'I' : `<@${message.author.id}>, You`} do not have the required permissions to perform this action.\n${botPerms ? 'I' : 'You'} need the permissions ${PermsHumnanReadable.join(', ')} for this command to work.`);
+				message.channel.send(`${botPerms ? 'I' : `<@${message.author.id}>, You`} do not have the required permissions to perform this action.` + '\n`Permissions required:` `' + PermsHumnanReadable.join(', ') +'`');
 				return false;
 			}
 			return true;
