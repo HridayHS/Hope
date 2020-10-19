@@ -3,14 +3,11 @@ module.exports = {
 	func: async function (message) {
 		const user = async () => {
 			const userID = message.content.split(' ')[2];
+			const userMention = message.mentions.users.first();
 
-			if (message.mentions.users.first()) {
-				return message.mentions.users.first();
-			} else if (userID) {
-				return await message.client.users.fetch(userID).catch(() => { });
-			} else {
-				return message.author;
-			}
+			return userMention ? userMention
+				: userID ? await message.client.users.fetch(userID)
+					: message.author;
 		};
 
 		const avatarAuthor = await user();
