@@ -4,14 +4,14 @@ const getEmbedMessage = (commandsCategory, message) => {
 	const { name: categoryName, list: commandsList } = commandsCategory;
 
 	let CommandsDescription = '';
-	for (const CommandName in commandsList) {
-		CommandsDescription += '`.s ' + CommandName + '`' + '\n' + commandsList[CommandName] + '\n\n';
+	for (const command in commandsList) {
+		CommandsDescription += '`.s ' + command + '`' + '\n' + commandsList[command] + '\n\n';
 	}
 
 	return new MessageEmbed()
 		.setAuthor(categoryName, message.client.user.displayAvatarURL())
 		.setColor('RED')
-		.setDescription(CommandsDescription)
+		.setDescription(CommandsDescription);
 };
 
 module.exports = {
@@ -55,20 +55,20 @@ module.exports = {
 			}
 		];
 
-		let commandMessageDescription = 'React to get a list of commands\n\n#️⃣ - General commands\n\n🎵 - Music commands\n\n🤖 - Bot commands';
+		let homePageDescription = 'React to get a list of commands\n\n#️⃣ - General commands\n\n🎵 - Music commands\n\n🤖 - Bot commands';
 
 		if (message.channel.type === 'dm') {
 			commands.splice(1, 1);
 			delete commands[0].list['membercount'];
 			delete commands[0].list['purge [1-100 | @member | all]'];
 			delete commands[0].list['serverinfo'];
-			commandMessageDescription = commandMessageDescription.replace('\n\n🎵 - Music commands', '');
+			homePageDescription = homePageDescription.replace('\n\n🎵 - Music commands', '');
 		}
 
 		/* .s commands <category name> */
 		const userRequestedCommandCategory = message.content.toLowerCase().split(' ')[2];
-		for (const commandCategory in commands) {
-			const category = commands[commandCategory];
+		for (const commandsCategory in commands) {
+			const category = commands[commandsCategory];
 			const categoryName = category.name.split(' ')[0].toLowerCase();
 			if (userRequestedCommandCategory === categoryName) {
 				message.channel.send(getEmbedMessage(category, message));
@@ -76,19 +76,19 @@ module.exports = {
 			}
 		}
 
-		const commandMessage = await message.channel.send(
+		const homePageMessage = await message.channel.send(
 			new MessageEmbed()
 				.setColor('GREEN')
-				.setDescription(commandMessageDescription)
+				.setDescription(homePageDescription)
 		);
 		let atHomePage = true;
 
-		commands.forEach(commandsCategory => {
-			commandMessage.react(commandsCategory.emoji);
+		commands.forEach(category => {
+			homePageMessage.react(category.emoji);
 		})
 
-		const filter = reaction => commands.some(commandsCategory => commandsCategory.emoji === reaction.emoji.name);
-		const collector = commandMessage.createReactionCollector(filter, { idle: 72000 });
+		const collectorFilter = reaction => commands.some(category => category.emoji === reaction.emoji.name);
+		const collector = homePageMessage.createReactionCollector(collectorFilter, { idle: 72000 });
 
 		collector.on('collect', (reaction, user) => {
 			if (user.id == message.client.user.id) {
@@ -99,7 +99,7 @@ module.exports = {
 				for (let i = 0; i < commands.length; i++) {
 					const category = commands[i];
 					if (category.emoji === reaction.emoji.name) {
-						commandMessage.edit(getEmbedMessage(category, message));
+						homePageMessage.edit(getEmbedMessage(category, message));
 						atHomePage = false;
 					}
 				}
@@ -115,7 +115,7 @@ module.exports = {
 				collected.forEach(reaction => reaction.remove());
 			}
 			if (atHomePage) {
-				commandMessage.edit(getEmbedMessage(commands[0], message));
+				homePageMessage.edit(getEmbedMessage(commands[0], message));
 			}
 		});
 	}
