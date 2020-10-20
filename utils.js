@@ -39,7 +39,7 @@ const customDateFormat = (date, withTime = false) => {
 	let string = `${Days[date.getDay()]}, ${date.getDate()} ${Months[date.getMonth()]}, ${date.getFullYear()}`;
 
 	if (withTime) {
-		string += `${Time12To24()} ${date.getHours() > 12 ? 'PM' : 'AM'}`;
+		string += ` ${Time12To24()} ${date.getHours() > 12 ? 'PM' : 'AM'}`;
 	}
 
 	return string;
