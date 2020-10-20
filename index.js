@@ -38,7 +38,8 @@ client.on('message', async (message) => {
 					.setColor('GREEN')
 					.addFields(
 						{ name: 'Prefix', value: '`.s`', inline: true },
-						{ name: 'Commands', value: '`.s commands`', inline: true }
+						{ name: 'Commands', value: '`.s commands`', inline: true },
+						{ name: 'About', value: '`.s about`', inline: true }
 					)
 			);
 			return;
@@ -94,7 +95,7 @@ client.on('message', async (message) => {
 				}
 
 				const PermsHumnanReadable = missingPerms.map(s => s.toLowerCase().replace(/(^|_)./g, s => s.slice(-1).toUpperCase()).replace(/([A-Z])/g, ' $1').trim());
-				message.channel.send(`${botPerms ? 'I' : `<@${message.author.id}>, You`} do not have the required permissions to perform this action.` + '\n`Permissions required:` `' + PermsHumnanReadable.join(', ') +'`');
+				message.channel.send(`${botPerms ? 'I' : `<@${message.author.id}>, You`} do not have the required permissions to perform this action.` + '\n`Permissions required:` `' + PermsHumnanReadable.join(', ') + '`');
 				return false;
 			}
 			return true;

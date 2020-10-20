@@ -1,4 +1,4 @@
-const ytdl = require('ytdl-core');
+const { queue } = require('./utils');
 
 module.exports = {
 	name: 'stop',
@@ -15,7 +15,10 @@ module.exports = {
 			message.channel.send('I am not connected to a voice channel!');
 			return;
 		}
-		voiceChannel.leave();
-		message.channel.send('Successfully disconnected!');
+
+		const serverQueue = queue.get(message.guild.id);
+		if (serverQueue && serverQueue.dispatcher) {
+			serverQueue.dispatcher.end();
+		}
 	}
 };
