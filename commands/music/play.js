@@ -4,11 +4,17 @@ const YouTube = require('simple-youtube-api');
 const { MessageEmbed } = require('discord.js');
 const youtube = new YouTube(require('../../config.json')["youtube-data-api-key"]);
 
+//
+const { Play, queue, queueConstruct } = require('./utils');
+
 module.exports = {
 	name: 'play',
 	alias: ['p'],
 	guildOnly: true,
 	func: async function (message) {
+		// Supress Embeds
+		message.suppressEmbeds(true);
+
 		const userMessage = message.content.split(' ').slice(2).join(' ');
 		if (userMessage === '') {
 			message.channel.send('Please provide a song name or a youtube video link!');
@@ -27,7 +33,12 @@ module.exports = {
 			return;
 		}
 
+		if (!queue.get(message.guild.id)) {
+			queue.set(message.guild.id, new queueConstruct());
+		}
+
 		const song = {
+			author: message.author,
 			videoResult: ytdl.validateURL(userMessage) ? await youtube.getVideo(userMessage)
 				: await youtube.searchVideos(userMessage, 1),
 			get title() {
@@ -49,23 +60,27 @@ module.exports = {
 			return;
 		}
 
-		message.channel.send(
-			new MessageEmbed()
-				.setAuthor('Playing')
-				.setColor('#FF0000')
-				.setTitle(song.title)
-				.setThumbnail(song.thumbnail)
-				.setURL(song.url)
-				.setFooter(`By ${message.author.tag}`, message.author.displayAvatarURL({ dynamic: true }))
-		);
+		const serverQueue = queue.get(message.guild.id);
 
-		voiceChannel.join().then(connection => {
-			message.guild.me.voice.setSelfDeaf(true);
+		if (serverQueue.songs.length !== 0) {
+			message.channel.send(
+				new MessageEmbed()
+					.setAuthor('Added to queue')
+					.setColor('#FF0000')
+					.setTitle(song.title)
+					.setThumbnail(song.thumbnail)
+					.setURL(song.url)
+					.setFooter(`By ${message.author.tag}`, message.author.displayAvatarURL({ dynamic: true }))
+			);
+		}
 
-			const stream = ytdl(song.url, { filter: 'audioonly', quality: 'highestaudio' });
-			const dispatcher = connection.play(stream, { bitrate: 165, volume: 0.85 });
+		serverQueue.songs.push(song);
 
-			dispatcher.on('finish', () => voiceChannel.leave());
-		});
+		if (!serverQueue.dispatcher) {
+			voiceChannel.join().then(connection => {
+				message.guild.me.voice.setSelfDeaf(true);
+				Play(message, connection, ytdl, serverQueue);
+			});
+		}
 	}
 };
