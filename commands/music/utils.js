@@ -9,7 +9,8 @@ class queueConstruct {
 	}
 	get queueList() {
 		const songs = this.songs;
-		if (!songs.length) {
+
+		if (songs.length === 0) {
 			return 'Type `.s play <song>` to add one.';
 		}
 
@@ -42,10 +43,10 @@ function Play(message, voiceConnection, ytdl, serverQueue) {
 	});
 
 	serverQueue.dispatcher.on('finish', () => {
-		// Remove the song once it has been finished playing.
+		// Remove the song from queue once it is finished.
 		serverQueue.songs.shift();
 
-		// If the songs queue list is empty, end the dispatcher.
+		// If the songs queue list is empty, end the dispatcher and delete serverQueue.
 		if (serverQueue.songs.length === 0) {
 			message.channel.send(
 				new MessageEmbed()
@@ -58,7 +59,7 @@ function Play(message, voiceConnection, ytdl, serverQueue) {
 			return;
 		}
 
-		// Or if not then play next song.
+		// Call the Play function again to play next song.
 		Play(message, voiceConnection, ytdl, serverQueue);
 	});
 }
