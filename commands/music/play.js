@@ -9,14 +9,13 @@ module.exports = {
 	alias: ['p'],
 	guildOnly: true,
 	func: async function (message) {
-		const userMessage = message.content.slice(8);
+		const userMessage = message.content.split(' ').slice(2).join(' ');
 		if (userMessage === '') {
 			message.channel.send('Please provide a song name or a youtube video link!');
 			return;
 		}
 
 		const voiceChannel = message.member.voice.channel;
-
 		if (!voiceChannel) {
 			message.reply('Please join a voice channel first!');
 			return;
@@ -46,7 +45,7 @@ module.exports = {
 		}
 
 		if (song.videoResult.length === 0) {
-			message.channel.send('Unable to find the song.')
+			message.channel.send('Unable to find the song.');
 			return;
 		}
 
@@ -57,14 +56,14 @@ module.exports = {
 				.setTitle(song.title)
 				.setThumbnail(song.thumbnail)
 				.setURL(song.url)
-				.setFooter(`By ${message.author.tag}`, message.author.displayAvatarURL({ dynamic: true, }))
+				.setFooter(`By ${message.author.tag}`, message.author.displayAvatarURL({ dynamic: true }))
 		);
 
 		voiceChannel.join().then(connection => {
 			message.guild.me.voice.setSelfDeaf(true);
 
 			const stream = ytdl(song.url, { filter: 'audioonly', quality: 'highestaudio' });
-			const dispatcher = connection.play(stream, { bitrate: 192000, volume: 0.85 });
+			const dispatcher = connection.play(stream, { bitrate: 165, volume: 0.85 });
 
 			dispatcher.on('finish', () => voiceChannel.leave());
 		});
