@@ -38,7 +38,8 @@ client.on('message', async (message) => {
 					.setColor('GREEN')
 					.addFields(
 						{ name: 'Prefix', value: '`.s`', inline: true },
-						{ name: 'Commands', value: '`.s commands`', inline: true }
+						{ name: 'Commands', value: '`.s commands`', inline: true },
+						{ name: 'About', value: '`.s about`', inline: true }
 					)
 			);
 			return;
