@@ -7,18 +7,19 @@ class queueConstruct {
 		this.dispatcher = undefined;
 		this.songs = new Array();
 	}
-	get queuedList() {
+	get queueList() {
 		const songs = this.songs;
 		if (!songs.length) {
 			return 'Type `.s play <song>` to add one.';
 		}
 
-		let queuedList = new String;
+		let queueList = new String;
 		for (let i = 0; i < songs.length; i++) {
 			const song = songs[i];
-			queuedList += `${i + 1}. ` + `[${song.title}](${song.url})` + '\n';
+			queueList += `${i + 1}. ` + `[${song.title}](${song.url})` + '\n';
 		}
-		return queuedList;
+
+		return queueList;
 	}
 }
 

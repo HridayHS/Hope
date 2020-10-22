@@ -10,7 +10,7 @@ module.exports = {
 		const EmbedMessage = {
 			color: '#FF0000',
 			title: 'Music Queue',
-			description: serverQueue ? serverQueue.queuedList : 'Song queue is empty.\nType `.s play <song>` to add one.',
+			description: serverQueue ? serverQueue.queueList : 'Song queue is empty.\nType `.s play <song>` to add one.',
 		};
 
 		message.channel.send({ embed: EmbedMessage });
