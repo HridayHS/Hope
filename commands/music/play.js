@@ -144,11 +144,14 @@ function Play(message, voiceConnection, serverQueue) {
 					.setDescription('Type `.s play <song>` to add one.')
 			);
 			message.guild.me.voice.channel.leave();
-			queue.delete(message.guild.id);
 			return;
 		}
 
 		// Call the Play function again to play next song.
 		Play(message, voiceConnection, ytdl, serverQueue);
+	});
+
+	serverQueue.dispatcher.on('end', () => {
+		queue.delete(message.guild.id);
 	});
 }
