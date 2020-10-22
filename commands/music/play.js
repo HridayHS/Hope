@@ -4,7 +4,6 @@ const YouTube = require('simple-youtube-api');
 const { MessageEmbed } = require('discord.js');
 const youtube = new YouTube(require('../../config.json')["youtube-data-api-key"]);
 
-//
 const { Play, queue, queueConstruct } = require('./utils');
 
 module.exports = {
@@ -12,13 +11,15 @@ module.exports = {
 	alias: ['p'],
 	guildOnly: true,
 	func: async function (message) {
-		// Supress Embeds
-		message.suppressEmbeds(true);
-
 		const userMessage = message.content.split(' ').slice(2).join(' ');
 		if (userMessage === '') {
 			message.channel.send('Please provide a song name or a youtube video link!');
 			return;
+		}
+
+		// If message contains youtube video link, supress the embed.
+		if (ytdl.validateURL(userMessage)) {
+			message.suppressEmbeds(true);
 		}
 
 		const voiceChannel = message.member.voice.channel;
@@ -62,7 +63,9 @@ module.exports = {
 
 		const serverQueue = queue.get(message.guild.id);
 
-		if (serverQueue.songs.length !== 0) {
+		serverQueue.songs.push(song);
+
+		if (serverQueue.songs.length > 1) {
 			message.channel.send(
 				new MessageEmbed()
 					.setAuthor('Added to queue')
@@ -74,13 +77,14 @@ module.exports = {
 			);
 		}
 
-		serverQueue.songs.push(song);
-
-		if (!serverQueue.dispatcher) {
-			voiceChannel.join().then(connection => {
-				message.guild.me.voice.setSelfDeaf(true);
-				Play(message, connection, ytdl, serverQueue);
-			});
+		// Return if bot is already playing.
+		if (serverQueue.dispatcher) {
+			return;
 		}
+
+		voiceChannel.join().then(connection => {
+			message.guild.me.voice.setSelfDeaf(true);
+			Play(message, connection, ytdl, serverQueue);
+		});
 	}
 };
