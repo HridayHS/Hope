@@ -145,8 +145,8 @@ function Play(message, voiceConnection, serverQueue) {
 			message.channel.send(
 				new MessageEmbed()
 					.setColor('#FF0000')
-					.setTitle('Muisc queue ended!')
-					.setDescription('Type `.s play <song>` to add one.')
+					.setTitle('Music queue has ended!')
+					.setDescription('Type `.s play <song>` to add more.')
 			);
 			await message.guild.me.voice.channel.leave();
 			queue.delete(message.guild.id);
