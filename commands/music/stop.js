@@ -10,9 +10,15 @@ module.exports = {
 			return;
 		}
 
-		const voiceChannel = message.guild.me.voice.channel;
-		if (!voiceChannel) {
+		const botVoiceChannel = message.guild.me.voice.channel;
+
+		if (!botVoiceChannel) {
 			message.channel.send('I am not playing any music. Type `.s play <song>` to play one.');
+			return;
+		}
+
+		if (!botVoiceChannel.members.has(message.author.id)) {
+			message.reply('Please join a voice channel where bot is playing first!');
 			return;
 		}
 
@@ -20,7 +26,7 @@ module.exports = {
 			return;
 		}
 
-		await voiceChannel.leave();
+		await botVoiceChannel.leave();
 		message.channel.send('Successfully disconnected!');
 		queue.delete(message.guild.id);
 	}
