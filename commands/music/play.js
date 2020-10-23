@@ -101,7 +101,7 @@ module.exports = {
 		}
 
 		// Return if bot is already playing.
-		if (serverQueue.dispatcher) {
+		if (voiceChannel.members.has(message.guild.me.id) && serverQueue.dispatcher) {
 			return;
 		}
 
