@@ -2,7 +2,7 @@ const { queue } = require('./play');
 
 module.exports = {
 	name: 'stop',
-	alias: ['s', 'leave'],
+	alias: ['leave'],
 	guildOnly: true,
 	func: async function (message) {
 		if (!message.member.roles.cache.find(role => role.name === 'DJ') && !message.member.hasPermission('MOVE_MEMBERS')) {
