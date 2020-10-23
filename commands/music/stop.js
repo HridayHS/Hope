@@ -12,7 +12,7 @@ module.exports = {
 
 		const voiceChannel = message.guild.me.voice.channel;
 		if (!voiceChannel) {
-			message.channel.send('I am not connected to a voice channel!');
+			message.channel.send('I am not playing any music. Type `.s play <song>` to play one.');
 			return;
 		}
 
