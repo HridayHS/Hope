@@ -136,7 +136,7 @@ function Play(message, voiceConnection, serverQueue) {
 		);
 	});
 
-	serverQueue.dispatcher.on('finish', () => {
+	serverQueue.dispatcher.on('finish', async () => {
 		// Remove the song from queue once it is finished.
 		serverQueue.songs.shift();
 
@@ -148,7 +148,7 @@ function Play(message, voiceConnection, serverQueue) {
 					.setTitle('Muisc queue ended!')
 					.setDescription('Type `.s play <song>` to add one.')
 			);
-			message.guild.me.voice.channel.leave();
+			await message.guild.me.voice.channel.leave();
 			queue.delete(message.guild.id);
 			return;
 		}
