@@ -1,4 +1,4 @@
-const { queue } = require('./utils');
+const { queue } = require('./play');
 
 module.exports = {
 	name: 'stop',
