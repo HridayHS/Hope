@@ -91,7 +91,7 @@ module.exports = {
 		if (serverQueue.songs.length > 1) {
 			message.channel.send(
 				new MessageEmbed()
-					.setAuthor('Added to queue')
+					.setAuthor(`Added to queue #${serverQueue.songs.length}`)
 					.setColor('#FF0000')
 					.setTitle(song.title)
 					.setThumbnail(song.thumbnail)
