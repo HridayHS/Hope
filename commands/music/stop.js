@@ -2,7 +2,7 @@ const { queue } = require('./play');
 
 module.exports = {
 	name: 'stop',
-	alias: ['s'],
+	alias: ['s', 'leave'],
 	guildOnly: true,
 	func: function (message) {
 		if (!message.member.roles.cache.find(role => role.name === 'DJ') && !message.member.hasPermission('MANAGE_CHANNELS')) {
