@@ -122,7 +122,7 @@ function Play(message, voiceConnection, serverQueue) {
 	const song = serverQueue.songs[0];
 
 	const stream = ytdl(song.url, { filter: 'audioonly', quality: 'highestaudio' });
-	serverQueue.dispatcher = voiceConnection.play(stream, { bitrate: 165, volume: 0.85 });
+	serverQueue.dispatcher = voiceConnection.play(stream, { bitrate: 165, volume: false });
 
 	serverQueue.dispatcher.on('start', () => {
 		message.channel.send(
