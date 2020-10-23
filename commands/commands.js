@@ -40,6 +40,8 @@ module.exports = {
 				emoji: '🎵',
 				list: {
 					'play <song name | youtube video link>': 'Play a song',
+					'queue': 'Display music queue',
+					'skip': 'Skip song',
 					'stop': 'Stop playing'
 				}
 			},
