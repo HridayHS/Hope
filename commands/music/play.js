@@ -105,10 +105,15 @@ module.exports = {
 			return;
 		}
 
-		voiceChannel.join().then(connection => {
-			message.guild.me.voice.setSelfDeaf(true);
-			Play(message, connection, serverQueue);
-		});
+		voiceChannel.join()
+			.then(connection => {
+				message.guild.me.voice.setSelfDeaf(true);
+				Play(message, connection, serverQueue);
+			})
+			.catch(error => {
+				voiceChannel.leave();
+				console.log(error);
+			});
 	},
 	queue
 };
