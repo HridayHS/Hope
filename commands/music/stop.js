@@ -5,8 +5,8 @@ module.exports = {
 	alias: ['s', 'leave'],
 	guildOnly: true,
 	func: async function (message) {
-		if (!message.member.roles.cache.find(role => role.name === 'DJ') && !message.member.hasPermission('MANAGE_CHANNELS')) {
-			message.channel.send('This command requires you to either have a role named DJ or the Manage Channels permission to use it.')
+		if (!message.member.roles.cache.find(role => role.name === 'DJ') && !message.member.hasPermission('MOVE_MEMBERS')) {
+			message.channel.send('This command requires you to either have a role named DJ or the Move Members permission to use it.');
 			return;
 		}
 
