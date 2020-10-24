@@ -86,6 +86,12 @@ module.exports = {
 
 		const serverQueue = queue.get(message.guild.id);
 
+		// Return if bot is already playing in different channel.
+		if (!voiceChannel.members.has(message.guild.me.id) && serverQueue.dispatcher) {
+			message.reply('I am already playing in different channel.');
+			return;
+		}
+
 		serverQueue.songs.push(song);
 
 		if (serverQueue.songs.length > 1) {
