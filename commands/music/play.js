@@ -96,7 +96,7 @@ module.exports = {
 					.setTitle(song.title)
 					.setThumbnail(song.thumbnail)
 					.setURL(song.url)
-					.setFooter(`By ${message.author.tag}`, message.author.displayAvatarURL({ dynamic: true }))
+					.setFooter(`By ${message.author.tag}`)
 			);
 		}
 
@@ -132,7 +132,7 @@ function Play(message, voiceConnection, serverQueue) {
 				.setTitle(song.title)
 				.setThumbnail(song.thumbnail)
 				.setURL(song.url)
-				.setFooter(`Added By ${song.author.tag}`, song.author.displayAvatarURL({ dynamic: true, }))
+				.setFooter(`Added by ${song.author.tag}`)
 		);
 	});
 
