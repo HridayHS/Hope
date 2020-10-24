@@ -140,7 +140,7 @@ function Play(message, voiceConnection, serverQueue) {
 		// Remove the song from queue once it is finished.
 		serverQueue.songs.shift();
 
-		// If the songs queue list is empty, end the dispatcher and delete serverQueue.
+		// If the queue is empty, leave the voice channel and delete server queue.
 		if (serverQueue.songs.length === 0) {
 			message.channel.send(
 				new MessageEmbed()
