@@ -1,8 +1,33 @@
+const { MessageEmbed } = require('discord.js');
 const ytdl = require('ytdl-core');
 const YouTube = require('simple-youtube-api');
 
-const { MessageEmbed } = require('discord.js');
 const youtube = new YouTube(require('../../config.json')["youtube-data-api-key"]);
+
+const queue = new Map();
+
+class queueConstruct {
+	constructor() {
+		this.dispatcher = undefined;
+		this.songs = new Array();
+	}
+
+	get queueList() {
+		const songs = this.songs;
+
+		if (songs.length === 0) {
+			return 'Type `.s play <song>` to add one.';
+		}
+
+		let queueList = new String;
+		for (let i = 0; i < songs.length; i++) {
+			const song = songs[i];
+			queueList += `${i + 1}. ` + `[${song.title}](${song.url})` + '\n';
+		}
+
+		return queueList;
+	}
+}
 
 module.exports = {
 	name: 'play',
@@ -13,6 +38,11 @@ module.exports = {
 		if (userMessage === '') {
 			message.channel.send('Please provide a song name or a youtube video link!');
 			return;
+		}
+
+		// If message contains youtube video link, supress the embed.
+		if (ytdl.validateURL(userMessage)) {
+			message.suppressEmbeds(true);
 		}
 
 		const voiceChannel = message.member.voice.channel;
@@ -27,7 +57,12 @@ module.exports = {
 			return;
 		}
 
+		if (!queue.get(message.guild.id)) {
+			queue.set(message.guild.id, new queueConstruct());
+		}
+
 		const song = {
+			author: message.author,
 			videoResult: ytdl.validateURL(userMessage) ? await youtube.getVideo(userMessage)
 				: await youtube.searchVideos(userMessage, 1),
 			get title() {
@@ -49,23 +84,82 @@ module.exports = {
 			return;
 		}
 
+		const serverQueue = queue.get(message.guild.id);
+
+		// Return if bot is already playing in different channel.
+		if (!voiceChannel.members.has(message.guild.me.id) && serverQueue.dispatcher) {
+			message.reply('I am already playing in different channel.');
+			return;
+		}
+
+		serverQueue.songs.push(song);
+
+		if (serverQueue.songs.length > 1) {
+			message.channel.send(
+				new MessageEmbed()
+					.setAuthor(`Added to queue #${serverQueue.songs.length}`)
+					.setColor('#FF0000')
+					.setTitle(song.title)
+					.setThumbnail(song.thumbnail)
+					.setURL(song.url)
+					.setFooter(`By ${message.author.tag}`)
+			);
+		}
+
+		// Return if bot is already playing.
+		if (voiceChannel.members.has(message.guild.me.id) && serverQueue.dispatcher) {
+			return;
+		}
+
+		voiceChannel.join()
+			.then(connection => {
+				message.guild.me.voice.setSelfDeaf(true);
+				Play(message, connection, serverQueue);
+			})
+			.catch(error => {
+				voiceChannel.leave();
+				console.log(error);
+			});
+	},
+	queue
+};
+
+function Play(message, voiceConnection, serverQueue) {
+	const song = serverQueue.songs[0];
+
+	const stream = ytdl(song.url, { filter: 'audioonly', quality: 'highestaudio' });
+	serverQueue.dispatcher = voiceConnection.play(stream, { bitrate: 165, volume: false });
+
+	serverQueue.dispatcher.on('start', () => {
 		message.channel.send(
 			new MessageEmbed()
-				.setAuthor('Playing')
+				.setAuthor('Now Playing')
 				.setColor('#FF0000')
 				.setTitle(song.title)
 				.setThumbnail(song.thumbnail)
 				.setURL(song.url)
-				.setFooter(`By ${message.author.tag}`, message.author.displayAvatarURL({ dynamic: true }))
+				.setFooter(`Added by ${song.author.tag}`)
 		);
+	});
 
-		voiceChannel.join().then(connection => {
-			message.guild.me.voice.setSelfDeaf(true);
+	serverQueue.dispatcher.on('finish', async () => {
+		// Remove the song from queue once it is finished.
+		serverQueue.songs.shift();
 
-			const stream = ytdl(song.url, { filter: 'audioonly', quality: 'highestaudio' });
-			const dispatcher = connection.play(stream, { bitrate: 165, volume: 0.85 });
+		// If the queue is empty, leave the voice channel and delete server queue.
+		if (serverQueue.songs.length === 0) {
+			message.channel.send(
+				new MessageEmbed()
+					.setColor('#FF0000')
+					.setTitle('Music queue has ended!')
+					.setDescription('Type `.s play <song>` to add more.')
+			);
+			await message.guild.me.voice.channel.leave();
+			queue.delete(message.guild.id);
+			return;
+		}
 
-			dispatcher.on('finish', () => voiceChannel.leave());
-		});
-	}
-};
+		// Call the Play function again to play next song.
+		Play(message, voiceConnection, serverQueue);
+	});
+}
