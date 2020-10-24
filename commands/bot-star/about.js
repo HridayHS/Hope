@@ -9,7 +9,7 @@ module.exports = {
 	func: async function (message) {
 		const bot = await message.client.fetchApplication();
 		const botCreatedAt = customDateFormat(bot.createdAt);
-		const botInviteLink = await message.client.generateInvite(botPermissions);
+		const botInviteLink = await message.client.generateInvite({ permissions: botPermissions });
 		const teamMembersList = bot.owner.members.map(member => member.user.tag).sort().join(', ');
 
 		message.channel.send(
