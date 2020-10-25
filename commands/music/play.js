@@ -80,9 +80,10 @@ module.exports = {
 		}
 
 		const serverQueue = queue.get(message.guild.id);
+		const isBotInSameVC = voiceChannel.members.has(message.guild.me.id);
 
 		// Return if bot is already playing in different channel.
-		if (!voiceChannel.members.has(message.guild.me.id) && serverQueue.dispatcher) {
+		if (!isBotInSameVC && serverQueue.dispatcher) {
 			message.reply('I am already playing in different channel.');
 			return;
 		}
@@ -102,7 +103,7 @@ module.exports = {
 		}
 
 		// Return if bot is already playing.
-		if (voiceChannel.members.has(message.guild.me.id) && serverQueue.dispatcher) {
+		if (isBotInSameVC && serverQueue.dispatcher) {
 			return;
 		}
 
