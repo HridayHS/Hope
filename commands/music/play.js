@@ -13,15 +13,10 @@ class queueConstruct {
 	}
 
 	get queueList() {
-		const songs = this.songs;
-
-		if (songs.length === 0) {
-			return 'Type `.s play <song>` to add one.';
-		}
-
 		let queueList = new String;
-		for (let i = 0; i < songs.length; i++) {
-			const song = songs[i];
+
+		for (let i = 0; i < this.songs.length; i++) {
+			const song = this.songs[i];
 			queueList += `${i + 1}. ` + `[${song.title}](${song.url})` + '\n';
 		}
 
