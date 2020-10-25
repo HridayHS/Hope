@@ -10,7 +10,7 @@ module.exports = {
 			const userMention = message.mentions.users.first();
 
 			return userMention ? userMention
-				: userID ? await message.client.users.fetch(userID).catch(() => {})
+				: userID ? await message.client.users.fetch(userID).catch(() => { })
 					: message.author;
 		};
 
