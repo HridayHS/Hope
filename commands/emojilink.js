@@ -3,6 +3,7 @@ module.exports = {
 	alias: ['e', 'emoji', 'emote', 'emotelink', 'elink'],
 	func: function (message) {
 		const Emojis = message.content.match(/(<:|<a:)+[^:]+:[0-9]+>/g);
+		const isLinkNeeded = message.content.match('link');
 
 		if (!Emojis) {
 			message.channel.send('Invalid emoji.');
@@ -21,17 +22,20 @@ module.exports = {
 		if (message.channel.type === 'dm') {
 			for (let i = 0; i < (Emojis.length > 5 ? 5 : Emojis.length); i++) {
 				Emoji.info = Emojis[i].slice(1).slice(0, -1).split(':');
-				message.channel.send(`<${Emoji.url}>`, { files: [Emoji.url] });
+				message.channel.send(
+					isLinkNeeded ? `<${Emoji.url}>` : Emoji.url, // Message content
+					isLinkNeeded ? { files: [Emoji.url] } : null // Message options
+				);
 			}
 			return;
 		}
 
+		const canSendFiles = message.guild.me.permissions.has(['ATTACH_FILES']);
 		Emoji.info = Emojis[0].slice(1).slice(0, -1).split(':');
 
-		if (message.guild.me.permissions.has(['ATTACH_FILES'])) {
-			message.channel.send(`<${Emoji.url}>`, { files: [Emoji.url] });
-		} else {
-			message.channel.send(Emoji.url);
-		}
+		message.channel.send(
+			isLinkNeeded ? `<${Emoji.url}>` : Emoji.url, // Message content
+			(isLinkNeeded && canSendFiles) ? { files: [Emoji.url] } : null // Message options
+		);
 	}
 };
