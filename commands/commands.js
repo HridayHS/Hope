@@ -113,9 +113,8 @@ module.exports = {
 		});
 
 		collector.on('end', collected => {
-			if (message.channel.type !== 'dm') {
-				collected.forEach(reaction => reaction.remove());
-			}
+			collected.forEach(reaction => (message.channel.type === 'dm') ? reaction.users.remove(message.client.user.id) : reaction.remove());
+
 			if (atHomePage) {
 				homePageMessage.edit(getEmbedMessage(commands[0], message));
 			}
