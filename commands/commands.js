@@ -24,15 +24,15 @@ module.exports = {
 				name: 'General Commands',
 				emoji: '#️⃣',
 				list: {
-					'avatar [@member]': 'Get avatar',
+					'avatar ?@member': 'Get avatar',
 					'emoji <custom emoji> ?link': 'Get emoji link',
 					'membercount': 'Get members count',
 					'pin <message>': 'Pin message',
 					'ping': 'Says pong',
-					'purge [1-100 | @member | all]': 'Purge recent messages',
+					'purge ?1-100 | ?@member | ?all': 'Purge recent messages',
 					'serverinfo': 'Get server info',
 					'unpinall': 'Unpins all the pinned messages',
-					'whois [@member]': 'Get member info'
+					'whois ?@member': 'Get member info'
 				}
 			},
 			{
