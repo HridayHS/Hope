@@ -24,6 +24,24 @@ class queueConstruct {
 	}
 }
 
+class Song {
+	constructor(video, author) {
+		this.author = author;
+		this.video = video;
+	}
+
+	get title() {
+		return this.video.title || this.video.values().next().value.title;
+	}
+	get thumbnail() {
+		const thumbnails = this.video.thumbnails || this.video.values().next().value.thumbnails;
+		return thumbnails.high.url;
+	}
+	get url() {
+		return this.video.url || this.video.values().next().value.url;
+	}
+}
+
 module.exports = {
 	name: 'play',
 	alias: ['p'],
@@ -36,7 +54,8 @@ module.exports = {
 		}
 
 		// If message contains youtube video link, supress the embed.
-		if (ytdl.validateURL(userMessage)) {
+		const isVideoURLValid = ytdl.validateURL(userMessage);
+		if (isVideoURLValid) {
 			message.suppressEmbeds(true);
 		}
 
@@ -56,50 +75,46 @@ module.exports = {
 			queue.set(message.guild.id, new queueConstruct());
 		}
 
-		const song = {
-			author: message.author,
-			videoResult: ytdl.validateURL(userMessage) ? await youtube.getVideo(userMessage)
-				: await youtube.searchVideos(userMessage, 1),
-			get title() {
-				return this.videoResult.title
-					|| this.videoResult.values().next().value.title;
-			},
-			get thumbnail() {
-				const thumbnails = this.videoResult.thumbnails || this.videoResult.values().next().value.thumbnails;
-				return thumbnails.high.url;
-			},
-			get url() {
-				return this.videoResult.url
-					|| this.videoResult.values().next().value.url;
-			}
-		}
-
-		if (song.videoResult.length === 0) {
-			message.channel.send('Unable to find the song.');
-			return;
-		}
-
 		const serverQueue = queue.get(message.guild.id);
 		const isBotInSameVC = voiceChannel.members.has(message.guild.me.id);
 
 		// Return if bot is already playing in different channel.
-		if (!isBotInSameVC && serverQueue.dispatcher) {
+		if (message.guild.me.voice.channel && !isBotInSameVC && serverQueue.dispatcher) {
 			message.reply('I am already playing in different channel.');
 			return;
 		}
 
-		serverQueue.songs.push(song);
+		const playlist = await youtube.getPlaylist(userMessage).catch(() => { });
 
-		if (serverQueue.songs.length > 1) {
-			message.channel.send(
-				new MessageEmbed()
-					.setAuthor(`Added to queue #${serverQueue.songs.length}`)
-					.setColor('#FF0000')
-					.setTitle(song.title)
-					.setThumbnail(song.thumbnail)
-					.setURL(song.url)
-					.setFooter(`By ${message.author.tag}`)
-			);
+		async function getVideos() {
+			return playlist ? await playlist.getVideos()
+				: isVideoURLValid ? new Array(await youtube.getVideo(userMessage))
+					: await youtube.searchVideos(userMessage, 1);
+		}
+
+		const videos = await getVideos();
+		videos.forEach(video => serverQueue.songs.push(new Song(video, message.author)));
+
+		if (playlist) {
+			message.channel.send({
+				embed: {
+					color: '#FF0000',
+					description: `Queued ${serverQueue.songs.length} tracks`,
+					footer: { text: `By ${message.author.tag}` }
+				}
+			});
+		} else if (serverQueue.songs.length > 1) {
+			const song = new Song(videos.values().next().value, message.author);
+			message.channel.send({
+				embed: {
+					color: '#FF0000',
+					author: { name: `Added to queue #${serverQueue.songs.length}` },
+					title: song.title,
+					thumbnail: song.thumbnail,
+					url: song.url,
+					footer: { text: `By ${message.author.tag}` }
+				}
+			});
 		}
 
 		// Return if bot is already playing.
