@@ -1,7 +1,7 @@
 const { MessageEmbed } = require('discord.js');
-const ytdl = require('ytdl-core');
 const YouTube = require('simple-youtube-api');
 
+const ytdl = require('ytdl-core');
 const youtube = new YouTube(require('../../config.json')["youtube-data-api-key"]);
 
 const queue = new Map();
@@ -31,14 +31,13 @@ class Song {
 	}
 
 	get title() {
-		return this.video.title || this.video.values().next().value.title;
+		return this.video.title;
 	}
 	get thumbnail() {
-		const thumbnails = this.video.thumbnails || this.video.values().next().value.thumbnails;
-		return thumbnails.high.url;
+		return this.video.thumbnails.high.url;
 	}
 	get url() {
-		return this.video.url || this.video.values().next().value.url;
+		return this.video.url;
 	}
 }
 
@@ -54,8 +53,7 @@ module.exports = {
 		}
 
 		// If message contains youtube video link, supress the embed.
-		const isVideoURLValid = ytdl.validateURL(userMessage);
-		if (isVideoURLValid) {
+		if (ytdl.validateURL(userMessage)) {
 			message.suppressEmbeds(true);
 		}
 
@@ -84,27 +82,25 @@ module.exports = {
 			return;
 		}
 
-		const playlist = await youtube.getPlaylist(userMessage).catch(() => { });
+		const songs = await resolveUserMessage(userMessage);
 
-		async function getVideos() {
-			return playlist ? await playlist.getVideos()
-				: isVideoURLValid ? new Array(await youtube.getVideo(userMessage))
-					: await youtube.searchVideos(userMessage, 1);
+		if (songs.length === 0) {
+			message.channel.send('Unable to find the song.');
+			return;
 		}
 
-		const videos = await getVideos();
-		videos.forEach(video => serverQueue.songs.push(new Song(video, message.author)));
+		songs.forEach(video => serverQueue.songs.push(new Song(video, message.author)));
 
-		if (playlist) {
+		if (songs.length > 1) {
 			message.channel.send({
 				embed: {
 					color: '#FF0000',
-					description: `Queued ${serverQueue.songs.length} tracks`,
+					description: `Queued ${songs.length} tracks`,
 					footer: { text: `By ${message.author.tag}` }
 				}
 			});
 		} else if (serverQueue.songs.length > 1) {
-			const song = new Song(videos.values().next().value, message.author);
+			const song = new Song(songs.values().next().value, message.author);
 			message.channel.send({
 				embed: {
 					color: '#FF0000',
@@ -134,6 +130,14 @@ module.exports = {
 	},
 	queue
 };
+
+async function resolveUserMessage(userMessage) {
+	const playlist = await youtube.getPlaylist(userMessage).catch(() => { });
+
+	return playlist ? await playlist.getVideos()
+		: ytdl.validateURL(userMessage) ? new Array(await youtube.getVideo(userMessage))
+			: await youtube.searchVideos(userMessage, 1);
+}
 
 function Play(message, voiceConnection, serverQueue) {
 	const song = serverQueue.songs[0];
