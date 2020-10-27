@@ -28,16 +28,9 @@ class Song {
 	constructor(video, author) {
 		this.author = author;
 		this.video = video;
-	}
-
-	get title() {
-		return this.video.title;
-	}
-	get thumbnail() {
-		return this.video.thumbnails.high.url;
-	}
-	get url() {
-		return this.video.url;
+		this.title = video.title;
+		this.thumbnail = video.thumbnails.high.url;
+		this.url = video.shortURL;
 	}
 }
 
