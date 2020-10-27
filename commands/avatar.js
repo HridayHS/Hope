@@ -21,19 +21,18 @@ module.exports = {
 			return;
 		}
 
-		const userAvatar = user.displayAvatarURL({ format: 'png', dynamic: true, size: 4096 });
-		const avatarBuffer = await DataResolver.resolveFileAsBuffer(userAvatar);
-		const avatarAverageColor = (await getAverageColor(avatarBuffer)).hex;
+		const avatarBuffer = await DataResolver.resolveFileAsBuffer(user.displayAvatarURL({ format: 'png' }));
+		const avatarAverageColor = await getAverageColor(avatarBuffer);
 
 		message.channel.send({
 			embed: {
-				color: avatarAverageColor,
+				color: avatarAverageColor.hex,
 				author: {
 					name: user.tag,
 					icon_url: user.displayAvatarURL({ dynamic: true }),
 				},
 				image: {
-					url: userAvatar
+					url: user.displayAvatarURL({ format: 'png', dynamic: true, size: 4096 })
 				}
 			}
 		});
