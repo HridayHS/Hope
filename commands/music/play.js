@@ -6,30 +6,6 @@ const youtube = new YouTube(require('../../config.json')["youtube-data-api-key"]
 
 const queue = new Map();
 
-class queueConstruct {
-	constructor() {
-		this.dispatcher = undefined;
-		this.songs = new Array();
-	}
-
-	get queueList() {
-		const queueList = new Array();
-		const queuePages = Math.ceil(this.songs.length / 10);
-
-		for (let i = 0; i < queuePages; i++) {
-			queueList.push('');
-
-			for (let z = (i * 10); z < ((i + 1) * 10); z++) {
-				const song = this.songs[z];
-				if (!song) break;
-				queueList[i] += `${z + 1}. ` + `[${song.title}](${song.url})` + '\n';
-			}
-		}
-
-		return queueList;
-	}
-}
-
 class Song {
 	constructor(video, author) {
 		this.author = author;
@@ -69,7 +45,7 @@ module.exports = {
 		}
 
 		if (!queue.get(message.guild.id)) {
-			queue.set(message.guild.id, new queueConstruct());
+			queue.set(message.guild.id, { dispatcher: undefined, songs: new Array(), voiceChannel: undefined });
 		}
 
 		const serverQueue = queue.get(message.guild.id);

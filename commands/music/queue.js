@@ -1,6 +1,54 @@
 const { queue } = require('./play');
 
-const reactions = ['⬆', '⬇'];
+function getQueueList(songsArr) {
+	const queueList = new Array();
+	const queuePages = Math.ceil(songsArr.length / 10);
+
+	for (let i = 0; i < queuePages; i++) {
+		queueList.push('');
+
+		for (let z = (i * 10); z < ((i + 1) * 10); z++) {
+			const song = songsArr[z];
+			if (!song) break;
+			queueList[i] += `${z + 1}. ` + `[${song.title}](${song.url})` + '\n';
+		}
+	}
+
+	return queueList;
+}
+
+function switchPage(emoji, serverQueue, queueList) {
+	const queueMessage = serverQueue.queueMessage;
+
+	switch (emoji) {
+		case '⬅️':
+			return (queueMessage.currentPage === 0) ? 0
+				: --queueMessage.currentPage;
+		case '➡️':
+			return (queueMessage.currentPage === queueList.length - 1) ? queueMessage.currentPage
+				: ++queueMessage.currentPage;
+	}
+}
+
+function getMessageEmbed(queueList, page) {
+	const embedMessage = {
+		embed: {
+			color: '#FF0000',
+			title: 'Music Queue',
+			description: queueList[page]
+		}
+	};
+
+	if (queueList.length > 1) {
+		embedMessage.embed.footer = {
+			text : `Page ${page + 1}/${queueList.length}`
+		};
+	}
+
+	return embedMessage;
+}
+
+const reactions = ['⬅️', '➡️'];
 
 module.exports = {
 	name: 'queue',
@@ -20,50 +68,38 @@ module.exports = {
 			return;
 		}
 
-		const queueMessage = await message.channel.send({
-			embed: {
-				color: '#FF0000',
-				title: 'Music Queue',
-				description: serverQueue.queueList[0]
-			}
-		});
+		const queueList = getQueueList(serverQueue.songs);
 
-		// Return if there are only 1 queue page.
-		if (serverQueue.queueList.length === 1) {
+		const queueMessage = await message.channel.send(getMessageEmbed(queueList, 0));
+
+		// Return if there is only 1 queue page.
+		if (queueList.length === 1) {
 			return;
 		}
 
-		serverQueue.currentPage = 0;
+		serverQueue.queueMessage = {
+			queueMessage,
+			currentPage: 0
+		};
+
 		reactions.forEach(reaction => queueMessage.react(reaction));
 
 		const collectorFilter = reaction => reactions.some(queueReaction => queueReaction === reaction.emoji.name);
 		serverQueue.collector = queueMessage.createReactionCollector(collectorFilter);
 
 		serverQueue.collector.on('collect', (reaction, user) => {
-			if (user.id == message.client.user.id) {
-				return;
-			}
+			if (user.id == message.client.user.id) return;
 
-			const isUserAllowedToPeformAction = serverQueue.voiceChannel.members.has(user.id);
-			if (isUserAllowedToPeformAction) {
-				switch (reaction.emoji.name) {
-					case '⬆':
-						queueMessage.edit({
-							embed: {
-								color: '#FF0000',
-								title: 'Music Queue',
-								description: serverQueue.queueList[getPreviousPage(serverQueue)]
-							}
-						});
+			if (serverQueue.voiceChannel.members.has(user.id)) {
+				const emoji = reaction.emoji.name;
+				switch (emoji) {
+					case '⬅️':
+						const previousPage = switchPage(emoji, serverQueue);
+						queueMessage.edit(getMessageEmbed(queueList, previousPage));
 						break;
-					case '⬇':
-						queueMessage.edit({
-							embed: {
-								color: '#FF0000',
-								title: 'Music Queue',
-								description: serverQueue.queueList[getNextPage(serverQueue)]
-							}
-						});
+					case '➡️':
+						const nextPage = switchPage(emoji, serverQueue, queueList);
+						queueMessage.edit(getMessageEmbed(queueList, nextPage));
 						break;
 				}
 			}
@@ -83,17 +119,3 @@ module.exports = {
 		});
 	}
 };
-
-function getPreviousPage(serverQueue) {
-	if (serverQueue.currentPage === 0) {
-		return 0;
-	}
-	return --serverQueue.currentPage;
-}
-
-function getNextPage(serverQueue) {
-	if (serverQueue.currentPage === serverQueue.queueList.length - 1) {
-		return serverQueue.currentPage;
-	}
-	return ++serverQueue.currentPage;
-}
