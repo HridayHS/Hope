@@ -13,11 +13,17 @@ class queueConstruct {
 	}
 
 	get queueList() {
-		let queueList = new String;
+		const queueList = new Array();
+		const queuePages = Math.ceil(this.songs.length / 10);
 
-		for (let i = 0; i < this.songs.length; i++) {
-			const song = this.songs[i];
-			queueList += `${i + 1}. ` + `[${song.title}](${song.url})` + '\n';
+		for (let i = 0; i < queuePages; i++) {
+			queueList.push('');
+
+			for (let z = (i * 10); z < ((i + 1) * 10); z++) {
+				const song = this.songs[z];
+				if (!song) break;
+				queueList[i] += `${z + 1}. ` + `[${song.title}](${song.url})` + '\n';
+			}
 		}
 
 		return queueList;
@@ -113,6 +119,7 @@ module.exports = {
 
 		voiceChannel.join()
 			.then(connection => {
+				serverQueue.voiceChannel = voiceChannel;
 				message.guild.me.voice.setSelfDeaf(true);
 				Play(message, connection, serverQueue);
 			})
@@ -163,6 +170,7 @@ function Play(message, voiceConnection, serverQueue) {
 					.setDescription('Type `.s play <song>` to add more.')
 			);
 			await message.guild.me.voice.channel.leave();
+			serverQueue.collector.stop();
 			queue.delete(message.guild.id);
 			return;
 		}
