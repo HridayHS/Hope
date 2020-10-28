@@ -18,7 +18,7 @@ function getQueueList(songsArr) {
 }
 
 function switchPage(emoji, serverQueue, queueList) {
-	const queueMessage = serverQueue.queueMessage;
+	const queueMessage = serverQueue.queue;
 
 	switch (emoji) {
 		case '⬅️':
@@ -41,7 +41,7 @@ function getMessageEmbed(queueList, page) {
 
 	if (queueList.length > 1) {
 		embedMessage.embed.footer = {
-			text : `Page ${page + 1}/${queueList.length}`
+			text: `Page ${page + 1}/${queueList.length}`
 		};
 	}
 
@@ -68,26 +68,36 @@ module.exports = {
 			return;
 		}
 
+		let defaultPage = 0;
+
+		if (serverQueue.queue) {
+			serverQueue.queue.reactionCollector.stop();
+			serverQueue.queue.message.delete();
+			defaultPage = serverQueue.queue.currentPage;
+		}
+
 		const queueList = getQueueList(serverQueue.songs);
 
-		const queueMessage = await message.channel.send(getMessageEmbed(queueList, 0));
+		const queueMessage = await message.channel.send(getMessageEmbed(queueList, defaultPage));
 
 		// Return if there is only 1 queue page.
 		if (queueList.length === 1) {
 			return;
 		}
 
-		serverQueue.queueMessage = {
-			queueMessage,
-			currentPage: 0
+		serverQueue.queue = {
+			message: queueMessage,
+			reactionCollector: undefined,
+			currentPage: defaultPage
 		};
 
+		// Add reactions to queue message
 		reactions.forEach(reaction => queueMessage.react(reaction));
 
 		const collectorFilter = reaction => reactions.some(queueReaction => queueReaction === reaction.emoji.name);
-		serverQueue.collector = queueMessage.createReactionCollector(collectorFilter);
+		serverQueue.queue.reactionCollector = queueMessage.createReactionCollector(collectorFilter);
 
-		serverQueue.collector.on('collect', (reaction, user) => {
+		serverQueue.queue.reactionCollector.on('collect', (reaction, user) => {
 			if (user.id == message.client.user.id) return;
 
 			if (serverQueue.voiceChannel.members.has(user.id)) {
@@ -107,15 +117,10 @@ module.exports = {
 			reaction.users.remove(user.id);
 		});
 
-		serverQueue.collector.on('end', collected => {
-			collected.forEach(reaction => reaction.remove());
-			queueMessage.edit({
-				embed: {
-					color: '#FF0000',
-					title: 'Music queue has ended!',
-					description: 'Type `.s play <song>` to add more.'
-				}
-			});
+		serverQueue.queue.reactionCollector.on('end', (collected, reason) => {
+			if (reason === 'QueueEnded') {
+				collected.forEach(reaction => reaction.remove());
+			}
 		});
 	}
 };

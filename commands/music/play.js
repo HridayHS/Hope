@@ -146,7 +146,7 @@ function Play(message, voiceConnection, serverQueue) {
 					.setDescription('Type `.s play <song>` to add more.')
 			);
 			await message.guild.me.voice.channel.leave();
-			serverQueue.collector.stop();
+			serverQueue.collector.stop('QueueEnded');
 			queue.delete(message.guild.id);
 			return;
 		}
