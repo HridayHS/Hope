@@ -1,20 +1,20 @@
 const { MessageEmbed } = require('discord.js');
 const { customDateFormat } = require('../utils');
 
+async function getUser(message) {
+	const userID = message.content.split(' ')[2];
+	const userMention = message.mentions.users.first();
+
+	return userMention ? userMention
+		: userID ? await message.client.users.fetch(userID, true, true).catch(() => {})
+			: message.author;
+};
+
 module.exports = {
 	name: 'whois',
 	alias: ['userinfo'],
 	func: async function (message) {
-		async function getUser() {
-			const userID = message.content.split(' ')[2];
-			const userMention = message.mentions.users.first();
-
-			return userMention ? userMention
-				: userID ? await message.client.users.fetch(userID).catch(() => {})
-					: message.author;
-		};;
-
-		const user = await getUser();
+		const user = await getUser(message);
 
 		if (!user) {
 			message.channel.send(`Unable to find user.`);

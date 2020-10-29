@@ -1,20 +1,20 @@
 const { DataResolver } = require('discord.js');
 const { getAverageColor } = require('fast-average-color-node');
 
+async function getUser(message) {
+	const userMention = message.mentions.users.first();
+	const userID = message.content.split(' ')[2];
+
+	return userMention ? userMention
+		: userID ? await message.client.users.fetch(userID, true, true).catch(() => { })
+			: message.author;
+};
+
 module.exports = {
 	name: 'avatar',
 	alias: ['av'],
 	func: async function (message) {
-		async function getUser() {
-			const userID = message.content.split(' ')[2];
-			const userMention = message.mentions.users.first();
-
-			return userMention ? userMention
-				: userID ? await message.client.users.fetch(userID).catch(() => { })
-					: message.author;
-		};
-
-		const user = await getUser();
+		const user = await getUser(message);
 
 		if (!user) {
 			message.channel.send(`Unable to find user.`);
