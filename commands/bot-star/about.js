@@ -5,7 +5,7 @@ const { customDateFormat } = require('../../utils');
 
 module.exports = {
 	name: 'about',
-	alias: ['bot', 'aboutbout', 'star', 'aboutstar'],
+	alias: ['abt', 'bot', 'abtbot', 'aboutbout', 'star', 'abtstar', 'aboutstar'],
 	func: async function (message) {
 		const bot = await message.client.fetchApplication();
 		const botCreatedAt = customDateFormat(bot.createdAt);
