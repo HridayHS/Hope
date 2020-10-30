@@ -1,5 +1,14 @@
 const fs = require('fs');
 
+/* Avatar average color */
+const { DataResolver } = require('discord.js');
+const { getAverageColor } = require('fast-average-color-node');
+
+async function avatarAverageColor(user) {
+	const avatarBuffer = await DataResolver.resolveFileAsBuffer(user.displayAvatarURL({ format: 'png' }));
+	return (await getAverageColor(avatarBuffer)).hex;
+}
+
 /* Bot Permissions */
 const botPermissions = ['ADMINISTRATOR', 'MANAGE_CHANNELS', 'VIEW_CHANNEL', 'SEND_MESSAGES', 'MANAGE_MESSAGES', 'EMBED_LINKS', 'ATTACH_FILES', 'READ_MESSAGE_HISTORY', 'ADD_REACTIONS', 'CONNECT', 'SPEAK'];
 
@@ -66,6 +75,7 @@ const serverRegionHR = region => {
 };
 
 module.exports = {
+	avatarAverageColor,
 	botPermissions,
 	botVersion,
 	getAllFiles,

@@ -1,12 +1,11 @@
-const { MessageEmbed } = require('discord.js');
-const { customDateFormat } = require('../utils');
+const { avatarAverageColor, customDateFormat } = require('../utils');
 
 async function getUser(message) {
 	const userID = message.content.split(' ')[2];
 	const userMention = message.mentions.users.first();
 
 	return userMention ? userMention
-		: userID ? await message.client.users.fetch(userID, true, true).catch(() => {})
+		: userID ? await message.client.users.fetch(userID, true, true).catch(() => { })
 			: message.author;
 };
 
@@ -21,19 +20,27 @@ module.exports = {
 			return;
 		}
 
-		const EmbedMessage = new MessageEmbed()
-			.setAuthor(user.tag, user.displayAvatarURL({ dynamic: true }))
-			.setThumbnail(user.displayAvatarURL({ format: 'png', dynamic: true, size: 4096 }))
-			.setColor('GREEN')
-			.addFields(
-				{ name: 'Registered', value: customDateFormat(user.createdAt), inline: true },
-			)
-			.setFooter('ID: ' + user.id);
+		const EmbedMessage = {
+			author: {
+				name: user.tag,
+				icon_url: user.displayAvatarURL({ dynamic: true })
+			},
+			thumbnail: {
+				url: user.displayAvatarURL({ format: 'png', dynamic: true, size: 4096 })
+			},
+			color: await avatarAverageColor(user),
+			fields: [
+				{ name: 'Created On', value: customDateFormat(user.createdAt), inline: true }
+			],
+			footer: {
+				text: 'User ID: ' + user.id
+			}
+		};
 
 		if (message.channel.type !== 'dm' && message.guild.member(user)) {
-			EmbedMessage.spliceFields(0, 0, { name: 'Joined', value: customDateFormat(message.guild.member(user).joinedAt, true), inline: true })
+			EmbedMessage.fields.unshift({ name: 'Joined', value: customDateFormat(message.guild.member(user).joinedAt, true), inline: true });
 		}
 
-		message.channel.send(EmbedMessage);
+		message.channel.send({ embed: EmbedMessage });
 	}
 };

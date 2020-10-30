@@ -1,9 +1,8 @@
-const { DataResolver } = require('discord.js');
-const { getAverageColor } = require('fast-average-color-node');
+const { avatarAverageColor } = require('../utils');
 
 async function getUser(message) {
-	const userMention = message.mentions.users.first();
 	const userID = message.content.split(' ')[2];
+	const userMention = message.mentions.users.first();
 
 	return userMention ? userMention
 		: userID ? await message.client.users.fetch(userID, true, true).catch(() => { })
@@ -21,12 +20,9 @@ module.exports = {
 			return;
 		}
 
-		const avatarBuffer = await DataResolver.resolveFileAsBuffer(user.displayAvatarURL({ format: 'png' }));
-		const avatarAverageColor = await getAverageColor(avatarBuffer);
-
 		message.channel.send({
 			embed: {
-				color: avatarAverageColor.hex,
+				color: await avatarAverageColor(user),
 				author: {
 					name: user.tag,
 					icon_url: user.displayAvatarURL({ dynamic: true }),
