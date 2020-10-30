@@ -30,7 +30,7 @@ module.exports = {
 			return;
 		}
 
-		const canSendFiles = message.guild.me.permissions.has(['ATTACH_FILES']);
+		const canSendFiles = message.channel.permissionsFor(message.guild.me).has('ATTACH_FILES');
 		Emoji.info = Emojis[0].slice(1).slice(0, -1).split(':');
 
 		message.channel.send(
