@@ -28,13 +28,19 @@ module.exports = {
 				list: {
 					'avatar ?@member | ?userID': 'Get avatar',
 					'emoji <custom emoji> ?link': 'Get emoji link',
-					'membercount': 'Get members count',
 					'pin <message>': 'Pin message',
 					'ping': 'Says pong',
-					'purge ?1-100 | ?@member | ?all': 'Purge recent messages',
-					'serverinfo': 'Get server info',
 					'unpinall': 'Unpins all the pinned messages',
 					'whois ?@member | ?userID': 'Get member info'
+				}
+			},
+			{
+				name: 'Server Commands',
+				emoji: '⚙️',
+				list: {
+					'membercount': 'Get members count',
+					'purge ?1-100 | ?@member | ?all': 'Purge recent messages',
+					'serverinfo': 'Get server info'
 				}
 			},
 			{
@@ -62,13 +68,10 @@ module.exports = {
 		let homePageDescription = 'React to get a list of commands';
 		commands.forEach(category => homePageDescription += `\n\n${category.emoji} - ${category.name.replace('Commands', 'commands')}`);
 
-		// Remove Music commands for DMChannel.
+		// Remove Server and Music commands for DMChannel.
 		if (message.channel.type === 'dm') {
-			commands.splice(1, 1);
-			delete commands[0].list['membercount'];
-			delete commands[0].list['purge [1-100 | @member | all]'];
-			delete commands[0].list['serverinfo'];
-			homePageDescription = homePageDescription.replace('\n\n🎵 - Music commands', '');
+			commands.splice(1, 2);
+			homePageDescription = homePageDescription.replace('\n\n⚙️ - Server commands\n\n🎵 - Music commands', '');
 		}
 
 		/* .s commands <category name> */
