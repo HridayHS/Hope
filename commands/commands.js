@@ -1,5 +1,3 @@
-const { MessageEmbed } = require('discord.js');
-
 const getEmbedMessage = (commandsCategory, message) => {
 	const { name: categoryName, list: commandsList } = commandsCategory;
 
@@ -8,10 +6,14 @@ const getEmbedMessage = (commandsCategory, message) => {
 		CommandsDescription += '`.s ' + command + '`' + '\n' + commandsList[command] + '\n\n';
 	}
 
-	return new MessageEmbed()
-		.setAuthor(categoryName, message.client.user.displayAvatarURL())
-		.setColor('RED')
-		.setDescription(CommandsDescription);
+	return {
+		color: 'RED',
+		author: {
+			name: categoryName,
+			icon_url: message.client.user.displayAvatarURL()
+		},
+		description: CommandsDescription
+	};
 };
 
 module.exports = {
@@ -57,8 +59,10 @@ module.exports = {
 			}
 		];
 
-		let homePageDescription = 'React to get a list of commands\n\n#️⃣ - General commands\n\n🎵 - Music commands\n\n🤖 - Bot commands';
+		let homePageDescription = 'React to get a list of commands';
+		commands.forEach(category => homePageDescription += `\n\n${category.emoji} - ${category.name.replace('Commands', 'commands')}`);
 
+		// Remove Music commands for DMChannel.
 		if (message.channel.type === 'dm') {
 			commands.splice(1, 1);
 			delete commands[0].list['membercount'];
@@ -73,21 +77,21 @@ module.exports = {
 			const category = commands[commandsCategory];
 			const categoryName = category.name.split(' ')[0].toLowerCase();
 			if (userRequestedCommandCategory === categoryName) {
-				message.channel.send(getEmbedMessage(category, message));
+				message.channel.send({ embed: getEmbedMessage(category, message) });
 				return;
 			}
 		}
 
-		const homePageMessage = await message.channel.send(
-			new MessageEmbed()
-				.setColor('GREEN')
-				.setDescription(homePageDescription)
-		);
+		const homePageMessage = await message.channel.send({
+			embed: {
+				color: 'GREEN',
+				description: homePageDescription
+			}
+		});
+
 		let atHomePage = true;
 
-		commands.forEach(category => {
-			homePageMessage.react(category.emoji);
-		})
+		commands.forEach(category => homePageMessage.react(category.emoji));
 
 		const collectorFilter = reaction => commands.some(category => category.emoji === reaction.emoji.name);
 		const collector = homePageMessage.createReactionCollector(collectorFilter, { idle: 72000 });
@@ -101,7 +105,7 @@ module.exports = {
 				for (let i = 0; i < commands.length; i++) {
 					const category = commands[i];
 					if (category.emoji === reaction.emoji.name) {
-						homePageMessage.edit(getEmbedMessage(category, message));
+						homePageMessage.edit({ embed: getEmbedMessage(category, message) });
 						atHomePage = false;
 					}
 				}
@@ -116,7 +120,7 @@ module.exports = {
 			collected.forEach(reaction => (message.channel.type === 'dm') ? reaction.users.remove(message.client.user.id) : reaction.remove());
 
 			if (atHomePage) {
-				homePageMessage.edit(getEmbedMessage(commands[0], message));
+				homePageMessage.edit({ embed: getEmbedMessage(commands[0], message) });
 			}
 		});
 	}
