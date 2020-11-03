@@ -1,4 +1,4 @@
-const { avatarAverageColor } = require('../utils');
+const { imageAverageColor } = require('../utils');
 
 async function getUser(message) {
 	const userID = message.content.split(' ')[2];
@@ -22,7 +22,7 @@ module.exports = {
 
 		message.channel.send({
 			embed: {
-				color: await avatarAverageColor(user),
+				color: await imageAverageColor(user.displayAvatarURL({ format: 'png' })),
 				author: {
 					name: user.tag,
 					icon_url: user.displayAvatarURL({ dynamic: true }),

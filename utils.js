@@ -4,9 +4,10 @@ const fs = require('fs');
 const { DataResolver } = require('discord.js');
 const { getAverageColor } = require('fast-average-color-node');
 
-async function avatarAverageColor(user) {
-	const avatarBuffer = await DataResolver.resolveFileAsBuffer(user.displayAvatarURL({ format: 'png' }));
-	return (await getAverageColor(avatarBuffer)).hex;
+async function imageAverageColor(image) {
+	const imageBuffer = await DataResolver.resolveFileAsBuffer(image);
+	const imageAverageColor = await getAverageColor(imageBuffer);
+	return imageAverageColor.hex;
 }
 
 /* Bot Permissions */
@@ -75,7 +76,7 @@ const serverRegionHR = region => {
 };
 
 module.exports = {
-	avatarAverageColor,
+	imageAverageColor,
 	botPermissions,
 	botVersion,
 	getAllFiles,

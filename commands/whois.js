@@ -1,4 +1,4 @@
-const { avatarAverageColor, customDateFormat } = require('../utils');
+const { imageAverageColor, customDateFormat } = require('../utils');
 
 async function getUser(message) {
 	const userID = message.content.split(' ')[2];
@@ -28,7 +28,7 @@ module.exports = {
 			thumbnail: {
 				url: user.displayAvatarURL({ format: 'png', dynamic: true, size: 4096 })
 			},
-			color: await avatarAverageColor(user),
+			color: await imageAverageColor(user.displayAvatarURL({ format: 'png' })),
 			fields: [
 				{ name: 'Created On', value: customDateFormat(user.createdAt), inline: true }
 			],
