@@ -40,6 +40,8 @@ module.exports = {
 				list: {
 					'membercount': 'Get members count',
 					'purge ?1-100 | ?@member | ?all': 'Purge recent messages',
+					'serverbanner': 'Get server banner',
+					'servericon': 'Get server icon',
 					'serverinfo': 'Get server info'
 				}
 			},
