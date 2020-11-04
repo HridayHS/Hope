@@ -1,26 +1,18 @@
 const { MessageEmbed } = require('discord.js');
-const ytdl = require('ytdl-core');
 const YouTube = require('simple-youtube-api');
 
+const ytdl = require('ytdl-core');
 const youtube = new YouTube(require('../../config.json')["youtube-data-api-key"]);
 
 const queue = new Map();
 
-class queueConstruct {
-	constructor() {
-		this.dispatcher = undefined;
-		this.songs = new Array();
-	}
-
-	get queueList() {
-		let queueList = new String;
-
-		for (let i = 0; i < this.songs.length; i++) {
-			const song = this.songs[i];
-			queueList += `${i + 1}. ` + `[${song.title}](${song.url})` + '\n';
-		}
-
-		return queueList;
+class Song {
+	constructor(video, author) {
+		this.author = author;
+		this.video = video;
+		this.title = video.title;
+		this.thumbnail = video.thumbnails.high.url;
+		this.url = video.shortURL;
 	}
 }
 
@@ -53,30 +45,7 @@ module.exports = {
 		}
 
 		if (!queue.get(message.guild.id)) {
-			queue.set(message.guild.id, new queueConstruct());
-		}
-
-		const song = {
-			author: message.author,
-			videoResult: ytdl.validateURL(userMessage) ? await youtube.getVideo(userMessage)
-				: await youtube.searchVideos(userMessage, 1),
-			get title() {
-				return this.videoResult.title
-					|| this.videoResult.values().next().value.title;
-			},
-			get thumbnail() {
-				const thumbnails = this.videoResult.thumbnails || this.videoResult.values().next().value.thumbnails;
-				return thumbnails.high.url;
-			},
-			get url() {
-				return this.videoResult.url
-					|| this.videoResult.values().next().value.url;
-			}
-		}
-
-		if (song.videoResult.length === 0) {
-			message.channel.send('Unable to find the song.');
-			return;
+			queue.set(message.guild.id, { dispatcher: undefined, songs: new Array(), voiceChannel: undefined });
 		}
 
 		const serverQueue = queue.get(message.guild.id);
@@ -88,18 +57,35 @@ module.exports = {
 			return;
 		}
 
-		serverQueue.songs.push(song);
+		const songs = await resolveUserMessage(userMessage);
 
-		if (serverQueue.songs.length > 1) {
-			message.channel.send(
-				new MessageEmbed()
-					.setAuthor(`Added to queue #${serverQueue.songs.length}`)
-					.setColor('#FF0000')
-					.setTitle(song.title)
-					.setThumbnail(song.thumbnail)
-					.setURL(song.url)
-					.setFooter(`By ${message.author.tag}`)
-			);
+		if (songs.length === 0) {
+			message.channel.send('Unable to find the song.');
+			return;
+		}
+
+		songs.forEach(video => serverQueue.songs.push(new Song(video, message.author)));
+
+		if (songs.length > 1) {
+			message.channel.send({
+				embed: {
+					color: '#FF0000',
+					description: `Queued ${songs.length} tracks`,
+					footer: { text: `By ${message.author.tag}` }
+				}
+			});
+		} else if (serverQueue.songs.length > 1) {
+			const song = new Song(songs.values().next().value, message.author);
+			message.channel.send({
+				embed: {
+					color: '#FF0000',
+					author: { name: `Added to queue #${serverQueue.songs.length}` },
+					title: song.title,
+					thumbnail: song.thumbnail,
+					url: song.url,
+					footer: { text: `By ${message.author.tag}` }
+				}
+			});
 		}
 
 		// Return if bot is already playing.
@@ -109,6 +95,7 @@ module.exports = {
 
 		voiceChannel.join()
 			.then(connection => {
+				serverQueue.voiceChannel = voiceChannel;
 				message.guild.me.voice.setSelfDeaf(true);
 				Play(message, connection, serverQueue);
 			})
@@ -119,6 +106,14 @@ module.exports = {
 	},
 	queue
 };
+
+async function resolveUserMessage(userMessage) {
+	const playlist = await youtube.getPlaylist(userMessage).catch(() => { });
+
+	return playlist ? await playlist.getVideos()
+		: ytdl.validateURL(userMessage) ? new Array(await youtube.getVideo(userMessage)).catch(() => { })
+			: await youtube.searchVideos(userMessage, 1);
+}
 
 function Play(message, voiceConnection, serverQueue) {
 	const song = serverQueue.songs[0];
@@ -151,6 +146,7 @@ function Play(message, voiceConnection, serverQueue) {
 					.setDescription('Type `.s play <song>` to add more.')
 			);
 			await message.guild.me.voice.channel.leave();
+			serverQueue.collector.stop('QueueEnded');
 			queue.delete(message.guild.id);
 			return;
 		}
