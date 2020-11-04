@@ -24,6 +24,6 @@
     "ffmpeg-static": "^4.2.7",
     "fs": "0.0.1-security",
     "simple-youtube-api": "^5.2.1",
-    "ytdl-core": "^3.4.2"
+    "ytdl-core": "^4.0.3"
   }
 }
