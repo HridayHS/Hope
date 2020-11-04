@@ -18,7 +18,7 @@
   },
   "homepage": "https://github.com/HridayHS/Star",
   "dependencies": {
-    "@discordjs/opus": "^0.3.2",
+    "@discordjs/opus": "^0.3.3",
     "discord.js": "^12.4.0",
     "fast-average-color-node": "^1.0.1",
     "ffmpeg-static": "^4.2.7",
