@@ -22,7 +22,7 @@ module.exports = {
 	guildOnly: true,
 	func: async function (message) {
 		const userMessage = message.content.split(' ').slice(2).join(' ');
-		if (userMessage === '') {
+		if (userMessage.length === 0) {
 			message.channel.send('Please provide a song name or a youtube video link!');
 			return;
 		}
@@ -44,8 +44,16 @@ module.exports = {
 			return;
 		}
 
+		// Create server queue.
 		if (!queue.get(message.guild.id)) {
-			queue.set(message.guild.id, { dispatcher: undefined, songs: new Array(), voiceChannel: undefined });
+			queue.set(message.guild.id, {
+				dispatcher: undefined,
+				songs: new Array(),
+				voiceChannel: undefined,
+				queueMessage: {
+					reactionCollectors: new Array()
+				}
+			});
 		}
 
 		const serverQueue = queue.get(message.guild.id);
@@ -57,6 +65,7 @@ module.exports = {
 			return;
 		}
 
+		// return console.log(await youtube.getVideo(userMessage));
 		const songs = await resolveUserMessage(userMessage);
 
 		if (songs.length === 0) {
@@ -111,7 +120,7 @@ async function resolveUserMessage(userMessage) {
 	const playlist = await youtube.getPlaylist(userMessage).catch(() => { });
 
 	return playlist ? await playlist.getVideos()
-		: ytdl.validateURL(userMessage) ? new Array(await youtube.getVideo(userMessage)).catch(() => { })
+		: ytdl.validateURL(userMessage) ? new Array(await youtube.getVideo(userMessage))
 			: await youtube.searchVideos(userMessage, 1);
 }
 
@@ -145,9 +154,16 @@ function Play(message, voiceConnection, serverQueue) {
 					.setTitle('Music queue has ended!')
 					.setDescription('Type `.s play <song>` to add more.')
 			);
-			await message.guild.me.voice.channel.leave();
-			serverQueue.collector.stop('QueueEnded');
+
+			// Stop all the reaction collectors.
+			const { reactionCollectors } = queue.get(message.guild.id).queueMessage;
+			reactionCollectors.forEach(collector => {
+				collector.stop();
+			});
+
+			message.guild.me.voice.channel.leave();
 			queue.delete(message.guild.id);
+
 			return;
 		}
 

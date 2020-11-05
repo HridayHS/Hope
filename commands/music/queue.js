@@ -1,14 +1,14 @@
 const { queue } = require('./play');
 
-function getQueueList(songsArr) {
+function getQueueList(songs) {
 	const queueList = new Array();
-	const queuePages = Math.ceil(songsArr.length / 10);
+	const queuePages = Math.ceil(songs.length / 10);
 
 	for (let i = 0; i < queuePages; i++) {
 		queueList.push('');
 
 		for (let z = (i * 10); z < ((i + 1) * 10); z++) {
-			const song = songsArr[z];
+			const song = songs[z];
 			if (!song) break;
 			queueList[i] += `${z + 1}. ` + `[${song.title}](${song.url})` + '\n';
 		}
@@ -17,35 +17,20 @@ function getQueueList(songsArr) {
 	return queueList;
 }
 
-function switchPage(emoji, serverQueue, queueList) {
-	const queueMessage = serverQueue.queue;
-
-	switch (emoji) {
-		case '⬅️':
-			return (queueMessage.currentPage === 0) ? 0
-				: --queueMessage.currentPage;
-		case '➡️':
-			return (queueMessage.currentPage === queueList.length - 1) ? queueMessage.currentPage
-				: ++queueMessage.currentPage;
-	}
-}
-
 function getMessageEmbed(queueList, page) {
-	const embedMessage = {
-		embed: {
-			color: '#FF0000',
-			title: 'Music Queue',
-			description: queueList[page]
-		}
+	const embed = {
+		color: '#FF0000',
+		title: 'Music Queue',
+		description: queueList[page]
 	};
 
 	if (queueList.length > 1) {
-		embedMessage.embed.footer = {
+		embed.footer = {
 			text: `Page ${page + 1}/${queueList.length}`
 		};
 	}
 
-	return embedMessage;
+	return embed;
 }
 
 const reactions = ['⬅️', '➡️'];
@@ -57,6 +42,7 @@ module.exports = {
 	func: async function (message) {
 		const serverQueue = queue.get(message.guild.id);
 
+		// If server queue doesn't exist, return with message.
 		if (!serverQueue) {
 			message.channel.send({
 				embed: {
@@ -68,59 +54,51 @@ module.exports = {
 			return;
 		}
 
-		let defaultPage = 0;
-
-		if (serverQueue.queue) {
-			serverQueue.queue.reactionCollector.stop();
-			serverQueue.queue.message.delete();
-			defaultPage = serverQueue.queue.currentPage;
-		}
-
 		const queueList = getQueueList(serverQueue.songs);
-
-		const queueMessage = await message.channel.send(getMessageEmbed(queueList, defaultPage));
+		const queueMessage = await message.channel.send({ embed: getMessageEmbed(queueList, 0) });
 
 		// Return if there is only 1 queue page.
 		if (queueList.length === 1) {
 			return;
 		}
 
-		serverQueue.queue = {
-			message: queueMessage,
-			reactionCollector: undefined,
-			currentPage: defaultPage
-		};
+		// Set queue list current page to 0;
+		let currentPage = 0;
 
 		// Add reactions to queue message
 		reactions.forEach(reaction => queueMessage.react(reaction));
 
 		const collectorFilter = reaction => reactions.some(queueReaction => queueReaction === reaction.emoji.name);
-		serverQueue.queue.reactionCollector = queueMessage.createReactionCollector(collectorFilter);
+		const reactionCollector = queueMessage.createReactionCollector(collectorFilter);
 
-		serverQueue.queue.reactionCollector.on('collect', (reaction, user) => {
+		reactionCollector.on('collect', (reaction, user) => {
 			if (user.id == message.client.user.id) return;
 
 			if (serverQueue.voiceChannel.members.has(user.id)) {
-				const emoji = reaction.emoji.name;
-				switch (emoji) {
-					case '⬅️':
-						const previousPage = switchPage(emoji, serverQueue);
-						queueMessage.edit(getMessageEmbed(queueList, previousPage));
+				const queueList = getQueueList(serverQueue.songs);
+				let page;
+
+				switch (reaction.emoji.name) {
+					case '⬅️': // Get previous page
+						page = currentPage === 0 ? 0 : --currentPage;
 						break;
-					case '➡️':
-						const nextPage = switchPage(emoji, serverQueue, queueList);
-						queueMessage.edit(getMessageEmbed(queueList, nextPage));
+					case '➡️': // Get Next page
+						page = (currentPage === queueList.length - 1) ? currentPage : ++currentPage;
 						break;
 				}
+
+				// Switch page
+				queueMessage.edit({ embed: getMessageEmbed(queueList, page) });
 			}
 
 			reaction.users.remove(user.id);
 		});
 
-		serverQueue.queue.reactionCollector.on('end', (collected, reason) => {
-			if (reason === 'QueueEnded') {
-				collected.forEach(reaction => reaction.remove());
-			}
+		reactionCollector.on('end', collected => {
+			collected.forEach(reaction => reaction.remove());
 		});
+
+		// Store reaction collector to server queue.
+		serverQueue.queueMessage.reactionCollectors.push(reactionCollector);
 	}
 };
