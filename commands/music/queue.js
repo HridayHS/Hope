@@ -18,19 +18,14 @@ function getQueueList(songs) {
 }
 
 function getMessageEmbed(queueList, page) {
-	const embed = {
+	return {
 		color: '#FF0000',
 		title: 'Music Queue',
-		description: queueList[page]
-	};
-
-	if (queueList.length > 1) {
-		embed.footer = {
+		description: queueList[page],
+		footer = {
 			text: `Page ${page + 1}/${queueList.length}`
-		};
-	}
-
-	return embed;
+		}
+	};
 }
 
 const reactions = ['⬅️', '➡️'];
@@ -62,20 +57,31 @@ module.exports = {
 			return;
 		}
 
-		// Set queue list current page to 0;
-		let currentPage = 0;
-
 		// Add reactions to queue message
 		reactions.forEach(reaction => queueMessage.react(reaction));
 
 		const collectorFilter = reaction => reactions.some(queueReaction => queueReaction === reaction.emoji.name);
 		const reactionCollector = queueMessage.createReactionCollector(collectorFilter);
 
+		// Set queue list current page to 0;
+		let currentPage = 0;
+
 		reactionCollector.on('collect', (reaction, user) => {
 			if (user.id == message.client.user.id) return;
 
+			const queueList = getQueueList(serverQueue.songs);
+
+			// Stop reaction collector if queue list only have 1 page.
+			if (queueList.length === 1) {
+				const { reactionCollectors } = queue.get(message.guild.id).queueMessage;
+
+				reactionCollector.stop();
+				reactionCollectors.splice(reactionCollectors.indexOf(reactionCollector), 1);
+
+				queueMessage.edit({ embed: getMessageEmbed(queueList, 0) });
+			}
+
 			if (serverQueue.voiceChannel.members.has(user.id)) {
-				const queueList = getQueueList(serverQueue.songs);
 				let page;
 
 				switch (reaction.emoji.name) {
@@ -94,6 +100,7 @@ module.exports = {
 			reaction.users.remove(user.id);
 		});
 
+		// Remove all the reaction when end even emits.
 		reactionCollector.on('end', collected => {
 			collected.forEach(reaction => reaction.remove());
 		});
