@@ -18,19 +18,14 @@ function getQueueList(songs) {
 }
 
 function getMessageEmbed(queueList, page) {
-	const embed = {
+	return {
 		color: '#FF0000',
 		title: 'Music Queue',
-		description: queueList[page]
-	};
-
-	if (queueList.length > 1) {
-		embed.footer = {
+		description: queueList[page],
+		footer: {
 			text: `Page ${page + 1}/${queueList.length}`
-		};
-	}
-
-	return embed;
+		}
+	};
 }
 
 const reactions = ['⬅️', '➡️'];
