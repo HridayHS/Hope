@@ -22,7 +22,7 @@ module.exports = {
 	guildOnly: true,
 	func: async function (message) {
 		const userMessage = message.content.split(' ').slice(2).join(' ');
-		if (userMessage === '') {
+		if (userMessage.length === 0) {
 			message.channel.send('Please provide a song name or a youtube video link!');
 			return;
 		}
@@ -44,6 +44,7 @@ module.exports = {
 			return;
 		}
 
+		// If server queue doesn't exist, create one.
 		if (!queue.get(message.guild.id)) {
 			queue.set(message.guild.id, { dispatcher: undefined, songs: new Array(), voiceChannel: undefined });
 		}
@@ -57,7 +58,7 @@ module.exports = {
 			return;
 		}
 
-		const songs = await resolveUserMessage(userMessage);
+		const songs = await userMessageToYTVideos(userMessage);
 
 		if (songs.length === 0) {
 			message.channel.send('Unable to find the song.');
@@ -107,7 +108,7 @@ module.exports = {
 	queue
 };
 
-async function resolveUserMessage(userMessage) {
+async function userMessageToYTVideos(userMessage) {
 	const playlist = await youtube.getPlaylist(userMessage).catch(() => { });
 
 	return playlist ? await playlist.getVideos()
