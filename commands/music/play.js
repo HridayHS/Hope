@@ -46,7 +46,14 @@ module.exports = {
 
 		// If server queue doesn't exist, create one.
 		if (!queue.get(message.guild.id)) {
-			queue.set(message.guild.id, { dispatcher: undefined, songs: new Array(), voiceChannel: undefined });
+			queue.set(message.guild.id, {
+				dispatcher: undefined,
+				songs: new Array(),
+				voiceChannel: undefined,
+				queueMessage: {
+					reactionCollectors: new Array()
+				}
+			});
 		}
 
 		const serverQueue = queue.get(message.guild.id);
@@ -146,9 +153,16 @@ function Play(message, voiceConnection, serverQueue) {
 					.setTitle('Music queue has ended!')
 					.setDescription('Type `.s play <song>` to add more.')
 			);
-			await message.guild.me.voice.channel.leave();
-			serverQueue.collector.stop('QueueEnded');
+
+			// Stop all the reaction collectors.
+			const { reactionCollectors } = queue.get(message.guild.id).queueMessage;
+			reactionCollectors.forEach(collector => {
+				collector.stop();
+			});
+
+			message.guild.me.voice.channel.leave();
 			queue.delete(message.guild.id);
+
 			return;
 		}
 

@@ -11,8 +11,9 @@ module.exports = {
 		}
 
 		const voiceChannel = message.guild.me.voice.channel;
+		const serverQueue = queue.get(message.guild.id);
 
-		if (!voiceChannel || !queue.get(message.guild.id)) {
+		if (!voiceChannel || !serverQueue) {
 			message.channel.send('I am not playing. Type `.s play <song>` to play.');
 			return;
 		}
@@ -22,7 +23,13 @@ module.exports = {
 			return;
 		}
 
-		await voiceChannel.leave();
+		// Stop all the reaction collectors.
+		const { reactionCollectors } = serverQueue.queueMessage;
+		reactionCollectors.forEach(collector => {
+			collector.stop();
+		});
+
+		voiceChannel.leave();
 		message.channel.send('Successfully disconnected!');
 		queue.delete(message.guild.id);
 	}
