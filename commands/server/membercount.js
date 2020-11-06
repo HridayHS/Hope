@@ -1,7 +1,9 @@
 module.exports = {
 	name: 'membercount',
 	guildOnly: true,
-	func: function (message) {
+	func: async function (message) {
+		const serverMembers = await message.guild.members.fetch({ force: true });
+
 		message.channel.send({
 			embed: {
 				author: {
@@ -11,8 +13,8 @@ module.exports = {
 				color: 'GREEN',
 				fields: [
 					{ name: 'Members', value: message.guild.memberCount },
-					{ name: 'Humans', value: message.guild.members.cache.filter(member => !member.user.bot).size },
-					{ name: 'Bots', value: message.guild.members.cache.filter(member => member.user.bot).size }
+					{ name: 'Humans', value: serverMembers.filter(member => !member.user.bot).size },
+					{ name: 'Bots', value: serverMembers.filter(member => member.user.bot).size }
 				]
 			}
 		});
