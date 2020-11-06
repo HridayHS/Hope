@@ -119,7 +119,7 @@ async function userMessageToYTVideos(userMessage) {
 	const playlist = await youtube.getPlaylist(userMessage).catch(() => { });
 
 	return playlist ? await playlist.getVideos()
-		: ytdl.validateURL(userMessage) ? new Array(await youtube.getVideo(userMessage))
+		: ytdl.validateURL(userMessage) ? [await youtube.getVideo(userMessage)]
 			: await youtube.searchVideos(userMessage, 1);
 }
 
