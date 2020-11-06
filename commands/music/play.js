@@ -1,10 +1,7 @@
-const { MessageEmbed } = require('discord.js');
 const YouTube = require('simple-youtube-api');
 
 const ytdl = require('ytdl-core');
 const youtube = new YouTube(require('../../config.json')["youtube-data-api-key"]);
-
-const queue = new Map();
 
 class Song {
 	constructor(video, author) {
@@ -15,6 +12,8 @@ class Song {
 		this.url = video.shortURL;
 	}
 }
+
+const queue = new Map();
 
 module.exports = {
 	name: 'play',
@@ -130,15 +129,16 @@ function Play(message, voiceConnection, serverQueue) {
 	serverQueue.dispatcher = voiceConnection.play(stream, { bitrate: 165, volume: false });
 
 	serverQueue.dispatcher.on('start', () => {
-		message.channel.send(
-			new MessageEmbed()
-				.setAuthor('Now Playing')
-				.setColor('#FF0000')
-				.setTitle(song.title)
-				.setThumbnail(song.thumbnail)
-				.setURL(song.url)
-				.setFooter(`Added by ${song.author.tag}`)
-		);
+		message.channel.send({
+			embed: {
+				author: { name: 'Now Playing' },
+				color: '#FF0000',
+				title: song.title,
+				thumbnail: { url: song.thumbnail },
+				url: song.url,
+				footer: { text: `Added by ${song.author.tag}` }
+			}
+		});
 	});
 
 	serverQueue.dispatcher.on('finish', async () => {
@@ -147,12 +147,13 @@ function Play(message, voiceConnection, serverQueue) {
 
 		// If the queue is empty, leave the voice channel and delete server queue.
 		if (serverQueue.songs.length === 0) {
-			message.channel.send(
-				new MessageEmbed()
-					.setColor('#FF0000')
-					.setTitle('Music queue has ended!')
-					.setDescription('Type `.s play <song>` to add more.')
-			);
+			message.channel.send({
+				embed: {
+					color: '#FF0000',
+					title: 'Music queue has ended!',
+					description: 'Type `.s play <song>` to add more.'
+				}
+			});
 
 			// Stop all the reaction collectors.
 			const { reactionCollectors } = queue.get(message.guild.id).queueMessage;

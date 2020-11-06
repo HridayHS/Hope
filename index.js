@@ -1,4 +1,4 @@
-const { Client, Collection, MessageEmbed } = require('discord.js');
+const { Client, Collection } = require('discord.js');
 const client = new Client();
 
 // Console log when bot is ready.
@@ -32,16 +32,20 @@ client.on('message', async (message) => {
 		case messageContent === '.s':
 		case messageContent === '.s help':
 		case messageContent === '<@!545420239706521601>':
-			message.channel.send(
-				new MessageEmbed()
-					.setAuthor('Bot Help', client.user.displayAvatarURL())
-					.setColor('GREEN')
-					.addFields(
+			message.channel.send({
+				embed: {
+					author: {
+						name: 'Bot Help',
+						icon_url: client.user.displayAvatarURL(),
+					},
+					color: 'GREEN',
+					fields: [
 						{ name: 'Prefix', value: '`.s`', inline: true },
 						{ name: 'Commands', value: '`.s commands`', inline: true },
 						{ name: 'About', value: '`.s about`', inline: true }
-					)
-			);
+					]
+				}
+			});
 			return;
 		case !messageContent.startsWith('.s'):
 			return;
