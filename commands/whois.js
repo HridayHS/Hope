@@ -5,7 +5,7 @@ async function getUser(message) {
 	const userMention = message.mentions.users.first();
 
 	return userMention ? userMention
-		: userID ? await message.client.users.fetch(userID, true, true).catch(() => { })
+		: userID ? await message.client.users.fetch(userID, true, true).catch(() => {})
 			: message.author;
 };
 

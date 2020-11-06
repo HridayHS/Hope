@@ -59,17 +59,17 @@ const customDateFormat = (date, withTime = false) => {
 const serverRegionHR = region => {
 	switch (region) {
 		case 'hongkong':
-			return 'Hong Kong'
+			return 'Hong Kong';
 		case 'southafrica':
-			return 'South Africa'
+			return 'South Africa';
 		case 'us-central':
-			return 'US Central'
+			return 'US Central';
 		case 'us-east':
-			return 'US East'
+			return 'US East';
 		case 'us-south':
-			return 'US South'
+			return 'US South';
 		case 'us-west':
-			return 'US West'
+			return 'US West';
 		default:
 			return region.charAt(0).toUpperCase() + region.slice(1);
 	}

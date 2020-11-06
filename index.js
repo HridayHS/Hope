@@ -71,7 +71,7 @@ client.on('message', async (message) => {
 	}
 
 	const botCommand = botCommands.get(messageContent.split(' ')[1])
-		|| botCommands.find(command => command.alias && command.alias.includes(messageContent.split(' ')[1]))
+		|| botCommands.find(command => command.alias && command.alias.includes(messageContent.split(' ')[1]));
 
 	if (botCommand) {
 		// Check if command is guild only

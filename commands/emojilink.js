@@ -27,7 +27,7 @@ module.exports = {
 				if (i === 5) break; // Don't send emoji links more than 5.
 
 				const EmojiInfo = Emojis[i].slice(1).slice(0, -1).split(':');
-				const EmojiURL = new Emoji(EmojiInfo).url
+				const EmojiURL = new Emoji(EmojiInfo).url;
 
 				message.channel.send(
 					isLinkNeeded ? `<${EmojiURL}>` : EmojiURL, // Message content
@@ -38,7 +38,7 @@ module.exports = {
 		}
 
 		const EmojiInfo = Emojis[0].slice(1).slice(0, -1).split(':');
-		const EmojiURL = new Emoji(EmojiInfo).url
+		const EmojiURL = new Emoji(EmojiInfo).url;
 
 		const canBotSendFiles = message.channel.permissionsFor(message.guild.me).has('ATTACH_FILES');
 
