@@ -28,28 +28,28 @@ const getAllFiles = dir =>
 	}, []);
 
 /* Custom date format for bot */
+const Time12To24 = date => {
+	const Hours = date.getHours();
+	const Minutes = date.getMinutes();
+
+	const HoursIn12 = (Hours === 0) ? 12
+		: (Hours > 12) ? (Hours - 12)
+			: Hours;
+
+	const HourText = HoursIn12;
+	const MinuteText = (Minutes <= 9) ? '0' + Minutes : Minutes;
+
+	return HourText + ':' + MinuteText;
+};
+
 const customDateFormat = (date, withTime = false) => {
-	const Time12To24 = () => {
-		const Hours = date.getHours();
-		const Minutes = date.getMinutes();
-
-		const HoursIn12 = (Hours === 0) ? 12
-			: (Hours > 12) ? (Hours - 12)
-				: Hours;
-
-		const HourText = HoursIn12;
-		const MinuteText = (Minutes <= 9) ? '0' + Minutes : Minutes;
-
-		return HourText + ':' + MinuteText;
-	};
-
 	const Days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 	const Months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
 	let string = `${Days[date.getDay()]}, ${date.getDate()} ${Months[date.getMonth()]}, ${date.getFullYear()}`;
 
 	if (withTime) {
-		string += ` ${Time12To24()} ${date.getHours() > 12 ? 'PM' : 'AM'}`;
+		string += ` ${Time12To24(date)} ${date.getHours() > 12 ? 'PM' : 'AM'}`;
 	}
 
 	return string;
