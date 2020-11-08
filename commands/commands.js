@@ -26,12 +26,12 @@ module.exports = {
 				name: 'General Commands',
 				emoji: '#️⃣',
 				list: {
-					'avatar ?@member | ?userID': 'Get avatar',
+					'avatar [?@member | ?userID]': 'Get avatar',
 					'emoji <custom emoji> ?link': 'Get emoji link',
 					'pin <message>': 'Pin message',
 					'ping': 'Says pong',
 					'unpinall': 'Unpins all the pinned messages',
-					'whois ?@member | ?userID': 'Get member info'
+					'whois [?@member | ?userID]': 'Get member info'
 				}
 			},
 			{
