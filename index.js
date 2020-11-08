@@ -24,6 +24,7 @@ for (const commandFile of commandFiles) {
 
 client.on('message', async (message) => {
 	const messageContent = message.content.toLowerCase();
+	const commandReceived = messageContent.split(' ')[1];
 
 	switch (true) {
 		case message.channel.type !== 'dm' && !message.guild.me.permissions.has(['SEND_MESSAGES']):
@@ -49,7 +50,7 @@ client.on('message', async (message) => {
 			return;
 		case !messageContent.startsWith('.s'):
 			return;
-		case messageContent.split(' ')[1] === 'refresh':
+		case commandReceived === 'refresh':
 			if (message.author.id !== (await client.fetchApplication()).owner.ownerID) {
 				message.reply('You cannot perform this action.');
 				return;
@@ -70,8 +71,8 @@ client.on('message', async (message) => {
 			return;
 	}
 
-	const botCommand = botCommands.get(messageContent.split(' ')[1])
-		|| botCommands.find(command => command.alias && command.alias.includes(messageContent.split(' ')[1]));
+	const botCommand = botCommands.get(commandReceived)
+		|| botCommands.find(command => command.alias && command.alias.includes(commandReceived));
 
 	if (botCommand) {
 		// Check if command is guild only
