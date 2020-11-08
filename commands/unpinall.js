@@ -1,8 +1,10 @@
+const unpinallPermissions = ['MANAGE_MESSAGES', 'READ_MESSAGE_HISTORY'];
+
 module.exports = {
 	name: 'unpinall',
 	permissions: {
-		bot: ['MANAGE_MESSAGES', 'READ_MESSAGE_HISTORY'],
-		member: ['MANAGE_MESSAGES', 'READ_MESSAGE_HISTORY']
+		bot: [...unpinallPermissions],
+		member: [...unpinallPermissions]
 	},
 	func: async function (message) {
 		const pinnedMessages = await message.channel.messages.fetchPinned();

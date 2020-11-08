@@ -27,6 +27,43 @@ const getAllFiles = dir =>
 		return isDirectory ? [...files, ...getAllFiles(name)] : [...files, name];
 	}, []);
 
+/**
+ * Check if bot/member have the required permission(s) to execute the command,
+ * If not then it returns false and sends a text message stating which permissions are missing.
+ */
+function hasCommandPermissions(message, botCommand, botPerms = false) {
+	// If command does not require any permission or message channel is DMChannel, return true.
+	if (!botCommand.permissions || message.channel.type === 'dm') {
+		return true;
+	}
+
+	const Perms = botCommand.permissions[botPerms ? 'bot' : 'member'];
+	if (!Perms) {
+		return true;
+	}
+
+	const hasPermissions = message.channel.permissionsFor(botPerms ? message.guild.me : message.member).has(Perms);
+
+	if (hasPermissions) {
+		return true;
+	} else {
+		const missingPerms = [];
+
+		// Check which permission is missing and push it into missingPerms array;
+		for (let i = 0; i < Perms.length; i++) {
+			const Permission = Perms[i];
+			const hasPermission = message.channel.permissionsFor(botPerms ? message.guild.me : message.member).has(Permission);
+			if (!hasPermission) {
+				missingPerms.push(Permission);
+			}
+		}
+
+		const PermsHumnanReadable = missingPerms.map(s => s.toLowerCase().replace(/(^|_)./g, s => s.slice(-1).toUpperCase()).replace(/([A-Z])/g, ' $1').trim());
+		message.channel.send(`${botPerms ? 'I' : `<@${message.author.id}>, You`} do not have the required permissions to perform this action.` + '\n`Permissions required:` `' + PermsHumnanReadable.join(', ') + '`');
+		return false;
+	}
+}
+
 /* Custom date format for bot */
 const Time12To24 = date => {
 	const Hours = date.getHours();
@@ -76,10 +113,11 @@ const serverRegionHR = region => {
 };
 
 module.exports = {
-	imageAverageColor,
 	botPermissions,
 	botVersion,
-	getAllFiles,
 	customDateFormat,
+	getAllFiles,
+	hasCommandPermissions,
+	imageAverageColor,
 	serverRegionHR
 };

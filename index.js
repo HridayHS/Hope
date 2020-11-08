@@ -1,7 +1,7 @@
 const { Client, Collection } = require('discord.js');
 
 const client = new Client();
-const { getAllFiles } = require('./utils');
+const { getAllFiles, hasCommandPermissions } = require('./utils');
 
 // Console log when bot is ready.
 client.once('ready', () => {
@@ -80,33 +80,9 @@ client.on('message', async (message) => {
 			return;
 		}
 
-		// Check if bot and member both have the required permission to execute the command.
-		function permissionsCheck(botPerms = false) {
-			if (!botCommand.permissions) {
-				return true;
-			}
-
-			const Perms = botCommand.permissions[botPerms ? 'bot' : 'member'];
-			const hasPermissions = message.channel.permissionsFor(botPerms ? message.guild.me : message.member).has(Perms);
-			if (Perms && !hasPermissions) {
-				const missingPerms = [];
-
-				for (let i = 0; i < Perms.length; i++) {
-					const Permission = Perms[i];
-					const hasPermission = message.channel.permissionsFor(botPerms ? message.guild.me : message.member).has(Permission);
-					if (!hasPermission) {
-						missingPerms.push(Permission);
-					}
-				}
-
-				const PermsHumnanReadable = missingPerms.map(s => s.toLowerCase().replace(/(^|_)./g, s => s.slice(-1).toUpperCase()).replace(/([A-Z])/g, ' $1').trim());
-				message.channel.send(`${botPerms ? 'I' : `<@${message.author.id}>, You`} do not have the required permissions to perform this action.` + '\n`Permissions required:` `' + PermsHumnanReadable.join(', ') + '`');
-				return false;
-			}
-			return true;
-		}
-
-		if (message.channel.type !== 'dm' && (!permissionsCheck(true) || !permissionsCheck())) {
+		// Return if bot/member does not have required permissions to use the command.
+		if (!hasCommandPermissions(message, botCommand, true)
+			|| !hasCommandPermissions(message, botCommand)) {
 			return;
 		}
 

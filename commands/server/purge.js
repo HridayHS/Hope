@@ -1,10 +1,12 @@
+const purgePermissions = ['MANAGE_CHANNELS', 'MANAGE_WEBHOOKS', 'MANAGE_MESSAGES', 'READ_MESSAGE_HISTORY'];
+
 module.exports = {
 	name: 'purge',
 	alias: ['clear', 'clean', 'delete'],
 	guildOnly: true,
 	permissions: {
-		bot: ['MANAGE_CHANNELS', 'MANAGE_WEBHOOKS', 'MANAGE_MESSAGES', 'READ_MESSAGE_HISTORY'],
-		member: ['MANAGE_CHANNELS', 'MANAGE_WEBHOOKS', 'MANAGE_MESSAGES', 'READ_MESSAGE_HISTORY']
+		bot: [...purgePermissions],
+		member: [...purgePermissions]
 	},
 	func: async function (message) {
 		const userInput = message.content.toLowerCase().split(' ')[2];
