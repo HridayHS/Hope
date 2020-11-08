@@ -37,6 +37,12 @@ module.exports = {
 			return;
 		}
 
+		// Delete user message if deletion is required.
+		const isMessageDeletionRequired = message.content.match('delete');
+		if (isMessageDeletionRequired) {
+			message.delete();
+		}
+
 		const canBotSendFiles = message.channel.permissionsFor(message.guild.me).has('ATTACH_FILES');
 		const EmojiURL = new Emoji(Emojis[0]).url;
 

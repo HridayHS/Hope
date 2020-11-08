@@ -27,7 +27,7 @@ module.exports = {
 				emoji: '#️⃣',
 				list: {
 					'avatar [?@member | ?userID]': 'Get avatar',
-					'emoji <custom emoji> ?link': 'Get emoji link',
+					'emoji <custom emoji> ?link | ?delete': 'Get emoji link',
 					'pin <message>': 'Pin message',
 					'ping': 'Says pong',
 					'unpinall': 'Unpins all the pinned messages',
