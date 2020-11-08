@@ -1,5 +1,7 @@
 const { Client, Collection } = require('discord.js');
+
 const client = new Client();
+const { getAllFiles } = require('./utils');
 
 // Console log when bot is ready.
 client.once('ready', () => {
@@ -11,8 +13,6 @@ client.once('ready', () => {
 client.login(require('./config.json').token);
 
 /* Bot */
-const { getAllFiles } = require('./utils');
-
 const botCommands = new Collection();
 
 let commandFiles = getAllFiles('./commands').filter(file => file.endsWith('.js'));
