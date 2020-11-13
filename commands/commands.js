@@ -69,14 +69,13 @@ module.exports = {
 	func: async function (message) {
 		const commands = [...botCommands];
 
-		let homePageDescription = 'React to get a list of commands';
-		commands.forEach(category => homePageDescription += `\n\n${category.emoji} - ${category.name.replace('Commands', 'commands')}`);
-
 		// Remove Server and Music commands for DMChannel.
 		if (message.channel.type === 'dm') {
 			commands.splice(1, 2);
-			homePageDescription = homePageDescription.replace('\n\n⚙️ - Server commands\n\n🎵 - Music commands', '');
 		}
+
+		let homePageDescription = 'React to get a list of commands';
+		commands.forEach(category => homePageDescription += `\n\n${category.emoji} - ${category.name.replace('Commands', 'commands')}`);
 
 		/* .s commands <category name> */
 		const userRequestedCommandCategory = message.content.toLowerCase().split(' ')[2];
