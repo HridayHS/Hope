@@ -10,6 +10,11 @@ class Emoji {
 	}
 }
 
+async function getMessageFromID(message) {
+	const messageID = message.content.split(' ')[2];
+	return messageID ? await message.channel.messages.fetch(messageID).catch(() => {}) : null;
+}
+
 async function getUser(message) {
 	const userID = message.content.split(' ')[2];
 	const userMention = message.mentions.users.first();
@@ -20,7 +25,10 @@ module.exports = {
 	name: 'emojilink',
 	alias: ['e', 'emoji', 'emote', 'emotelink', 'elink'],
 	func: async function (message) {
-		const Emojis = message.content.match(/(<:|<a:)+[^:]+:[0-9]+>/g);
+		const messageFromID = await getMessageFromID(message);
+		const EmojiMessage = messageFromID ? messageFromID.content : message.content;
+
+		const Emojis = EmojiMessage.match(/(<:|<a:)+[^:]+:[0-9]+>/g);
 		const user = await getUser(message);
 
 		if (!Emojis && !user) {
