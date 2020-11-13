@@ -1,3 +1,49 @@
+const botCommands = [
+	{
+		name: 'General Commands',
+		emoji: '#️⃣',
+		list: {
+			'avatar [?@member | ?userID]': 'Get avatar',
+			'emoji [<custom emoji> | <?member | ?userID>] | ?link | ?delete': 'Get emoji link',
+			'pin <message>': 'Pin message',
+			'ping': 'Says pong',
+			'unpinall': 'Unpins all the pinned messages',
+			'whois [?@member | ?userID]': 'Get member info'
+		}
+	},
+	{
+		name: 'Server Commands',
+		emoji: '⚙️',
+		list: {
+			'membercount': 'Get members count',
+			'purge ?1-100 | ?@member | ?all': 'Purge recent messages',
+			'serverbanner': 'Get server banner',
+			'servericon': 'Get server icon',
+			'serverinfo': 'Get server info'
+		}
+	},
+	{
+		name: 'Music Commands',
+		emoji: '🎵',
+		list: {
+			'play <song name | youtube video link | youtube playlist>': 'Play a song',
+			'queue': 'Display music queue',
+			'skip': 'Skip song',
+			'stop': 'Stop playing'
+		}
+	},
+	{
+		name: 'Bot Commands',
+		emoji: '🤖',
+		list: {
+			'about': 'Get info about bot',
+			'botdiscord': 'Get bot discord link',
+			'botinvite': 'Get bot invite link',
+			'version': 'Display bot version'
+		}
+	}
+];
+
 const getEmbedMessage = (commandsCategory, message) => {
 	const { name: categoryName, list: commandsList } = commandsCategory;
 
@@ -21,51 +67,7 @@ module.exports = {
 	alias: ['cmd', 'cmds', 'command'],
 	permissions: { bot: ['ADD_REACTIONS'] },
 	func: async function (message) {
-		const commands = [
-			{
-				name: 'General Commands',
-				emoji: '#️⃣',
-				list: {
-					'avatar [?@member | ?userID]': 'Get avatar',
-					'emoji [<custom emoji> | <?member | ?userID>] | ?link | ?delete': 'Get emoji link',
-					'pin <message>': 'Pin message',
-					'ping': 'Says pong',
-					'unpinall': 'Unpins all the pinned messages',
-					'whois [?@member | ?userID]': 'Get member info'
-				}
-			},
-			{
-				name: 'Server Commands',
-				emoji: '⚙️',
-				list: {
-					'membercount': 'Get members count',
-					'purge ?1-100 | ?@member | ?all': 'Purge recent messages',
-					'serverbanner': 'Get server banner',
-					'servericon': 'Get server icon',
-					'serverinfo': 'Get server info'
-				}
-			},
-			{
-				name: 'Music Commands',
-				emoji: '🎵',
-				list: {
-					'play <song name | youtube video link | youtube playlist>': 'Play a song',
-					'queue': 'Display music queue',
-					'skip': 'Skip song',
-					'stop': 'Stop playing'
-				}
-			},
-			{
-				name: 'Bot Commands',
-				emoji: '🤖',
-				list: {
-					'about': 'Get info about bot',
-					'botdiscord': 'Get bot discord link',
-					'botinvite': 'Get bot invite link',
-					'version': 'Display bot version'
-				}
-			}
-		];
+		const commands = [...botCommands];
 
 		let homePageDescription = 'React to get a list of commands';
 		commands.forEach(category => homePageDescription += `\n\n${category.emoji} - ${category.name.replace('Commands', 'commands')}`);
