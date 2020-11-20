@@ -15,6 +15,56 @@ class Song {
 
 const queue = new Map();
 
+function Play(message, voiceConnection, serverQueue) {
+	const song = serverQueue.songs[0];
+
+	const stream = ytdl(song.url, { filter: 'audioonly', quality: 'highestaudio' });
+	serverQueue.dispatcher = voiceConnection.play(stream, { bitrate: 165, volume: false });
+
+	serverQueue.dispatcher.on('start', () => {
+		message.channel.send({
+			embed: {
+				author: { name: 'Now Playing' },
+				color: '#FF0000',
+				title: song.title,
+				thumbnail: { url: song.thumbnail },
+				url: song.url,
+				footer: { text: `Added by ${song.author.tag}` }
+			}
+		});
+	});
+
+	serverQueue.dispatcher.on('finish', async () => {
+		// Remove the song from queue once it is finished.
+		serverQueue.songs.shift();
+
+		// If the queue is empty, leave the voice channel and delete server queue.
+		if (serverQueue.songs.length === 0) {
+			message.channel.send({
+				embed: {
+					color: '#FF0000',
+					title: 'Music queue has ended!',
+					description: 'Type `.s play <song>` to add more.'
+				}
+			});
+
+			// Stop all the reaction collectors.
+			const { reactionCollectors } = queue.get(message.guild.id).queueMessage;
+			reactionCollectors.forEach(collector => {
+				collector.stop();
+			});
+
+			message.guild.me.voice.channel.leave();
+			queue.delete(message.guild.id);
+
+			return;
+		}
+
+		// Call the Play function again to play next song.
+		Play(message, voiceConnection, serverQueue);
+	});
+}
+
 module.exports = {
 	name: 'play',
 	alias: ['p'],
@@ -120,54 +170,4 @@ async function userMessageToYTVideos(userMessage) {
 	return playlist ? await playlist.getVideos()
 		: ytdl.validateURL(userMessage) ? [await youtube.getVideo(userMessage)]
 			: await youtube.searchVideos(userMessage, 1);
-}
-
-function Play(message, voiceConnection, serverQueue) {
-	const song = serverQueue.songs[0];
-
-	const stream = ytdl(song.url, { filter: 'audioonly', quality: 'highestaudio' });
-	serverQueue.dispatcher = voiceConnection.play(stream, { bitrate: 165, volume: false });
-
-	serverQueue.dispatcher.on('start', () => {
-		message.channel.send({
-			embed: {
-				author: { name: 'Now Playing' },
-				color: '#FF0000',
-				title: song.title,
-				thumbnail: { url: song.thumbnail },
-				url: song.url,
-				footer: { text: `Added by ${song.author.tag}` }
-			}
-		});
-	});
-
-	serverQueue.dispatcher.on('finish', async () => {
-		// Remove the song from queue once it is finished.
-		serverQueue.songs.shift();
-
-		// If the queue is empty, leave the voice channel and delete server queue.
-		if (serverQueue.songs.length === 0) {
-			message.channel.send({
-				embed: {
-					color: '#FF0000',
-					title: 'Music queue has ended!',
-					description: 'Type `.s play <song>` to add more.'
-				}
-			});
-
-			// Stop all the reaction collectors.
-			const { reactionCollectors } = queue.get(message.guild.id).queueMessage;
-			reactionCollectors.forEach(collector => {
-				collector.stop();
-			});
-
-			message.guild.me.voice.channel.leave();
-			queue.delete(message.guild.id);
-
-			return;
-		}
-
-		// Call the Play function again to play next song.
-		Play(message, voiceConnection, serverQueue);
-	});
 }
