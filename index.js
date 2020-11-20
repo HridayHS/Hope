@@ -5,8 +5,9 @@ const { getAllFiles, hasCommandPermissions } = require('./utils');
 
 // Console log when bot is ready.
 client.once('ready', () => {
+	const date = new Date();
 	const Months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
-	console.log(`Bot is up | ${new Date().getHours()}:${new Date().getMinutes()}, ${new Date().getDate()} ${Months[new Date().getMonth()]}`);
+	console.log(`Bot is up | ${date.getHours()}:${date.getMinutes()}, ${date.getDate()} ${Months[date.getMonth()]}`);
 });
 
 // Initialize login
