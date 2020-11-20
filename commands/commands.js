@@ -3,12 +3,12 @@ const botCommands = [
 		name: 'General Commands',
 		emoji: '#️⃣',
 		list: {
-			'avatar [?@member | ?userID]': 'Get avatar',
-			'emoji [<custom emoji> | <?member | ?userID>] | ?link | ?delete': 'Get emoji link',
+			'avatar [@member]': 'Get avatar',
+			'emoji <custom emoji OR @member> [link] [delete]': 'Get emoji link',
 			'pin <message>': 'Pin message',
 			'ping': 'Says pong',
 			'unpinall': 'Unpins all the pinned messages',
-			'whois [?@member | ?userID]': 'Get member info'
+			'whois [@member]': 'Get member info'
 		}
 	},
 	{
@@ -16,7 +16,7 @@ const botCommands = [
 		emoji: '⚙️',
 		list: {
 			'membercount': 'Get members count',
-			'purge ?1-100 | ?@member | ?all': 'Purge recent messages',
+			'purge [1-100] OR [@member] OR [all]': 'Purge recent messages',
 			'serverbanner': 'Get server banner',
 			'servericon': 'Get server icon',
 			'serverinfo': 'Get server info'
@@ -26,7 +26,7 @@ const botCommands = [
 		name: 'Music Commands',
 		emoji: '🎵',
 		list: {
-			'play <song name | youtube video link | youtube playlist>': 'Play a song',
+			'play <song name OR youtube video link OR youtube playlist>': 'Play a song',
 			'queue': 'Display music queue',
 			'skip': 'Skip song',
 			'stop': 'Stop playing'
