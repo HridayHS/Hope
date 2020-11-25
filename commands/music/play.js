@@ -1,15 +1,12 @@
-const YouTube = require('simple-youtube-api');
-
 const ytdl = require('ytdl-core');
-const youtube = new YouTube(require('../../config.json')["youtube-data-api-key"]);
+const yts = require('yt-search');
 
 class Song {
 	constructor(video, author) {
 		this.author = author;
-		this.video = video;
 		this.title = video.title;
-		this.thumbnail = video.thumbnails.high.url;
-		this.url = video.shortURL;
+		this.thumbnail = video.thumbnail;
+		this.url = video.url;
 	}
 }
 
@@ -164,10 +161,33 @@ module.exports = {
 	queue
 };
 
-async function userMessageToYTVideos(userMessage) {
-	const playlist = await youtube.getPlaylist(userMessage).catch(() => { });
+function getYouTubeVideoID(url) {
+	url = url.split(/(vi\/|v%3D|v=|\/v\/|youtu\.be\/|\/embed\/)/);
+	return url[2] ? url[2].split(/[^0-9a-z_\-]/i)[0] : null;
+}
 
-	return playlist ? await playlist.getVideos()
-		: ytdl.validateURL(userMessage) ? [await youtube.getVideo(userMessage)]
-			: await youtube.searchVideos(userMessage, 1);
+async function userMessageToYTVideos(userMessage) {
+	// YouTube playlist
+	if (userMessage.includes('https://www.youtube.com/playlist?')) {
+		const playlistID = userMessage.match(/[&?]list=([^&]+)/i)[1];
+		const playlist = await yts({ listId: playlistID });
+		const playlistVideos = playlist.videos
+			.filter(video => video.title !== '[Deleted video]')
+			.map(playlistVideo => {
+				playlistVideo.url = 'https://youtu.be/' + playlistVideo.videoId;
+				return playlistVideo;
+			});
+		return playlistVideos;
+	}
+
+	// Youtube video
+	const videoID = getYouTubeVideoID(userMessage);
+	if (videoID) {
+		const video = await yts({ videoId: videoID });
+		return [video];
+	}
+
+	// YouTube search result
+	const searchResult = await yts(userMessage);
+	return searchResult.videos.slice(0, 1);
 }
