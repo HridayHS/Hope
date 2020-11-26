@@ -41,7 +41,7 @@ module.exports = {
 			}
 
 			// Send upto five Emojis for DMChannel and only one for other ones.
-			const amountOfEmojisToSend = (message.channel.type === 'dm') ? (Emojis.length > 5 ? 5 : Emojis.length) : 1;
+			const amountOfEmojisToSend = (message.channel.type === 'dm') ? Math.min(Emojis.length, 5) : 1;
 
 			for (let i = 0; i < amountOfEmojisToSend; i++) {
 				const EmojiURL = new Emoji(Emojis[i]).url;
