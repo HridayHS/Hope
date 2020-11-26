@@ -49,7 +49,7 @@ client.on('message', async (message) => {
 				}
 			});
 			return;
-		case !messageContent.startsWith('.s'):
+		case messageContent.split(' ')[0] !== '.s':
 			return;
 		case commandReceived === 'refresh':
 			if (message.author.id !== (await client.fetchApplication()).owner.ownerID) {
