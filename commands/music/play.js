@@ -9,10 +9,6 @@ const spotify = new SpotifyWebAPI({ clientId: SpotifyClientID, clientSecret: Spo
 const ytdl = require('ytdl-core');
 const yts = require('yt-search');
 
-spotify.clientCredentialsGrant()
-	.then(data => spotify.setAccessToken(data.body['access_token']))
-	.catch(console.error);
-
 class Song {
 	constructor(video, author) {
 		this.author = author;
@@ -191,6 +187,12 @@ function getYouTubeVideoID(url) {
 }
 
 async function getSpotifyPlaylistTracks(playlistID) {
+	await spotify.clientCredentialsGrant()
+		.then(data => {
+			spotify.setAccessToken(data.body['access_token']);
+		})
+		.catch(console.error);
+
 	let offsetNumber = 0;
 	let playlistTotalTracks;
 	const playlistTracks = [];
