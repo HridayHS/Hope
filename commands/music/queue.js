@@ -10,7 +10,7 @@ function getQueueList(songs) {
 		for (let z = (i * 10); z < ((i + 1) * 10); z++) {
 			const song = songs[z];
 			if (!song) break;
-			queueList[i] += `${z + 1}. ` + `[${song.title}](${song.url})` + '\n';
+			queueList[i] += `${z + 1}. ` + `[${song.spotify_track_name || song.title}](${song.spotify_track_url || song.url})` + '\n';
 		}
 	}
 
