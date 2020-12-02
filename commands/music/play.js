@@ -26,7 +26,7 @@ const queue = new Map();
 async function Play(message, voiceConnection, serverQueue) {
 	let song = serverQueue.songs[0];
 
-	// Get youtube song url of spotify track.
+	// Fetch streamable url of spotify track.
 	if (!song.url && song.spotify_track_name) {
 		const searchResult = await yts(song.spotify_track_name);
 		song = { ...searchResult.videos[0], ...song };
@@ -130,8 +130,8 @@ module.exports = {
 
 		const songs = await userMessageToYTVideos(userMessage);
 
-		if (songs.length === 0) {
-			message.channel.send('Unable to find the song.');
+		if (!songs || songs.length === 0) {
+			message.channel.send('Unable to find songs.');
 			return;
 		}
 
@@ -189,7 +189,8 @@ async function getSpotifyPlaylistTracks(playlistID) {
 	const playlistTracks = [];
 
 	do {
-		const playlist = await spotify.getPlaylistTracks(playlistID, { offset: offsetNumber });
+		const playlist = await spotify.getPlaylistTracks(playlistID, { offset: offsetNumber }).catch(() => {});
+		if (!playlist) return;
 		const { offset, total, items } = playlist.body;
 
 		playlistTracks.push(...items);
@@ -210,6 +211,7 @@ async function userMessageToYTVideos(userMessage) {
 
 		const spotifyPlaylistID = SpotifyPlaylistIDRegEx.exec(userMessage)[2];
 		const spotifyPlaylistTracks = await getSpotifyPlaylistTracks(spotifyPlaylistID);
+		if (!spotifyPlaylistTracks) return;
 
 		return spotifyPlaylistTracks.map(track => {
 			const artistName = track.track.artists[0].name;
@@ -226,7 +228,7 @@ async function userMessageToYTVideos(userMessage) {
 	/* YouTube */
 
 	// Playlist
-	if (userMessage.includes('https://www.youtube.com/playlist?')) {
+	if (userMessage.includes('youtube.com/playlist')) {
 		const playlistID = userMessage.match(/[&?]list=([^&]+)/i)[1];
 		const playlist = await yts({ listId: playlistID });
 		const playlistVideos = playlist.videos
