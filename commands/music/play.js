@@ -17,7 +17,6 @@ spotify.clientCredentialsGrant()
 		setInterval(async () => {
 			const data = await spotify.clientCredentialsGrant();
 			spotify.setAccessToken(data.body['access_token']);
-			console.log('Refreshed spotify access token.');
 		}, 3600000);
 	})
 	.catch(console.error);
