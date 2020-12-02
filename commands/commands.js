@@ -26,7 +26,7 @@ const botCommands = [
 		name: 'Music Commands',
 		emoji: '🎵',
 		list: {
-			'play <song name OR youtube video link OR youtube playlist>': 'Play a song',
+			'play <song name OR youtube video link OR youtube playlist OR spotify playlist>': 'Play a song',
 			'queue': 'Display music queue',
 			'skip': 'Skip song',
 			'stop': 'Stop playing'
