@@ -22,37 +22,14 @@ spotify.clientCredentialsGrant()
 	})
 	.catch(console.error);
 
-class Song {
-	constructor(video, author) {
-		this.author = author;
-		this.title = video.title;
-		this.thumbnail = video.thumbnail;
-		this.url = video.url;
-
-		if ('spotify_track_name' in video) {
-			this.spotify_track_name = video.spotify_track_name;
-		}
-
-		if ('spotify_track_thumbnail' in video) {
-			this.spotify_track_thumbnail = video.spotify_track_thumbnail;
-		}
-
-		if ('spotify_track_url' in video) {
-			this.spotify_track_url = video.spotify_track_url;
-		}
-	}
-}
-
 const queue = new Map();
 
 async function Play(message, voiceConnection, serverQueue) {
 	let song = serverQueue.songs[0];
 
-	// Spotify
-	if (!song.url) {
-		const { spotify_track_name } = song;
-
-		const searchResult = await yts({ search: spotify_track_name, category: 'music' });
+	// Get youtube song url of spotify track.
+	if (!song.url && song.spotify_track_name) {
+		const searchResult = await yts(song.spotify_track_name);
 		song = { ...searchResult.videos[0], ...song };
 	}
 
@@ -65,7 +42,7 @@ async function Play(message, voiceConnection, serverQueue) {
 				author: { name: 'Now Playing' },
 				color: song.spotify_track_url ? '#1DB954' : '#FF0000',
 				title: song.spotify_track_name || song.title,
-				thumbnail: { url: song.spotify_track_thumbnail || song.thumbnail },
+				thumbnail: { url: song.thumbnail },
 				url: song.spotify_track_url || song.url,
 				footer: { text: `Added by ${song.author.tag}` }
 			}
@@ -173,11 +150,11 @@ module.exports = {
 			const song = songs[0];
 			message.channel.send({
 				embed: {
-					color: song.spotify_track_url ? '#1DB954' : '#FF0000',
+					color: '#FF0000',
 					author: { name: `Added to queue #${serverQueue.songs.length}` },
-					title: song.spotify_track_name || song.title,
-					thumbnail: song.spotify_track_thumbnail || song.thumbnail,
-					url: song.spotify_track_url || song.url,
+					title: song.title,
+					thumbnail: song.thumbnail,
+					url: song.url,
 					footer: { text: `By ${message.author.tag}` }
 				}
 			});
@@ -229,8 +206,10 @@ async function userMessageToYTVideos(userMessage) {
 	/* Spotify */
 
 	// Playlist
-	if (userMessage.includes('open.spotify.com/playlist')) {
-		const spotifyPlaylistID = userMessage.split('/')[4];
+	if (userMessage.includes('open.spotify.com/playlist') || userMessage.startsWith('spotify:playlist:')) {
+		const SpotifyPlaylistIDRegEx = /^(https:\/\/open.spotify.com\/playlist\/|spotify:playlist:)([a-zA-Z0-9]+)(.*)$/gm;
+
+		const spotifyPlaylistID = SpotifyPlaylistIDRegEx.exec(userMessage)[2];
 		const spotifyPlaylistTracks = await getSpotifyPlaylistTracks(spotifyPlaylistID);
 
 		return spotifyPlaylistTracks.map(track => {
@@ -239,7 +218,6 @@ async function userMessageToYTVideos(userMessage) {
 
 			return {
 				spotify_track_name: `${artistName} - ${trackName}`,
-				spotify_track_thumbnail: 'https://cdn.discordapp.com/avatars/545420239706521601/9fb441dfa2135181808a394f8189c2cf.png',
 				spotify_track_url: 'https://open.spotify.com/track/' + track.track.id,
 				track: track.track
 			};
