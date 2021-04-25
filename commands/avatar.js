@@ -33,7 +33,7 @@ module.exports = {
 				color: await imageAverageColor(avatarAttachment.attachment),
 				author: {
 					name: user.tag,
-					icon_url: user.displayAvatarURL({ dynamic: true }),
+					icon_url: 'attachment://avatar.png',
 				},
 				image: {
 					url: 'attachment://avatar.png'
