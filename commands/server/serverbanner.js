@@ -3,6 +3,7 @@ const { imageAverageColor } = require('../../utils');
 module.exports = {
 	name: 'serverbanner',
 	alias: ['sb'],
+	guildOnly: true,
 	func: async function (message) {
 		const server = message.guild;
 
