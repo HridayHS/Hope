@@ -24,8 +24,13 @@ module.exports = {
 			return;
 		}
 
-		const imageBuffer = await DataResolver.resolveFileAsBuffer(user.displayAvatarURL({ format: 'png', dynamic: true, size: 4096 }));
-		const avatarAttachment = new MessageAttachment(imageBuffer, 'avatar.png');
+		const userDisplayAvatarURL = user.displayAvatarURL({ format: 'png', dynamic: true, size: 4096 });
+
+		const imageBuffer = await DataResolver.resolveFileAsBuffer(userDisplayAvatarURL);
+		const avatarType = userDisplayAvatarURL.split('.').pop().split('?')[0];
+		const attachmentFileName = avatarType == 'gif' ? 'avatar.gif' : 'avatar.png';
+
+		const avatarAttachment = new MessageAttachment(imageBuffer, attachmentFileName);
 
 		message.channel.send({
 			files: [avatarAttachment],
@@ -33,10 +38,10 @@ module.exports = {
 				color: await imageAverageColor(avatarAttachment.attachment),
 				author: {
 					name: user.tag,
-					icon_url: 'attachment://avatar.png',
+					icon_url: `attachment://${attachmentFileName}`,
 				},
 				image: {
-					url: 'attachment://avatar.png'
+					url: `attachment://${attachmentFileName}`,
 				}
 			}
 		});
