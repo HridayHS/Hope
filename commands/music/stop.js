@@ -5,12 +5,13 @@ module.exports = {
 	alias: ['leave'],
 	guildOnly: true,
 	func: async function (message) {
-		if (!message.member.roles.cache.find(role => role.name === 'DJ') && !message.member.hasPermission('MOVE_MEMBERS')) {
+		const voiceChannel = message.guild.me.voice.channel;
+
+		if (!message.member.roles.cache.find(role => role.name === 'DJ') && !message.member.permissionsIn(voiceChannel).has('MOVE_MEMBERS')) {
 			message.channel.send('This command requires you to either have a role named DJ or the Move Members permission to use it.');
 			return;
 		}
 
-		const voiceChannel = message.guild.me.voice.channel;
 		const serverQueue = queue.get(message.guild.id);
 
 		if (!voiceChannel || !serverQueue) {
