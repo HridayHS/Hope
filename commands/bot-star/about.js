@@ -5,7 +5,7 @@ module.exports = {
 	name: 'about',
 	alias: ['abt', 'bot', 'abtbot', 'aboutbout', 'star', 'abtstar', 'aboutstar'],
 	func: async function (message) {
-		const bot = await message.client.fetchApplication();
+		const bot = await message.client.application.fetch();
 		const botCreatedAt = customDateFormat(bot.createdAt);
 		const botInviteLink = await message.client.generateInvite({ permissions: botPermissions });
 		const teamMembersList = bot.owner.members.map(member => member.user.tag).sort().join(', ');
