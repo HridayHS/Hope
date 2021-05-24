@@ -37,8 +37,9 @@ module.exports = {
 			}
 		};
 
-		if (message.channel.type !== 'dm' && message.guild.member(user)) {
-			EmbedMessage.fields.unshift({ name: 'Joined', value: customDateFormat(message.guild.member(user).joinedAt, true), inline: true });
+		const guildMember = await message.guild.members.fetch({ user: user, force: true });
+		if (message.channel.type !== 'dm' && guildMember) {
+			EmbedMessage.fields.unshift({ name: 'Joined', value: customDateFormat(guildMember.joinedAt, true), inline: true });
 		}
 
 		message.channel.send({ embed: EmbedMessage });
