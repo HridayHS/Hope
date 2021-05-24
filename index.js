@@ -52,7 +52,7 @@ client.on('message', async (message) => {
 		case messageContent.split(' ')[0] !== '.s':
 			return;
 		case commandReceived === 'refresh':
-			if (message.author.id !== (await client.fetchApplication()).owner.ownerID) {
+			if (message.author.id !== (await client.application.fetch()).owner.ownerID) {
 				message.reply('You cannot perform this action.');
 				return;
 			}
