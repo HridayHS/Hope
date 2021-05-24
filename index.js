@@ -1,6 +1,6 @@
 const { Client, Collection } = require('discord.js');
 
-const client = new Client();
+const client = new Client({ intents: ['GUILDS', 'GUILD_MEMBERS', 'GUILD_MESSAGES', 'GUILD_MESSAGE_REACTIONS', 'GUILD_MESSAGE_TYPING', 'DIRECT_MESSAGES', 'DIRECT_MESSAGE_REACTIONS', 'DIRECT_MESSAGE_TYPING'] });
 const { getAllFiles, hasCommandPermissions } = require('./utils');
 
 // Console log when bot is ready.
