@@ -32,10 +32,10 @@ module.exports = {
 
 		const avatarAttachment = new MessageAttachment(imageBuffer, attachmentFileName);
 
-		message.channel.send({
+		let messageAttachment = {
 			files: [avatarAttachment],
 			embed: {
-				color: await imageAverageColor(avatarAttachment.attachment),
+				color: await imageAverageColor(userDisplayAvatarURL),
 				author: {
 					name: user.tag,
 					icon_url: `attachment://${attachmentFileName}`,
@@ -44,6 +44,19 @@ module.exports = {
 					url: `attachment://${attachmentFileName}`,
 				}
 			}
-		});
+		};
+
+		try {
+			await message.channel.send(messageAttachment);
+		} catch (DiscordAPIError) {
+			// If file size is too large, send avatar url.
+			if (DiscordAPIError.code == 40005) {
+				delete messageAttachment.files;
+				messageAttachment.embed.author.icon_url = user.displayAvatarURL({ dynamic: true });
+				messageAttachment.embed.image.url = userDisplayAvatarURL;
+
+				message.channel.send(messageAttachment);
+			}
+		}
 	}
 };
