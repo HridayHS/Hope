@@ -1,6 +1,3 @@
-const { DataResolver, MessageAttachment } = require('discord.js');
-const { getAverageColor } = require('fast-average-color-node');
-
 const { imageAverageColor } = require('../utils');
 
 async function getUser(message) {
@@ -25,23 +22,18 @@ module.exports = {
 		}
 
 		const userDisplayAvatarURL = user.displayAvatarURL({ format: 'png', dynamic: true, size: 4096 });
-
-		const imageBuffer = await DataResolver.resolveFileAsBuffer(userDisplayAvatarURL);
-		const avatarType = userDisplayAvatarURL.split('.').pop().split('?')[0];
-		const attachmentFileName = avatarType == 'gif' ? 'avatar.gif' : 'avatar.png';
-
-		const avatarAttachment = new MessageAttachment(imageBuffer, attachmentFileName);
+		const avatarFileName = userDisplayAvatarURL.split('/').pop().split('?')[0];
 
 		let messageAttachment = {
-			files: [avatarAttachment],
+			files: [userDisplayAvatarURL],
 			embed: {
 				color: await imageAverageColor(userDisplayAvatarURL),
 				author: {
 					name: user.tag,
-					icon_url: `attachment://${attachmentFileName}`,
+					icon_url: `attachment://${avatarFileName}`,
 				},
 				image: {
-					url: `attachment://${attachmentFileName}`,
+					url: `attachment://${avatarFileName}`,
 				}
 			}
 		};
