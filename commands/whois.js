@@ -33,7 +33,7 @@ module.exports = {
 			},
 			color: avatarDominantColor.value,
 			fields: [
-				{ name: 'Created On', value: customDateFormat(user.createdAt), inline: true }
+				{ name: 'Created On', value: customDateFormat(user.createdAt, true), inline: true }
 			],
 			footer: {
 				text: 'User ID: ' + user.id
