@@ -1,4 +1,4 @@
-const { imageAverageColor } = require('../../utils');
+const { imgDominantColor } = require('../../utils');
 
 module.exports = {
 	name: 'servericon',
@@ -17,9 +17,11 @@ module.exports = {
 			return;
 		}
 
+		const iconDominantColor = await imgDominantColor(server.iconURL({ format: 'png' }));
+
 		message.channel.send({
 			embed: {
-				color: await imageAverageColor(server.iconURL({ format: 'png' })),
+				color: iconDominantColor.value,
 				author: {
 					name: server.name,
 					icon_url: server.iconURL({ dynamic: true }),

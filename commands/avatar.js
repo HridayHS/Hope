@@ -1,4 +1,4 @@
-const { imageAverageColor } = require('../utils');
+const { imgDominantColor } = require('../utils');
 
 async function getUser(message) {
 	const userID = message.content.split(' ')[2];
@@ -21,13 +21,15 @@ module.exports = {
 			return;
 		}
 
-		const userDisplayAvatarURL = user.displayAvatarURL({ format: 'png', dynamic: true, size: 4096 });
-		const avatarFileName = userDisplayAvatarURL.split('/').pop().split('?')[0];
+		const avatarURL = user.displayAvatarURL({ format: 'png', dynamic: true, size: 4096 });
+
+		const avatarFileName = avatarURL.split('/').pop().split('?')[0];
+		const avatarDominantColor = await imgDominantColor(avatarURL);
 
 		let messageAttachment = {
-			files: [userDisplayAvatarURL],
+			files: [avatarURL],
 			embed: {
-				color: await imageAverageColor(userDisplayAvatarURL),
+				color: avatarDominantColor.value,
 				author: {
 					name: user.tag,
 					icon_url: `attachment://${avatarFileName}`,
@@ -45,7 +47,7 @@ module.exports = {
 			if (DiscordAPIError.code == 40005) {
 				delete messageAttachment.files;
 				messageAttachment.embed.author.icon_url = user.displayAvatarURL({ dynamic: true });
-				messageAttachment.embed.image.url = userDisplayAvatarURL;
+				messageAttachment.embed.image.url = avatarURL;
 
 				message.channel.send(messageAttachment);
 			}

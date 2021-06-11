@@ -1,15 +1,5 @@
 const fs = require('fs');
 
-/* Avatar average color */
-const { DataResolver } = require('discord.js');
-const { getAverageColor } = require('fast-average-color-node');
-
-async function imageAverageColor(image) {
-	const imageBuffer = await DataResolver.resolveFileAsBuffer(image);
-	const imageAverageColor = await getAverageColor(imageBuffer);
-	return imageAverageColor.hex;
-}
-
 /* Bot Permissions */
 const botPermissions = ['ADMINISTRATOR', 'MANAGE_CHANNELS', 'VIEW_CHANNEL', 'SEND_MESSAGES', 'MANAGE_MESSAGES', 'EMBED_LINKS', 'ATTACH_FILES', 'READ_MESSAGE_HISTORY', 'ADD_REACTIONS', 'CONNECT', 'SPEAK'];
 
@@ -26,6 +16,10 @@ const getAllFiles = dir =>
 		const isDirectory = fs.statSync(name).isDirectory();
 		return isDirectory ? [...files, ...getAllFiles(name)] : [...files, name];
 	}, []);
+
+/* Image dominant color */
+const { getAverageColor } = require('fast-average-color-node');
+const imgDominantColor = img => getAverageColor(img, { algorithm: 'dominant', mode: 'speed', ignoredColor: [0, 0, 0, 0] });
 
 /**
  * Check if bot/member have the required permission(s) to execute the command,
@@ -118,6 +112,6 @@ module.exports = {
 	customDateFormat,
 	getAllFiles,
 	hasCommandPermissions,
-	imageAverageColor,
+	imgDominantColor,
 	serverRegionHR
 };
