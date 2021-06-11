@@ -58,29 +58,21 @@ function hasCommandPermissions(message, botCommand, botPerms = false) {
 	}
 }
 
-/* Custom date format for bot */
-const Time12To24 = date => {
-	const Hours = date.getHours();
-	const Minutes = date.getMinutes();
-
-	const HoursIn12 = (Hours === 0) ? 12
-		: (Hours > 12) ? (Hours - 12)
-			: Hours;
-
-	const HourText = HoursIn12;
-	const MinuteText = (Minutes <= 9) ? '0' + Minutes : Minutes;
-
-	return HourText + ':' + MinuteText;
-};
-
-const customDateFormat = (date, withTime = false) => {
+/* Custom date format */
+const customDateFormat = (date = new Date(), withTime = false) => {
 	const Days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 	const Months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
-	let string = `${Days[date.getDay()]}, ${date.getDate()} ${Months[date.getMonth()]}, ${date.getFullYear()}`;
+	const Date = date.getDate();
+	const Day = Days[date.getDay()];
+	const Month = Months[date.getMonth()];
+	const Year = date.getFullYear();
+
+	let string = `${Day}, ${Month} ${Date}, ${Year}`;
 
 	if (withTime) {
-		string += ` ${Time12To24(date)} ${date.getHours() > 12 ? 'PM' : 'AM'}`;
+		const timeIn12Hour = date.toLocaleTimeString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true });
+		string += ' ' + timeIn12Hour;
 	}
 
 	return string;
