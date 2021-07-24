@@ -1,12 +1,12 @@
-const purgePermissions = ['MANAGE_CHANNELS', 'MANAGE_WEBHOOKS', 'MANAGE_MESSAGES', 'READ_MESSAGE_HISTORY'];
+const PERMS_FOR_PURGE = ['MANAGE_CHANNELS', 'MANAGE_WEBHOOKS', 'MANAGE_MESSAGES', 'READ_MESSAGE_HISTORY'];
 
 module.exports = {
 	name: 'purge',
 	alias: ['clear', 'clean', 'delete'],
 	guildOnly: true,
 	permissions: {
-		bot: [...purgePermissions],
-		member: [...purgePermissions]
+		bot: PERMS_FOR_PURGE,
+		member: PERMS_FOR_PURGE
 	},
 	func: async function (message) {
 		const userInput = message.content.toLowerCase().split(' ')[2];
@@ -26,9 +26,9 @@ module.exports = {
 			return;
 		}
 
-		// Return with a message if last is message is older than 14 days.
+		// Return with a message if last message is older than 14 days.
 		const lastMessage = await message.channel.messages.fetch({ limit: 2 });
-		if (Date.now() - lastMessage.last().createdAt.getTime() > 1209600000) {
+		if (new Date.now() - lastMessage.last().createdAt.getTime() > 1209600000) {
 			message.channel.send('Unable to purge messages older than 14 days.');
 			return;
 		}
