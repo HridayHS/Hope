@@ -24,7 +24,7 @@ for (const commandFile of commandFiles) {
 	botCommands.set(command.name, command);
 }
 
-client.on('message', async (message) => {
+client.on('messageCreate', async (message) => {
 	const messageContent = message.content.toLowerCase();
 	const commandReceived = messageContent.split(' ')[1];
 
