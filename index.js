@@ -1,8 +1,22 @@
 const { Client, Collection, Intents } = require('discord.js');
 
-const client = new Client({ intents: [Intents.FLAGS.DIRECT_MESSAGES, Intents.FLAGS.DIRECT_MESSAGE_REACTIONS, Intents.FLAGS.DIRECT_MESSAGE_TYPING, Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_EMOJIS_AND_STICKERS, Intents.FLAGS.GUILD_INTEGRATIONS, Intents.FLAGS.GUILD_MEMBERS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.GUILD_MESSAGE_REACTIONS, Intents.FLAGS.GUILD_MESSAGE_TYPING, Intents.FLAGS.GUILD_PRESENCES, Intents.FLAGS.GUILD_VOICE_STATES, Intents.FLAGS.GUILD_WEBHOOKS] });
+const botIntents = [
+	Intents.FLAGS.DIRECT_MESSAGES,
+	Intents.FLAGS.DIRECT_MESSAGE_REACTIONS,
+	Intents.FLAGS.DIRECT_MESSAGE_TYPING,
+	Intents.FLAGS.GUILDS,
+	Intents.FLAGS.GUILD_EMOJIS_AND_STICKERS,
+	Intents.FLAGS.GUILD_INTEGRATIONS,
+	Intents.FLAGS.GUILD_MEMBERS,
+	Intents.FLAGS.GUILD_MESSAGES,
+	Intents.FLAGS.GUILD_MESSAGE_REACTIONS,
+	Intents.FLAGS.GUILD_MESSAGE_TYPING,
+	Intents.FLAGS.GUILD_PRESENCES,
+	Intents.FLAGS.GUILD_VOICE_STATES,
+	Intents.FLAGS.GUILD_WEBHOOKS
+];
 
-const { getAllFiles, hasCommandPermissions } = require('./utils');
+const client = new Client({ intents: botIntents });
 
 // Console log when bot is ready.
 client.once('ready', () => {
@@ -15,6 +29,8 @@ client.once('ready', () => {
 client.login(require('./config.json').token);
 
 /* Bot */
+const { getAllFiles, hasCommandPermissions } = require('./utils');
+
 const botCommands = new Collection();
 
 let commandFiles = getAllFiles('./commands').filter(file => file.endsWith('.js'));
@@ -36,7 +52,7 @@ client.on('messageCreate', async (message) => {
 		case messageContent === '.s help':
 		case messageContent === '<@!545420239706521601>':
 			message.channel.send({
-				embed: {
+				embeds: [{
 					author: {
 						name: 'Bot Help',
 						icon_url: client.user.displayAvatarURL(),
@@ -47,13 +63,16 @@ client.on('messageCreate', async (message) => {
 						{ name: 'Commands', value: '`.s commands`', inline: true },
 						{ name: 'About', value: '`.s about`', inline: true }
 					]
-				}
+				}]
 			});
 			return;
 		case messageContent.split(' ')[0] !== '.s':
 			return;
 		case commandReceived === 'refresh':
-			if (message.author.id !== (await client.fetchApplication()).owner.ownerID) {
+			const clientApplication = await client.application.fetch();
+			const botOwnerId = clientApplication.owner.ownerId;
+
+			if (message.author.id !== botOwnerId) {
 				message.reply('You cannot perform this action.');
 				return;
 			}

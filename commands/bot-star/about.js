@@ -4,16 +4,16 @@ module.exports = {
 	name: 'about',
 	alias: ['abt', 'bot', 'abtbot', 'aboutbout', 'star', 'abtstar', 'aboutstar'],
 	func: async function (message) {
-		const bot = await message.client.fetchApplication();
+		const bot = await message.client.application.fetch();
 
 		const botCreatedAt = customDateFormat(bot.createdAt);
 		const botDeveloper = bot.owner.owner.user.tag;
 		const botGuildsSize = message.client.guilds.cache.size;
-		const botInviteLink = await message.client.generateInvite({ permissions: botPermissions });
+		const botInviteLink = await message.client.generateInvite({ scopes: ['bot'], permissions: botPermissions });
 		const botTeamMembersList = bot.owner.members.map(member => member.user.tag).sort().join(', ');
 
 		message.channel.send({
-			embed: {
+			embeds: [{
 				author: {
 					name: 'About me',
 					icon_url: message.client.user.displayAvatarURL()
@@ -31,7 +31,7 @@ module.exports = {
 				footer: {
 					text: 'Made by Team Star'
 				}
-			}
+			}]
 		});
 	}
 };

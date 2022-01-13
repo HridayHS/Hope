@@ -84,16 +84,16 @@ module.exports = {
 			const category = commands[commandsCategory];
 			const categoryName = category.name.split(' ')[0].toLowerCase();
 			if (userRequestedCommandCategory === categoryName) {
-				message.channel.send({ embed: getEmbedMessage(category, message) });
+				message.channel.send({ embeds: [getEmbedMessage(category, message)] });
 				return;
 			}
 		}
 
 		const homePageMessage = await message.channel.send({
-			embed: {
+			embeds: [{
 				color: 'GREEN',
 				description: homePageDescription
-			}
+			}]
 		});
 
 		let atHomePage = true;
@@ -112,7 +112,7 @@ module.exports = {
 				for (let i = 0; i < commands.length; i++) {
 					const category = commands[i];
 					if (category.emoji === reaction.emoji.name) {
-						homePageMessage.edit({ embed: getEmbedMessage(category, message) });
+						homePageMessage.edit({ embeds: [getEmbedMessage(category, message)] });
 						atHomePage = false;
 					}
 				}
@@ -127,7 +127,7 @@ module.exports = {
 			collected.forEach(reaction => (message.channel.type === 'dm') ? reaction.users.remove(message.client.user.id) : reaction.remove());
 
 			if (atHomePage) {
-				homePageMessage.edit({ embed: getEmbedMessage(commands[0], message) });
+				homePageMessage.edit({ embeds: [getEmbedMessage(commands[0], message)] });
 			}
 		});
 	}

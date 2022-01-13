@@ -44,6 +44,6 @@ module.exports = {
 			EmbedMessage.fields.unshift({ name: 'Joined', value: customDateFormat(message.guild.member(user).joinedAt, true), inline: true });
 		}
 
-		message.channel.send({ embed: EmbedMessage });
+		message.channel.send({ embeds: [EmbedMessage] });
 	}
 };

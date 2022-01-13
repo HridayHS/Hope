@@ -37,14 +37,14 @@ async function Play(message, voiceConnection, serverQueue) {
 
 	serverQueue.dispatcher.on('start', () => {
 		message.channel.send({
-			embed: {
+			embeds: [{
 				author: { name: 'Now Playing' },
 				color: song.spotify_track_url ? '#1DB954' : '#FF0000',
 				title: song.spotify_track_name || song.title,
 				thumbnail: { url: song.thumbnail },
 				url: song.spotify_track_url || song.url,
 				footer: { text: `Added by ${song.author.tag}` }
-			}
+			}]
 		});
 	});
 
@@ -55,11 +55,11 @@ async function Play(message, voiceConnection, serverQueue) {
 		// If the queue is empty, leave the voice channel and delete server queue.
 		if (serverQueue.songs.length === 0) {
 			message.channel.send({
-				embed: {
+				embeds: [{
 					color: '#FF0000',
 					title: 'Music queue has ended!',
 					description: 'Type `.s play <song>` to add more.'
-				}
+				}]
 			});
 
 			// Stop all the reaction collectors.
@@ -139,23 +139,23 @@ module.exports = {
 
 		if (songs.length > 1) {
 			message.channel.send({
-				embed: {
+				embeds: [{
 					color: '#FF0000',
 					description: `Queued ${songs.length} tracks`,
 					footer: { text: `By ${message.author.tag}` }
-				}
+				}]
 			});
 		} else {
 			const song = songs[0];
 			message.channel.send({
-				embed: {
+				embeds: [{
 					color: '#FF0000',
 					author: { name: `Added to queue #${serverQueue.songs.length}` },
 					title: song.title,
 					thumbnail: song.thumbnail,
 					url: song.url,
 					footer: { text: `By ${message.author.tag}` }
-				}
+				}]
 			});
 		}
 

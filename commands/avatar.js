@@ -28,7 +28,7 @@ module.exports = {
 
 		let messageAttachment = {
 			files: [avatarURL],
-			embed: {
+			embeds: [{
 				color: avatarDominantColor.value,
 				author: {
 					name: user.tag,
@@ -37,7 +37,7 @@ module.exports = {
 				image: {
 					url: `attachment://${avatarFileName}`,
 				}
-			}
+			}]
 		};
 
 		try {
@@ -46,8 +46,8 @@ module.exports = {
 			// If file size is too large, send avatar url.
 			if (DiscordAPIError.code == 40005) {
 				delete messageAttachment.files;
-				messageAttachment.embed.author.icon_url = user.displayAvatarURL({ dynamic: true });
-				messageAttachment.embed.image.url = avatarURL;
+				messageAttachment.embeds[0].author.icon_url = user.displayAvatarURL({ dynamic: true });
+				messageAttachment.embeds[0].image.url = avatarURL;
 
 				message.channel.send(messageAttachment);
 			}

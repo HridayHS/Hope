@@ -40,11 +40,11 @@ module.exports = {
 		// If server queue doesn't exist, return with message.
 		if (!serverQueue) {
 			message.channel.send({
-				embed: {
+				embeds: [{
 					color: '#FF0000',
 					title: 'Music Queue',
 					description: 'Queue is empty.\nType `.s play <song>` to add one.'
-				}
+				}]
 			});
 			return;
 		}
@@ -83,7 +83,7 @@ module.exports = {
 				}
 
 				// Switch page
-				queueMessage.edit({ embed: getMessageEmbed(queueList, page) });
+				queueMessage.edit({ embeds: [getMessageEmbed(queueList, page)] });
 			}
 
 			reaction.users.remove(user.id);
