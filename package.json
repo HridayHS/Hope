@@ -20,7 +20,7 @@
   "dependencies": {
     "@discordjs/voice": "^0.7.5",
     "discord.js": "^13.5.1",
-    "fast-average-color-node": "^2.1.0",
+    "fast-average-color-node": "^1.0.3",
     "ffmpeg-static": "^4.3.0",
     "fs": "0.0.1-security",
     "sodium": "^3.0.2",
