@@ -62,7 +62,7 @@ module.exports = {
 
 		// Remove Server and Music commands for DMChannel.
 		if (message.channel.type == 'DM') {
-			commands.splice(1, 2);
+			commands.splice(1, 1);
 		}
 
 		let homePageDescription = 'React to get a list of commands';
