@@ -101,7 +101,7 @@ module.exports = {
 		commands.forEach(category => homePageMessage.react(category.emoji));
 
 		const collectorFilter = reaction => commands.some(category => category.emoji === reaction.emoji.name);
-		const collector = homePageMessage.createReactionCollector({ collectorFilter, idle: 5000 });
+		const collector = homePageMessage.createReactionCollector({ collectorFilter, idle: 72000 });
 
 		collector.on('collect', (reaction, user) => {
 			if (user.id == message.client.user.id) {
