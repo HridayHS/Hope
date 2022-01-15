@@ -5,7 +5,7 @@ const botCommands = [
 		list: {
 			'avatar [@member]': 'Get avatar',
 			'emoji <custom emoji OR @member> [link] [delete]': 'Get emoji link',
-			'fetchemoji <guild id>': `Fetches guild's all emojis`,
+			'fetchemojis <guild id>': `Fetches guild's all emojis`,
 			'pin <message>': 'Pin message',
 			'ping': 'Says pong',
 			'unpinall': 'Unpins all the pinned messages',

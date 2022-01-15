@@ -11,7 +11,7 @@ module.exports = {
 			return;
 		}
 
-		const guild = await message.client.guilds.fetch(guildID, true, true);
+		const guild = await message.client.guilds.fetch({ guildID, cache: true, force: true });
 
 		// If guild is not available return with a message.
 		if (!guild || !guild.available) {
