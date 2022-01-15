@@ -4,19 +4,25 @@ module.exports = {
 	func: async function (message) {
 		const serverMembers = await message.guild.members.fetch({ force: true });
 
+		const MembersCount = {
+			Total: message.guild.memberCount,
+			Humans: serverMembers.filter(member => !member.user.bot).size,
+			Bots: serverMembers.filter(member => member.user.bot).size
+		};
+
 		message.channel.send({
-			embed: {
+			embeds: [{
 				author: {
 					name: 'Member Count',
-					icon_url: message.guild.iconURL()
+					iconURL: message.guild.iconURL()
 				},
 				color: 'GREEN',
 				fields: [
-					{ name: 'Members', value: message.guild.memberCount },
-					{ name: 'Humans', value: serverMembers.filter(member => !member.user.bot).size },
-					{ name: 'Bots', value: serverMembers.filter(member => member.user.bot).size }
+					{ name: 'Total Members', value: MembersCount.Total.toString() },
+					{ name: 'Humans', value: MembersCount.Humans.toString() },
+					{ name: 'Bots', value: MembersCount.Bots.toString() }
 				]
-			}
+			}]
 		});
 	}
 };

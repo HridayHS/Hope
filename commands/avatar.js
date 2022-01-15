@@ -5,7 +5,7 @@ async function getUser(message) {
 	const userMention = message.mentions.users.first();
 
 	return userMention ? userMention
-		: userID ? await message.client.users.fetch(userID, true, true).catch(() => {})
+		: userID ? await message.client.users.fetch(userID, { cache: true, force: true }).catch(() => {})
 			: message.author;
 };
 
@@ -32,7 +32,7 @@ module.exports = {
 				color: avatarDominantColor.value,
 				author: {
 					name: user.tag,
-					icon_url: `attachment://${avatarFileName}`,
+					iconURL: `attachment://${avatarFileName}`,
 				},
 				image: {
 					url: `attachment://${avatarFileName}`,
@@ -46,7 +46,7 @@ module.exports = {
 			// If file size is too large, send avatar url.
 			if (DiscordAPIError.code == 40005) {
 				delete messageAttachment.files;
-				messageAttachment.embeds[0].author.icon_url = user.displayAvatarURL({ dynamic: true });
+				messageAttachment.embeds[0].author.iconURL = user.displayAvatarURL({ dynamic: true });
 				messageAttachment.embeds[0].image.url = avatarURL;
 
 				message.channel.send(messageAttachment);

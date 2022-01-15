@@ -16,7 +16,7 @@ const botIntents = [
 	Intents.FLAGS.GUILD_WEBHOOKS
 ];
 
-const client = new Client({ intents: botIntents });
+const client = new Client({ partials: ['CHANNEL'], intents: botIntents });
 
 // Console log when bot is ready.
 client.once('ready', () => {
@@ -45,7 +45,7 @@ client.on('messageCreate', async (message) => {
 	const commandReceived = messageContent.split(' ')[1];
 
 	switch (true) {
-		case message.channel.type !== 'dm' && !message.guild.me.permissions.has(['SEND_MESSAGES']):
+		case message.channel.type != 'DM' && !message.guild.me.permissions.has(['SEND_MESSAGES']):
 		case message.author.bot:
 			return;
 		case messageContent === '.s':
@@ -55,7 +55,7 @@ client.on('messageCreate', async (message) => {
 				embeds: [{
 					author: {
 						name: 'Bot Help',
-						icon_url: client.user.displayAvatarURL(),
+						iconURL: client.user.displayAvatarURL(),
 					},
 					color: 'GREEN',
 					fields: [
@@ -96,8 +96,8 @@ client.on('messageCreate', async (message) => {
 		|| botCommands.find(command => command.alias && command.alias.includes(commandReceived));
 
 	if (botCommand) {
-		// Check if command is guild only
-		if (botCommand.guildOnly && message.channel.type === 'dm') {
+		// Return if guild only command is requested in DM channel.
+		if (botCommand.guildOnly && message.channel.type == 'DM') {
 			return;
 		}
 

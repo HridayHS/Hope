@@ -13,7 +13,7 @@ class Emoji {
 async function getUser(message) {
 	const userID = message.content.split(' ')[2];
 	const userMention = message.mentions.users.first();
-	return userMention ?? await message.client.users.fetch(userID, true, true).catch(() => {});
+	return userMention ?? await message.client.users.fetch(userID, { cache: true, force: true }).catch(() => {})
 };
 
 module.exports = {
@@ -24,14 +24,14 @@ module.exports = {
 		const user = await getUser(message);
 
 		if (!Emojis && !user) {
-			message.channel.send('Invalid emoji.');
+			message.channel.send('Invalid custom emoji.');
 			return;
 		}
 
-		const canBotSendFiles = (message.channel.type === 'dm') ? true
+		const canBotSendFiles = (message.channel.type == 'DM') ? true
 			: message.channel.permissionsFor(message.guild.me).has('ATTACH_FILES');
 		const isLinkNeeded = message.content.match('link');
-		const isMessageDeletionRequired = message.channel.type !== 'dm' && message.content.match('delete');
+		const isMessageDeletionRequired = message.channel.type != 'DM' && message.content.match('delete');
 
 		/* Custom emoji from message content. */
 		if (Emojis) {
@@ -41,7 +41,7 @@ module.exports = {
 			}
 
 			// Send upto five Emojis for DMChannel and only one for other ones.
-			const amountOfEmojisToSend = (message.channel.type === 'dm') ? Math.min(Emojis.length, 5) : 1;
+			const amountOfEmojisToSend = (message.channel.type == 'DM') ? Math.min(Emojis.length, 5) : 1;
 
 			for (let i = 0; i < amountOfEmojisToSend; i++) {
 				const EmojiURL = new Emoji(Emojis[i]).url;
@@ -55,7 +55,14 @@ module.exports = {
 
 		/* Custom emoji from user custom status */
 		if (user) {
-			const userActivities = user.presence.activities;
+			const guildMember = await message.guild.members.fetch({ user, cache: true, force: true, withPresences: true });
+
+			if (guildMember.size == 0) {
+				message.reply('Not a guild member.');
+				return;
+			}
+
+			const userActivities = guildMember.presence.activities;
 			if (userActivities.length === 0) {
 				message.channel.send('Unable to retrieve emoji.');
 				return;
@@ -65,7 +72,7 @@ module.exports = {
 				const activity = userActivities[i];
 
 				// Skip if activity type isn't custom status.
-				if (activity.type !== 'CUSTOM_STATUS') continue;
+				if (activity.type !== 'CUSTOM') continue;
 
 				const Emoji = activity.emoji;
 				if (!Emoji || !Emoji.id) {

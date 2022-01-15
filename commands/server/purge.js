@@ -13,12 +13,11 @@ module.exports = {
 
 		/* .s purge all */
 		if (userInput === 'all') {
-			const oldChannelPossition = message.channel.position;
 			const oldChannelWebhooks = await message.channel.fetchWebhooks();
-			await message.channel.delete();
 
-			const channelClone = await message.channel.clone();
-			channelClone.setPosition(oldChannelPossition);
+			const deletedChannel = await message.channel.delete();
+			const channelClone = await deletedChannel.clone();
+
 			oldChannelWebhooks.forEach(webhook => {
 				channelClone.createWebhook(webhook.name, { avatar: webhook.avatarURL() });
 			});
@@ -28,7 +27,7 @@ module.exports = {
 
 		// Return with a message if last message is older than 14 days.
 		const lastMessage = await message.channel.messages.fetch({ limit: 2 });
-		if (new Date.now() - lastMessage.last().createdAt.getTime() > 1209600000) {
+		if (Date.now() - lastMessage.last().createdAt.getTime() > 1209600000) {
 			message.channel.send('Unable to purge messages older than 14 days.');
 			return;
 		}
@@ -52,7 +51,8 @@ module.exports = {
 
 		/* .s purge [1-100] */
 		let purgeAmount = parseInt(userInput);
-		if (isNaN(purgeAmount) && purgeAmount < 1) {
+
+		if (!isNaN(purgeAmount) && purgeAmount <= 0) {
 			message.reply('Please enter a valid number. [1-100]');
 			return;
 		}

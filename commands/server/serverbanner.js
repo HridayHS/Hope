@@ -20,16 +20,16 @@ module.exports = {
 		const bannerDominantColor = await imgDominantColor(server.bannerURL({ format: 'png' }));
 
 		message.channel.send({
-			embed: {
+			embeds: [{
 				color: bannerDominantColor.value,
 				author: {
 					name: server.name,
-					icon_url: server.bannerURL({ dynamic: true }),
+					iconURL: server.bannerURL(),
 				},
 				image: {
-					url: server.bannerURL({ format: 'png', dynamic: true, size: 4096 })
+					url: server.bannerURL({ format: 'png', size: 4096 })
 				}
-			}
+			}]
 		});
 	}
 };

@@ -27,7 +27,7 @@ const imgDominantColor = img => getAverageColor(img, { algorithm: 'dominant', mo
  */
 function hasCommandPermissions(message, botCommand, botPerms = false) {
 	// If command does not require any permission or message channel is DMChannel, return true.
-	if (!botCommand.permissions || message.channel.type === 'dm') {
+	if (!botCommand.permissions || message.channel.type == 'DM') {
 		return true;
 	}
 
@@ -79,22 +79,68 @@ const customDateFormat = (date = new Date(), withTime = false) => {
 };
 
 /* Server region name normalized (HR = Human Readable) */
-const serverRegionHR = region => {
-	switch (region) {
-		case 'hongkong':
-			return 'Hong Kong';
-		case 'southafrica':
-			return 'South Africa';
-		case 'us-central':
-			return 'US Central';
-		case 'us-east':
-			return 'US East';
-		case 'us-south':
-			return 'US South';
-		case 'us-west':
-			return 'US West';
-		default:
-			return region.charAt(0).toUpperCase() + region.slice(1);
+const serverLocaleHR = locale => {
+	switch (locale) {
+		case 'en-US':
+			return 'English (United States)';
+		case 'en-GB':
+			return 'English (Great Britain)';
+		case 'bg':
+			return 'Bulgarian';
+		case 'zh-CN':
+			return 'Chinese (China)';
+		case 'zh-TW':
+			return 'Chinese (Taiwan)';
+		case 'hr':
+			return 'Croatian';
+		case 'cs':
+			return 'Czech';
+		case 'da':
+			return 'Danish';
+		case 'nl':
+			return 'Dutch';
+		case 'fi':
+			return 'Finnish';
+		case 'fr':
+			return 'French';
+		case 'de':
+			return 'German';
+		case 'el':
+			return 'Greek';
+		case 'hi':
+			return 'Hindi';
+		case 'hu':
+			return 'Hungarian';
+		case 'it':
+			return 'Italian';
+		case 'ja':
+			return 'Japanese';
+		case 'ko':
+			return 'Korean';
+		case 'lt':
+			return 'Lithuanian';
+		case 'no':
+			return 'Norwegian';
+		case 'pl':
+			return 'Polish';
+		case 'pt-BR':
+			return 'Portuguese (Brazil)';
+		case 'ro':
+			return 'Romanian';
+		case 'ru':
+			return 'Russian';
+		case 'es-ES':
+			return 'Spanish (Spain)';
+		case 'sv-SE':
+			return 'Swedish';
+		case 'th':
+			return 'Thai';
+		case 'tr':
+			return 'Turkish';
+		case 'uk':
+			return 'Ukrainian';
+		case 'vi':
+			return 'Vietnamese';
 	}
 };
 
@@ -105,5 +151,5 @@ module.exports = {
 	getAllFiles,
 	hasCommandPermissions,
 	imgDominantColor,
-	serverRegionHR
+	serverLocaleHR
 };

@@ -57,7 +57,7 @@ const getEmbedMessage = (commandsCategory, message) => {
 		color: 'RED',
 		author: {
 			name: categoryName,
-			icon_url: message.client.user.displayAvatarURL()
+			iconURL: message.client.user.displayAvatarURL()
 		},
 		description: CommandsDescription
 	};
@@ -71,7 +71,7 @@ module.exports = {
 		const commands = [...botCommands];
 
 		// Remove Server and Music commands for DMChannel.
-		if (message.channel.type === 'dm') {
+		if (message.channel.type == 'DM') {
 			commands.splice(1, 2);
 		}
 
@@ -101,7 +101,7 @@ module.exports = {
 		commands.forEach(category => homePageMessage.react(category.emoji));
 
 		const collectorFilter = reaction => commands.some(category => category.emoji === reaction.emoji.name);
-		const collector = homePageMessage.createReactionCollector(collectorFilter, { idle: 72000 });
+		const collector = homePageMessage.createReactionCollector({ collectorFilter, idle: 5000 });
 
 		collector.on('collect', (reaction, user) => {
 			if (user.id == message.client.user.id) {
@@ -118,13 +118,13 @@ module.exports = {
 				}
 			}
 
-			if (message.channel.type !== 'dm') {
+			if (message.channel.type != 'DM') {
 				reaction.users.remove(user.id);
 			}
 		});
 
 		collector.on('end', collected => {
-			collected.forEach(reaction => (message.channel.type === 'dm') ? reaction.users.remove(message.client.user.id) : reaction.remove());
+			collected.forEach(reaction => (message.channel.type == 'DM') ? reaction.users.remove(message.client.user.id) : reaction.remove());
 
 			if (atHomePage) {
 				homePageMessage.edit({ embeds: [getEmbedMessage(commands[0], message)] });

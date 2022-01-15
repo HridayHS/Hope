@@ -5,7 +5,7 @@ async function getUser(message) {
 	const userMention = message.mentions.users.first();
 
 	return userMention ? userMention
-		: userID ? await message.client.users.fetch(userID, true, true).catch(() => {})
+		: userID ? await message.client.users.fetch(userID, { cache: true, force: true }).catch(() => {})
 			: message.author;
 };
 
@@ -26,7 +26,7 @@ module.exports = {
 		const EmbedMessage = {
 			author: {
 				name: user.tag,
-				icon_url: user.displayAvatarURL({ dynamic: true })
+				iconURL: user.displayAvatarURL({ dynamic: true })
 			},
 			thumbnail: {
 				url: avatarURL
@@ -40,8 +40,8 @@ module.exports = {
 			}
 		};
 
-		if (message.channel.type !== 'dm' && message.guild.member(user)) {
-			EmbedMessage.fields.unshift({ name: 'Joined', value: customDateFormat(message.guild.member(user).joinedAt, true), inline: true });
+		if (message.channel.type != 'DM' && message.guild.members.cache.get(user.id)) {
+			EmbedMessage.fields.unshift({ name: 'Joined', value: customDateFormat(message.guild.members.cache.get(user.id).joinedAt, true), inline: true });
 		}
 
 		message.channel.send({ embeds: [EmbedMessage] });
