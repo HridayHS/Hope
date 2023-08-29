@@ -1,3 +1,4 @@
+const { resolveColor } = require('discord.js');
 const { imgDominantColor } = require('../utils');
 
 async function getUser(message) {
@@ -12,7 +13,7 @@ async function getUser(message) {
 module.exports = {
 	name: 'avatar',
 	alias: ['av'],
-	permissions: { bot: ['ATTACH_FILES'] },
+	permissions: { bot: ['AttachFiles'] },
 	func: async function (message) {
 		const user = await getUser(message);
 
@@ -21,7 +22,7 @@ module.exports = {
 			return;
 		}
 
-		const avatarURL = user.displayAvatarURL({ format: 'png', dynamic: true, size: 4096 });
+		const avatarURL = user.displayAvatarURL({ extension: 'png', size: 4096 });
 
 		const avatarFileName = avatarURL.split('/').pop().split('?')[0];
 		const avatarDominantColor = await imgDominantColor(avatarURL);
@@ -29,7 +30,7 @@ module.exports = {
 		let messageAttachment = {
 			files: [avatarURL],
 			embeds: [{
-				color: avatarDominantColor.value,
+				color: resolveColor(avatarDominantColor.value),
 				author: {
 					name: user.tag,
 					iconURL: `attachment://${avatarFileName}`,
@@ -46,7 +47,7 @@ module.exports = {
 			// If file size is too large, send avatar url.
 			if (DiscordAPIError.code == 40005) {
 				delete messageAttachment.files;
-				messageAttachment.embeds[0].author.iconURL = user.displayAvatarURL({ dynamic: true });
+				messageAttachment.embeds[0].author.iconURL = user.displayAvatarURL();
 				messageAttachment.embeds[0].image.url = avatarURL;
 
 				message.channel.send(messageAttachment);

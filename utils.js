@@ -1,7 +1,8 @@
 const fs = require('fs');
+const { ChannelType } = require('discord.js');
 
 /* Bot Permissions */
-const botPermissions = ['ADMINISTRATOR', 'MANAGE_CHANNELS', 'VIEW_CHANNEL', 'SEND_MESSAGES', 'MANAGE_MESSAGES', 'EMBED_LINKS', 'ATTACH_FILES', 'READ_MESSAGE_HISTORY', 'ADD_REACTIONS', 'CONNECT', 'SPEAK'];
+const botPermissions = ['Administrator', 'ManageChannels', 'ViewChannel', 'SendMessages', 'ManageMessages', 'EmbedLinks', 'AttachFiles', 'ReadMessageHistory', 'AddReactions', 'Connect', 'Speak'];
 
 /* Bot version */
 const packageJson = fs.readFileSync('./package.json');
@@ -27,7 +28,7 @@ const imgDominantColor = img => getAverageColor(img, { algorithm: 'dominant', mo
  */
 function hasCommandPermissions(message, botCommand, botPerms = false) {
 	// If command does not require any permission or message channel is DMChannel, return true.
-	if (!botCommand.permissions || message.channel.type == 'DM') {
+	if (!botCommand.permissions || message.channel.type === ChannelType.DM) {
 		return true;
 	}
 
@@ -36,7 +37,7 @@ function hasCommandPermissions(message, botCommand, botPerms = false) {
 		return true;
 	}
 
-	const hasPermissions = message.channel.permissionsFor(botPerms ? message.guild.me : message.member).has(Perms);
+	const hasPermissions = message.channel.permissionsFor(botPerms ? message.guild.members.me : message.member).has(Perms);
 
 	if (hasPermissions) {
 		return true;
@@ -46,7 +47,7 @@ function hasCommandPermissions(message, botCommand, botPerms = false) {
 		// Check which permission is missing and push it into missingPerms array;
 		for (let i = 0; i < Perms.length; i++) {
 			const Permission = Perms[i];
-			const hasPermission = message.channel.permissionsFor(botPerms ? message.guild.me : message.member).has(Permission);
+			const hasPermission = message.channel.permissionsFor(botPerms ? message.guild.members.me : message.member).has(Permission);
 			if (!hasPermission) {
 				missingPerms.push(Permission);
 			}

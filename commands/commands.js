@@ -1,3 +1,5 @@
+const { ChannelType, Colors } = require('discord.js');
+
 const botCommands = [
 	{
 		name: 'General Commands',
@@ -44,7 +46,7 @@ const getEmbedMessage = (commandsCategory, message) => {
 	}
 
 	return {
-		color: 'RED',
+		color: Colors.Red,
 		author: {
 			name: categoryName,
 			iconURL: message.client.user.displayAvatarURL()
@@ -56,12 +58,12 @@ const getEmbedMessage = (commandsCategory, message) => {
 module.exports = {
 	name: 'commands',
 	alias: ['cmd', 'cmds', 'command'],
-	permissions: { bot: ['ADD_REACTIONS'] },
+	permissions: { bot: ['AddReactions'] },
 	func: async function (message) {
 		const commands = [...botCommands];
 
 		// Remove Server and Music commands for DMChannel.
-		if (message.channel.type == 'DM') {
+		if (message.channel.type === ChannelType.DM) {
 			commands.splice(1, 1);
 		}
 
@@ -81,7 +83,7 @@ module.exports = {
 
 		const homePageMessage = await message.channel.send({
 			embeds: [{
-				color: 'GREEN',
+				color: Colors.Green,
 				description: homePageDescription
 			}]
 		});
@@ -108,13 +110,13 @@ module.exports = {
 				}
 			}
 
-			if (message.channel.type != 'DM') {
+			if (message.channel.type !== ChannelType.DM) {
 				reaction.users.remove(user.id);
 			}
 		});
 
 		collector.on('end', collected => {
-			collected.forEach(reaction => (message.channel.type == 'DM') ? reaction.users.remove(message.client.user.id) : reaction.remove());
+			collected.forEach(reaction => (message.channel.type === ChannelType.DM) ? reaction.users.remove(message.client.user.id) : reaction.remove());
 
 			if (atHomePage) {
 				homePageMessage.edit({ embeds: [getEmbedMessage(commands[0], message)] });

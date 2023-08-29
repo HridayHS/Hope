@@ -1,3 +1,4 @@
+const { Colors } = require('discord.js');
 const { botPermissions, customDateFormat } = require('../../utils');
 
 module.exports = {
@@ -18,7 +19,7 @@ module.exports = {
 					name: 'About me',
 					icon_url: message.client.user.displayAvatarURL()
 				},
-				color: 'GREEN',
+				color: Colors.Green,
 				fields: [
 					{ name: 'Created on', value: botCreatedAt, inline: true },
 					{ name: 'Developer', value: botDeveloper, inline: true },

@@ -1,22 +1,23 @@
-const { Client, Collection, Intents } = require('discord.js');
+const { Client, Collection, Colors, ChannelType, GatewayIntentBits, Partials } = require('discord.js');
 
 const botIntents = [
-	Intents.FLAGS.DIRECT_MESSAGES,
-	Intents.FLAGS.DIRECT_MESSAGE_REACTIONS,
-	Intents.FLAGS.DIRECT_MESSAGE_TYPING,
-	Intents.FLAGS.GUILDS,
-	Intents.FLAGS.GUILD_EMOJIS_AND_STICKERS,
-	Intents.FLAGS.GUILD_INTEGRATIONS,
-	Intents.FLAGS.GUILD_MEMBERS,
-	Intents.FLAGS.GUILD_MESSAGES,
-	Intents.FLAGS.GUILD_MESSAGE_REACTIONS,
-	Intents.FLAGS.GUILD_MESSAGE_TYPING,
-	Intents.FLAGS.GUILD_PRESENCES,
-	Intents.FLAGS.GUILD_VOICE_STATES,
-	Intents.FLAGS.GUILD_WEBHOOKS
+	GatewayIntentBits.DirectMessages,
+	GatewayIntentBits.DirectMessageReactions,
+	GatewayIntentBits.DirectMessageTyping,
+	GatewayIntentBits.Guilds,
+	GatewayIntentBits.GuildEmojisAndStickers,
+	GatewayIntentBits.GuildIntegrations,
+	GatewayIntentBits.GuildMembers,
+	GatewayIntentBits.GuildMessages,
+	GatewayIntentBits.GuildMessageReactions,
+	GatewayIntentBits.GuildMessageTyping,
+	GatewayIntentBits.GuildPresences,
+	GatewayIntentBits.GuildVoiceStates,
+	GatewayIntentBits.GuildWebhooks,
+	GatewayIntentBits.MessageContent
 ];
 
-const client = new Client({ partials: ['CHANNEL'], intents: botIntents });
+const client = new Client({ intents: botIntents, partials: [Partials.Channel, Partials.Message] });
 
 // Console log when bot is ready.
 client.once('ready', () => {
@@ -45,7 +46,7 @@ client.on('messageCreate', async (message) => {
 	const commandReceived = messageContent.split(' ')[1];
 
 	switch (true) {
-		case message.channel.type != 'DM' && !message.guild.me.permissions.has(['SEND_MESSAGES']):
+		case message.channel.type !== ChannelType.DM && !message.guild.members.me.permissions.has(['SendMessages']):
 		case message.author.bot:
 			return;
 		case messageContent === '.s':
@@ -57,7 +58,7 @@ client.on('messageCreate', async (message) => {
 						name: 'Bot Help',
 						iconURL: client.user.displayAvatarURL(),
 					},
-					color: 'GREEN',
+					color: Colors.Green,
 					fields: [
 						{ name: 'Prefix', value: '`.s`', inline: true },
 						{ name: 'Commands', value: '`.s commands`', inline: true },
@@ -97,7 +98,7 @@ client.on('messageCreate', async (message) => {
 
 	if (botCommand) {
 		// Return if guild only command is requested in DM channel.
-		if (botCommand.guildOnly && message.channel.type == 'DM') {
+		if (botCommand.guildOnly && message.channel.type === ChannelType.DM) {
 			return;
 		}
 
