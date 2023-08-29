@@ -1,3 +1,5 @@
+const { ActivityType, ChannelType } = require('discord.js');
+
 class Emoji {
 	constructor(emoji) {
 		this.emojiInfo = emoji.slice(1).slice(0, -1).split(':');
@@ -13,7 +15,7 @@ class Emoji {
 async function getUser(message) {
 	const userID = message.content.split(' ')[2];
 	const userMention = message.mentions.users.first();
-	return userMention ?? await message.client.users.fetch(userID, { cache: true, force: true }).catch(() => {})
+	return userMention ?? await message.client.users.fetch(userID, { cache: true, force: true }).catch(() => {});
 };
 
 module.exports = {
@@ -28,10 +30,10 @@ module.exports = {
 			return;
 		}
 
-		const canBotSendFiles = (message.channel.type == 'DM') ? true
-			: message.channel.permissionsFor(message.guild.me).has('ATTACH_FILES');
+		const canBotSendFiles = (message.channel.type === ChannelType.DM) ? true
+			: message.channel.permissionsFor(message.guild.members.me).has('AttachFiles');
 		const isLinkNeeded = message.content.match('link');
-		const isMessageDeletionRequired = message.channel.type != 'DM' && message.content.match('delete');
+		const isMessageDeletionRequired = message.channel.type !== ChannelType.DM && message.content.match('delete');
 
 		/* Custom emoji from message content. */
 		if (Emojis) {
@@ -41,7 +43,7 @@ module.exports = {
 			}
 
 			// Send upto five Emojis for DMChannel and only one for other ones.
-			const amountOfEmojisToSend = (message.channel.type == 'DM') ? Math.min(Emojis.length, 5) : 1;
+			const amountOfEmojisToSend = (message.channel.type === ChannelType.DM) ? Math.min(Emojis.length, 5) : 1;
 
 			for (let i = 0; i < amountOfEmojisToSend; i++) {
 				const EmojiURL = new Emoji(Emojis[i]).url;
@@ -63,6 +65,7 @@ module.exports = {
 			}
 
 			const userActivities = guildMember.presence.activities;
+
 			if (userActivities.length === 0) {
 				message.channel.send('Unable to retrieve emoji.');
 				return;
@@ -72,7 +75,7 @@ module.exports = {
 				const activity = userActivities[i];
 
 				// Skip if activity type isn't custom status.
-				if (activity.type !== 'CUSTOM') continue;
+				if (activity.type !== ActivityType.Custom) continue;
 
 				const Emoji = activity.emoji;
 				if (!Emoji || !Emoji.id) {

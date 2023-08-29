@@ -1,10 +1,10 @@
-const pinPermissions = ['MANAGE_CHANNELS'];
+const pinPermissions = ['ManageChannels'];
 
 module.exports = {
 	name: 'pin',
 	permissions: {
-		bot: [...pinPermissions],
-		member: [...pinPermissions]
+		bot: pinPermissions,
+		member: pinPermissions
 	},
 	func: function (message) {
 		const userMessage = message.content;

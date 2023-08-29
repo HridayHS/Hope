@@ -1,3 +1,4 @@
+const { ChannelType } = require('discord.js');
 const { imgDominantColor, customDateFormat } = require('../utils');
 
 async function getUser(message) {
@@ -20,18 +21,18 @@ module.exports = {
 			return;
 		}
 
-		const avatarURL = user.displayAvatarURL({ format: 'png', dynamic: true, size: 4096 });
+		const avatarURL = user.displayAvatarURL({ extension: 'png', size: 4096 });
 		const avatarDominantColor = await imgDominantColor(avatarURL);
 
 		const EmbedMessage = {
 			author: {
 				name: user.tag,
-				iconURL: user.displayAvatarURL({ dynamic: true })
+				iconURL: user.displayAvatarURL()
 			},
 			thumbnail: {
 				url: avatarURL
 			},
-			color: avatarDominantColor.value,
+			color: avatarDominantColor,
 			fields: [
 				{ name: 'Created On', value: customDateFormat(user.createdAt, true), inline: true }
 			],
@@ -40,7 +41,7 @@ module.exports = {
 			}
 		};
 
-		if (message.channel.type != 'DM' && message.guild.members.cache.get(user.id)) {
+		if (message.channel.type != ChannelType.DM && message.guild.members.cache.get(user.id)) {
 			EmbedMessage.fields.unshift({ name: 'Joined', value: customDateFormat(message.guild.members.cache.get(user.id).joinedAt, true), inline: true });
 		}
 

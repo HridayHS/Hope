@@ -1,5 +1,5 @@
 const fs = require('fs');
-const { ChannelType } = require('discord.js');
+const { ChannelType, resolveColor } = require('discord.js');
 
 /* Bot Permissions */
 const botPermissions = ['Administrator', 'ManageChannels', 'ViewChannel', 'SendMessages', 'ManageMessages', 'EmbedLinks', 'AttachFiles', 'ReadMessageHistory', 'AddReactions', 'Connect', 'Speak'];
@@ -20,7 +20,10 @@ const getAllFiles = dir =>
 
 /* Image dominant color */
 const { getAverageColor } = require('fast-average-color-node');
-const imgDominantColor = img => getAverageColor(img, { algorithm: 'dominant', mode: 'speed', ignoredColor: [0, 0, 0, 0] });
+const imgDominantColor = async (img) => {
+	const { value } = await getAverageColor(img, { algorithm: 'dominant', mode: 'speed', ignoredColor: [0, 0, 0, 0] });
+	return resolveColor(value);
+};
 
 /**
  * Check if bot/member have the required permission(s) to execute the command,

@@ -1,4 +1,3 @@
-const { resolveColor } = require('discord.js');
 const { imgDominantColor } = require('../utils');
 
 async function getUser(message) {
@@ -30,7 +29,7 @@ module.exports = {
 		let messageAttachment = {
 			files: [avatarURL],
 			embeds: [{
-				color: resolveColor(avatarDominantColor.value),
+				color: avatarDominantColor,
 				author: {
 					name: user.tag,
 					iconURL: `attachment://${avatarFileName}`,
